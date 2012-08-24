@@ -11,7 +11,7 @@ vendor/*
 ## Application Specific
 public/docstore/*
 config/environments/development.rb
-config/environments/production.rb
+#config/environments/production.rb
 config/production.sphinx.conf
 config/development.sphinx.conf
 
