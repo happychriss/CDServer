@@ -1,0 +1,15 @@
+<h1>Listing uploads</h1>
+
+<% unless @uploads.nil? then %>
+<% @uploads.each do |upload| %>
+    <div class='preview'>
+      <%= render :partial => "show_upload", :locals => {:upload => upload} %>
+    </div>
+<% end %>
+    <div style="clear:both;"></div>
+<% end %>
+
+
+
+
+

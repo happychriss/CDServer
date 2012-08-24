@@ -1,4 +1,10 @@
 CDServer::Application.routes.draw do
+  resources :folders
+
+  resources :uploads
+
+  root :to => 'search#search'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

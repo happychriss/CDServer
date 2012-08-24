@@ -1,0 +1,9 @@
+<a name='doc<%= upload.id %>'></a>
+<%= image_tag(upload.short_path(:s_jpg), :id=>upload.id, :bigjpg=>upload.short_path(:jpg)) %>
+<div class="clear"></div>
+
+<div style="float:left;line-height:1;margin-top:2px">
+        <%="#{upload.id} - #{upload.created_at.strftime("%d.%m.%y")} - #{upload.source}" %>
+  <div class="clear"></div>
+  <%=" #{upload.folder.name}" %>
+    </div>

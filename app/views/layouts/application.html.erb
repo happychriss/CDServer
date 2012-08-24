@@ -8,7 +8,14 @@
 </head>
 <body>
 
-<%= yield %>
-
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><%= link_to "Maintain Folders", folders_path %></li>
+      <li><%= link_to "Uploaded Documents", uploads_path %></li>
+    </ul>
+  </div>
+  <%= yield %>
+</div>
 </body>
 </html>
