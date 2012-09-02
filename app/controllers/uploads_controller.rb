@@ -2,11 +2,17 @@ class UploadsController < ApplicationController
   # GET /uploads
   # GET /uploads.json
   def index
-    @uploads =Upload.order('id asc').paginate :page => params[:page],  :per_page => 100
+    @uploads =Document.AllFirstPages(params[:page])
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @uploads }
     end
+  end
+
+  def group
+    @drop_doc=Upload.find(params[:drop_id])
+    @drag_doc=Upload.find(params[:drag_id])
+    Document.AddPage(@drop_doc,@drag_doc)
   end
 
   # GET /uploads/1
@@ -88,6 +94,9 @@ class UploadsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to uploads_url }
       format.json { head :no_content }
+      format.js
     end
   end
 end
+
+

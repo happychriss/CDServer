@@ -11,7 +11,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120822195719) do
+ActiveRecord::Schema.define(:version => 20120901203152) do
+
+  create_table "documents", :force => true do |t|
+    t.integer "document_id"
+  end
 
   create_table "folders", :force => true do |t|
     t.string   "name"
@@ -21,11 +25,13 @@ ActiveRecord::Schema.define(:version => 20120822195719) do
 
   create_table "uploads", :force => true do |t|
     t.integer  "folder_id"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.string   "original_filename"
     t.string   "source"
     t.text     "content"
+    t.integer  "document_id",       :default => 0, :null => false
+    t.integer  "position",          :default => 0, :null => false
   end
 
 end

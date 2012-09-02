@@ -1,4 +1,6 @@
 class Upload < ActiveRecord::Base
+  require 'DoubleLinkedList'
+  include DoubleLinkedList
   attr_accessible :folder_id, :upload_file, :source
   attr_accessor :upload_file
   belongs_to :folder
@@ -33,5 +35,8 @@ class Upload < ActiveRecord::Base
     File.join(Rails.public_path,'docstore',self.file_name(type))
   end
 
+  def document?
+    (self.document_id!=0 ? true : false)
+  end
 
 end

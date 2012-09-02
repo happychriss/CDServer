@@ -1,8 +1,14 @@
+<%= javascript_include_tag 'jquery-ui.min.js' %>
+<%= javascript_include_tag 'group.js' %>
+
+
 <h1>Listing uploads</h1>
+<input type="hidden" id="controller_div" value="/uploads/group" />
 
 <% unless @uploads.nil? then %>
 <% @uploads.each do |upload| %>
-    <div class='preview'>
+        <div class='preview <%= (upload.document? ? "document" : "page") %>' id=<%= upload.id %>>
+
       <%= render :partial => "show_upload", :locals => {:upload => upload} %>
     </div>
 <% end %>

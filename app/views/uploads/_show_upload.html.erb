@@ -1,9 +1,10 @@
 <a name='doc<%= upload.id %>'></a>
-<%= image_tag(upload.short_path(:s_jpg), :id=>upload.id, :bigjpg=>upload.short_path(:jpg)) %>
+<%= image_tag(upload.short_path(:s_jpg), :id => upload.id, :bigjpg => upload.short_path(:jpg)) %>
 <div class="clear"></div>
 
 <div style="float:left;line-height:1;margin-top:2px">
-        <%="#{upload.id} - #{upload.created_at.strftime("%d.%m.%y")} - #{upload.source}" %>
+  <%= "#{upload.id} - #{upload.created_at.strftime("%d.%m.%y")} - #{upload.source}" %>
   <div class="clear"></div>
-  <%=" #{upload.folder.name}" %>
-    </div>
+  <%= " #{upload.folder.name}  #{p=Document.Pages(upload); p.to_s + "-Pages" if p!=1}" %>
+  <%= (link_to "!!!DELETE!!!", upload, :remote => true, :confirm => 'Are you sure?', :method => :delete) if p==1 %>
+</div>

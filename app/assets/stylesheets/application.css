@@ -26,7 +26,7 @@ body {
     background: white;
     margin: 10px;
     border-radius: 15px;
-    box-shadow: 1px 1px 1px 1px #666;
+    box-shadow: 3px #666;
     padding: 10px;
 
 }
@@ -36,10 +36,16 @@ body {
 .preview {
     float: left;
     margin: 15px;
-    padding: 5px;
+    padding: 7px;
     border-radius: 15px;
     box-shadow: 5px 5px 5px 5px #888;
+    width: 225px;
+    height: 340px;
+}
 
+
+.document {
+    background: gray;
 }
 
 h1 {

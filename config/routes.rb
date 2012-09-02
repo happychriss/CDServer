@@ -1,7 +1,8 @@
 CDServer::Application.routes.draw do
   resources :folders
-
   resources :uploads
+
+  post "uploads/group"
 
   root :to => 'search#search'
 
