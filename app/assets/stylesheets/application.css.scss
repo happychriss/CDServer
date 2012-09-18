@@ -61,10 +61,21 @@ a img {
     margin: 3px;
 }
 
-a {
-    color: orange;
-    font-weight: bold;
+@mixin my_link {
+  color: orange;
+  font-weight: bold;
+  cursor: pointer; cursor: hand;
+text-decoration:underline;
 }
+
+a {
+   @include my_link;
+}
+
+.clicklink {
+  @include my_link;
+}
+
 
 #container {
 

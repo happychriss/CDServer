@@ -11,16 +11,53 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120901203152) do
+ActiveRecord::Schema.define(:version => 20120917101154) do
 
   create_table "documents", :force => true do |t|
-    t.integer "document_id"
+    t.string   "comment"
+    t.integer  "folder_id"
+    t.integer  "status"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.boolean  "first_page_only"
   end
 
   create_table "folders", :force => true do |t|
     t.string   "name"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "pages", :force => true do |t|
+    t.string   "original_filename"
+    t.string   "source"
+    t.text     "content"
+    t.integer  "document_id",       :default => 0, :null => false
+    t.integer  "position",          :default => 0, :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.datetime "uploaded_at"
+  end
+
+  create_table "taggings", :force => true do |t|
+    t.integer  "tag_id"
+    t.integer  "taggable_id"
+    t.string   "taggable_type"
+    t.integer  "tagger_id"
+    t.string   "tagger_type"
+    t.string   "context",       :limit => 128
+    t.datetime "created_at"
+  end
+
+  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
+  add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
+
+  create_table "tags", :force => true do |t|
+    t.string "name"
+  end
+
+  create_table "upload_doc_ids", :force => true do |t|
+    t.integer "document_id"
   end
 
   create_table "uploads", :force => true do |t|

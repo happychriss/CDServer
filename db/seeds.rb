@@ -5,6 +5,6 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
-if Document.first.nil? then
-  Document.create(:document_id => 0)
+if UploadDocId.first.nil? then
+  UploadDocId.create(:document_id => 0)
 end

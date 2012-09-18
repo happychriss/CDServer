@@ -2,7 +2,7 @@ class UploadsController < ApplicationController
   # GET /uploads
   # GET /uploads.json
   def index
-    @uploads =Document.AllFirstPages(params[:page])
+    @uploads =UploadDocId.AllFirstUploadPages(params[:page])
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @uploads }
@@ -12,7 +12,7 @@ class UploadsController < ApplicationController
   def group
     @drop_doc=Upload.find(params[:drop_id])
     @drag_doc=Upload.find(params[:drag_id])
-    Document.AddPage(@drop_doc,@drag_doc)
+    UploadDocId.AddPage(@drop_doc,@drag_doc)
   end
 
   # GET /uploads/1

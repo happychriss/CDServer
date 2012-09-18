@@ -4,6 +4,8 @@
   <title>CDServer</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
+  <%= javascript_include_tag 'jquery-ui.min.js' %>
+
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -11,10 +13,14 @@
 <div id="container">
   <div id="menu">
     <ul>
-      <li><%= link_to "Maintain Folders", folders_path %></li>
       <li><%= link_to "Uploaded Documents", uploads_path %></li>
+      <li><%= link_to "New Document", documents_path %></li>
+      <li><%= link_to "Maintain Folders", folders_path %></li>
+      <li><%= link_to "Maintain Tags", tags_path %></li>
+
     </ul>
   </div>
+  <%= content_tag :h1, yield(:title) if show_title? %>
   <%= yield %>
 </div>
 </body>

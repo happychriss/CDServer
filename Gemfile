@@ -23,6 +23,9 @@ end
 gem 'jquery-rails'
 gem 'sidekiq'
 gem 'will_paginate'
+gem 'acts-as-taggable-on', '~> 2.3.1'
+gem 'acts_as_list', '~> 0.1.8'
+gem 'nested_form'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

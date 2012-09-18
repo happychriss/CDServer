@@ -1,6 +1,14 @@
 CDServer::Application.routes.draw do
+
   resources :folders
   resources :uploads
+  resources :tags
+
+  resources :documents do
+       resources :documents, :pages
+  end
+
+
 
   post "uploads/group"
 
