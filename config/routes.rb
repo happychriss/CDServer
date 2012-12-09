@@ -1,18 +1,19 @@
 CDServer::Application.routes.draw do
 
+  get 'upload_status' => 'documents#upload_status'
+
   resources :folders
-  resources :uploads
   resources :tags
+  resources :pages
 
   resources :documents do
        resources :documents, :pages
   end
 
+  match 'search/' => 'search#search'
+  match 'found/' => 'search#found'
 
-
-  post "uploads/group"
-
-  root :to => 'search#search'
+    root :to => 'search#search'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

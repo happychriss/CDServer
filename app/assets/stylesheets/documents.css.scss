@@ -1,0 +1,48 @@
+
+
+.document_page_index {
+  width: 50%;
+  border-right-style: solid;
+  float: left;
+}
+
+.document_page_index .preview {
+  cursor: move;
+}
+
+.document_sort_frame {
+  position: fixed;
+  right:0px;
+  width: 50%;
+}
+
+.document_sort {
+  background: url(fading_background_sort.png) repeat-x #e3e3e3;
+  height: 360px;
+  padding: 10px;
+  z-index: 1;
+
+}
+
+.page_sort {
+  float: left;
+  padding: 3px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 2px 2px #888;
+  width: 225px;
+  height: 340px;
+  margin: 0px;
+  cursor: move;
+}
+
+.page_sort:hover {
+
+}
+
+.status_frame {
+  background: #a9a9a9;
+  border-radius: 10px;
+  height: 50px;
+  margin: 20px;
+  padding: 10px;
+}

@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.6'
+gem 'rails', '~> 3.2.6'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -21,11 +21,14 @@ group :assets do
 end
 
 gem 'jquery-rails'
+gem 'redis'
 gem 'sidekiq'
 gem 'will_paginate'
 gem 'acts-as-taggable-on', '~> 2.3.1'
 gem 'acts_as_list', '~> 0.1.8'
-gem 'nested_form'
+gem 'thinking-sphinx', '2.0.10'
+
+
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

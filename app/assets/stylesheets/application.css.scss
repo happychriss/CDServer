@@ -35,13 +35,24 @@ body {
 /* Document Preview and document display*/
 .preview {
     float: left;
-    margin: 15px;
+    margin: 10px;
     padding: 7px;
     border-radius: 15px;
     box-shadow: 5px 5px 5px 5px #888;
     width: 225px;
     height: 340px;
+    background: #d3d3d3;
+    position: relative;
 }
+
+.preview_footer {
+  float: left;
+  line-height: 1;
+  margin-top: 2px;
+  height: 20px;
+  width: 100%;
+}
+
 
 
 .document {
@@ -236,6 +247,7 @@ tr td, th{
     box-shadow: 0 0 10px #777; /* vertical and horizontal alignment used for preloader text */
     line-height: 400px;
     text-align: center;
+    z-index: 999999;
 }
 
 #easy_zoom {

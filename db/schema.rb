@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120917101154) do
+ActiveRecord::Schema.define(:version => 0) do
 
   create_table "documents", :force => true do |t|
     t.string   "comment"
@@ -29,14 +29,15 @@ ActiveRecord::Schema.define(:version => 20120917101154) do
   end
 
   create_table "pages", :force => true do |t|
+    t.integer  "folder_id"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.string   "original_filename"
     t.string   "source"
     t.text     "content"
     t.integer  "document_id",       :default => 0, :null => false
-    t.integer  "position",          :default => 0, :null => false
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
-    t.datetime "uploaded_at"
+    t.integer  "position"
+    t.datetime "stored_at"
   end
 
   create_table "taggings", :force => true do |t|
@@ -58,17 +59,6 @@ ActiveRecord::Schema.define(:version => 20120917101154) do
 
   create_table "upload_doc_ids", :force => true do |t|
     t.integer "document_id"
-  end
-
-  create_table "uploads", :force => true do |t|
-    t.integer  "folder_id"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
-    t.string   "original_filename"
-    t.string   "source"
-    t.text     "content"
-    t.integer  "document_id",       :default => 0, :null => false
-    t.integer  "position",          :default => 0, :null => false
   end
 
 end

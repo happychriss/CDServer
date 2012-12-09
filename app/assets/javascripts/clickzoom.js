@@ -10,16 +10,17 @@
 clickzoom = function() {
 
 
-    $(".preview img").live('click',function(e) {
+    $(".clickzoom").live('click',function(e) {
 
         if ($("#click_zoom").length!=0){
             $("#click_zoom").remove();
         } else {
 
-        var big_image_name = $(this).attr('bigjpg');
+        var big_image_name = $(this).find('img').attr('bigjpg');
         var newImg = new Image();
         newImg.src =big_image_name;
-        newImg.id='click_zoom'
+        newImg.id='click_zoom';
+
 
         new_window = $("#container").append(newImg);
 

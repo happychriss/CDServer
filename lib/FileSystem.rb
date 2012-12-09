@@ -1,6 +1,8 @@
 module FileSystem
   def file_name(type)
-    new_file_base_name=self.original_filename.chomp(File.extname(self.original_filename))
+    #new_file_base_name=self.id.to_s + '_' + self.original_filename.chomp(File.extname(self.original_filename))
+
+    new_file_base_name=self.id.to_s
 
     file_name=new_file_base_name + case type
                                      when :pdf
@@ -13,6 +15,8 @@ module FileSystem
                                        '_s.jpg'
                                      when :txt
                                        '.txt'
+                                     when :all
+                                      '*.*'
                                    end
   end
 

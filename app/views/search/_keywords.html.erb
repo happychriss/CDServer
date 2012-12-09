@@ -1,0 +1,15 @@
+<% current_keywords='' if (mode=='keyword_names' and current_keywords.nil?) %>
+<div id="keywords">
+    <div class="form-field">
+    <% Tag.all.each do |tag| %>
+        <div style="float:left;min-width:70px">
+          <%= check_box_tag("document[keyword_list][]", tag.name, current_keywords.include?(tag.id))  if mode=='keyword_ids'%>
+          <%= check_box_tag("document[keyword_list][]", tag.name, current_keywords.include?(tag.name)) if mode =='keyword_names'%>
+          <label><%= tag.name %>  </label>
+        </div>
+    <% end %>
+    <div class="clear"></div>
+  </div>
+</div>
+
+

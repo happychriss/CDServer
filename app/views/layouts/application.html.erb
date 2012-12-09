@@ -5,6 +5,7 @@
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= javascript_include_tag 'jquery-ui.min.js' %>
+  <%= javascript_include_tag 'jquery.ui.touch-punch.js' %>
 
   <%= csrf_meta_tags %>
 </head>
@@ -13,7 +14,7 @@
 <div id="container">
   <div id="menu">
     <ul>
-      <li><%= link_to "Uploaded Documents", uploads_path %></li>
+      <li><%= link_to "Uploaded Files", new_document_path %></li>
       <li><%= link_to "New Document", documents_path %></li>
       <li><%= link_to "Maintain Folders", folders_path %></li>
       <li><%= link_to "Maintain Tags", tags_path %></li>

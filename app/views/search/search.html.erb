@@ -1,1 +1,21 @@
-Welcome
+<%= form_tag('/found', :method => "get", :class=>"input_area") do %>
+
+    <%= text_field_tag(:q, @q, :size => 40, :id=>'search_input') %>
+
+    <%= render :partial => 'keywords', :locals => {:current_keywords => @current_keyword_names, :mode => "keyword_names"} %>
+
+    <p class='submit'> <%= submit_tag("Search") %></p>
+<% end %>
+
+
+<% unless @pages.nil? then %>
+
+    <% @pages.each do |page| %>
+        <div class='preview clickzoom'  id=<%= page.id %>>
+          <%= render :partial => "pages/show_page", :locals => {:page => page} %>
+        </div>
+    <% end %>
+    <div style="clear:both;"></div>
+<% end %>
+
+<%= will_paginate @pages unless @pages.nil?%>
