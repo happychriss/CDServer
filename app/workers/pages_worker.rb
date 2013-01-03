@@ -1,3 +1,6 @@
+## Create small preview image in docstore
+## called when a page is uploaded
+
 require "fileutils"
 
 class PagesWorker
@@ -5,7 +8,6 @@ class PagesWorker
   sidekiq_options :retry => false
 
   def perform(page_id)
-    ## Create small preview image in docstore
 
     upload_count=$redis.incr('upload_count')
     logger.info "START Redis Initial Upload Count #{upload_count}"
@@ -35,7 +37,7 @@ class PagesWorker
     logger.info "Conversion completed"
     upload_count=$redis.decr('upload_count')
     logger.info "STOP Redis Initial Upload Count #{upload_count}"
-
+    Log.write("Upload","Completed upload for page #{page.id}")
   end
 
 end

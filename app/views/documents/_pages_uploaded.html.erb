@@ -1,6 +1,6 @@
 <% unless pages.nil? then %>
       <% pages.each do |page| %>
-            <div class='preview group clickzoom' id=<%= 'page_'+page.id.to_s %>>
+            <div class='preview group' id=<%= 'page_'+page.id.to_s %>>
               <%= render :partial => "pages/show_page", :locals => {:page => page} %>
             </div>
 

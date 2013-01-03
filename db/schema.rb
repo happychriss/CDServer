@@ -11,15 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 0) do
+ActiveRecord::Schema.define(:version => 20130102204645) do
 
   create_table "documents", :force => true do |t|
     t.string   "comment"
     t.integer  "folder_id"
-    t.integer  "status"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
-    t.boolean  "first_page_only"
+    t.integer  "status",          :default => 0,     :null => false
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+    t.boolean  "first_page_only", :default => false, :null => false
   end
 
   create_table "folders", :force => true do |t|
@@ -28,16 +28,24 @@ ActiveRecord::Schema.define(:version => 0) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "logs", :force => true do |t|
+    t.string   "source"
+    t.string   "message"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "pages", :force => true do |t|
-    t.integer  "folder_id"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.integer  "folder_id",                           :null => false
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
     t.string   "original_filename"
     t.string   "source"
     t.text     "content"
-    t.integer  "document_id",       :default => 0, :null => false
+    t.integer  "document_id"
     t.integer  "position"
-    t.datetime "stored_at"
+    t.integer  "status",            :default => 0,    :null => false
+    t.boolean  "delta",             :default => true, :null => false
   end
 
   create_table "taggings", :force => true do |t|
@@ -55,10 +63,6 @@ ActiveRecord::Schema.define(:version => 0) do
 
   create_table "tags", :force => true do |t|
     t.string "name"
-  end
-
-  create_table "upload_doc_ids", :force => true do |t|
-    t.integer "document_id"
   end
 
 end

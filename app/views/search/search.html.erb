@@ -2,7 +2,7 @@
 
     <%= text_field_tag(:q, @q, :size => 40, :id=>'search_input') %>
 
-    <%= render :partial => 'keywords', :locals => {:current_keywords => @current_keyword_names, :mode => "keyword_names"} %>
+    <%= render :partial => 'keywords', :locals => {:current_keywords => @current_keywords} %>
 
     <p class='submit'> <%= submit_tag("Search") %></p>
 <% end %>
@@ -11,7 +11,7 @@
 <% unless @pages.nil? then %>
 
     <% @pages.each do |page| %>
-        <div class='preview clickzoom'  id=<%= page.id %>>
+        <div class='preview'  id=<%= 'page_'+page.id.to_s %>>
           <%= render :partial => "pages/show_page", :locals => {:page => page} %>
         </div>
     <% end %>
@@ -19,3 +19,4 @@
 <% end %>
 
 <%= will_paginate @pages unless @pages.nil?%>
+

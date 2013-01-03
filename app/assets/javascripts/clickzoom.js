@@ -16,13 +16,22 @@ clickzoom = function() {
             $("#click_zoom").remove();
         } else {
 
-        var big_image_name = $(this).find('img').attr('bigjpg');
+        var big_image_name = $(this).attr('bigjpg');
         var newImg = new Image();
         newImg.src =big_image_name;
         newImg.id='click_zoom';
 
 
         new_window = $("#container").append(newImg);
+//
+//        var left_arrow= new Image();
+//            left_arrow.src='arrow_left.png';
+//            left_arrow.id='left_arrow';
+//            left_arrow.className='left_button';
+//            $(left_arrow).offset({ top: 120 , left: newImg.offsetLeft-100});
+//
+//            new_window.append(left_arrow);
+//
 
         e.stopPropagation();
 

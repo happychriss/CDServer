@@ -2,6 +2,8 @@ CDServer::Application.routes.draw do
 
   get 'upload_status' => 'documents#upload_status'
 
+  post 'sort_pages' => 'documents#sort_pages'
+
   resources :folders
   resources :tags
   resources :pages
@@ -13,7 +15,12 @@ CDServer::Application.routes.draw do
   match 'search/' => 'search#search'
   match 'found/' => 'search#found'
 
-    root :to => 'search#search'
+
+  match 'pdf/:id' => 'pages#show_pdf', :as => :pdf
+  match 'rtf/:id' => 'pages#show_rtf', :as => :rtf
+
+
+  root :to => 'search#search'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
