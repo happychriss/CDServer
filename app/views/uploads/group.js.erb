@@ -1,5 +1,0 @@
-$("#<%=@drag_doc.id%>").remove();
-$("#<%=@drop_doc.id%>").html("<%= escape_javascript(render(:partial => 'show_upload', :locals => { :upload => @drop_doc})) %>");
-$("#<%=@drop_doc.id%>").draggable( "disable" );
-$("#<%=@drop_doc.id%>").css("background-color", "gray");
-

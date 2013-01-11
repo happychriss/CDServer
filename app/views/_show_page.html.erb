@@ -1,0 +1,21 @@
+<!-- Standard Template to show pages - with yield -->
+<!-- http://railsonedge.blogspot.de/2008/04/dry-up-your-views-with-layouts-for-your.html-->
+
+  <%= image_tag(page.short_path(:s_jpg), :id => page.id, :bigjpg => page.short_path(:jpg), :class => 'clickzoom') %>
+
+  <div class="clear"></div>
+
+  <div class="preview_footer">
+
+    <% if page.has_document? %>
+        <%= "Page #{page.position+1}/#{page.document.pages.length}" %> |
+    <% end %>
+
+    <%= "#{page.id} - #{page.created_at.strftime("%d.%m.%y")} - #{page.source}" %> |
+
+    <%= link_to "RTF", rtf_path(page.id) %> | <%= link_to("PDF", pdf_path(page.id)) unless page.document.nil?%>
+
+    <%= yield %>  <!-- !!!!HERE IS THE YIELD -->
+  </div>
+
+

@@ -1,0 +1,8 @@
+<!-- will be yielded into /pages/show_page -->
+<div style="float:right;">
+<%= (link_to "Delete", {:controller => 'documents', :id=>page.id,:action=>'destroy_page'},
+                       {:remote => (page.document_pages!=1), :confirm => 'Are you sure?'}) %>
+<%= (link_to "Remove", {:controller => 'documents', :id=>page.id,:action=>'remove_page'}, {:remote => true}) if page.document_pages>1 %>
+
+</div>
+

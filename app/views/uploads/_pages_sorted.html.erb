@@ -3,7 +3,6 @@
     <% pages_sorted.each do |page| %>
         <div class='page_small' style="margin-left:<%=left_margin%>px; z-index: <%=z_index;%>    ;" id=<%= page.id %>>
             <% z_index=z_index-1 %>
-          <a name='doc<%= page.id %>'></a>
           <%= image_tag(page.short_path(:s_jpg), :id => page.id, :bigjpg => page.short_path(:jpg), :class => 'clickzoom') %>
           <div class="clear"></div>
 

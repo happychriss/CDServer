@@ -1,23 +1,36 @@
 CDServer::Application.routes.draw do
 
-  get 'upload_status' => 'documents#upload_status'
+  ## Upload, non HABTM
+  get 'upload_status' => 'uploads#upload_status'
 
-  post 'sort_pages' => 'documents#sort_pages'
+  post 'upload/' => 'uploads#create_page'  ##thi is used to create a new page from client
+  get 'uploads/destroy_page' => 'uploads#destroy_page'
 
-  resources :folders
-  resources :tags
-  resources :pages
 
-  resources :documents do
-       resources :documents, :pages
-  end
+  ## Search Controller, non HABTM
+  match 'pdf/:id' => 'search#show_pdf', :as => :pdf
+  match 'rtf/:id' => 'search#show_rtf', :as => :rtf
+  post 'add_page' => 'search#add_page'
 
   match 'search/' => 'search#search'
   match 'found/' => 'search#found'
 
+  ## Documents contgroller
+  post 'sort_pages' => 'documents#sort_pages'
+  get 'documents/remove_page/:id' => 'documents#remove_page'
+  get 'documents/destroy_page' => 'documents#destroy_page'
 
-  match 'pdf/:id' => 'pages#show_pdf', :as => :pdf
-  match 'rtf/:id' => 'pages#show_rtf', :as => :rtf
+  resources :folders
+  resources :tags
+  resources :uploads
+  resources :documents
+
+  #resources :documents do
+  #     resources :documents, :uploads
+  #end
+
+
+
 
 
   root :to => 'search#search'

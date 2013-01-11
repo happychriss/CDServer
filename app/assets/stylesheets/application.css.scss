@@ -45,6 +45,11 @@ body {
     position: relative;
 }
 
+.preview.no_backup{
+  background: #ff0000;
+}
+
+
 .preview_footer {
   float: left;
   line-height: 1;
@@ -52,8 +57,6 @@ body {
   height: 20px;
   width: 100%;
 }
-
-
 
 .document {
     background: gray;

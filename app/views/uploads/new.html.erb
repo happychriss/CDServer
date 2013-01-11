@@ -1,5 +1,63 @@
-<h1>New upload</h1>
+<div style="clear:both;" xmlns="http://www.w3.org/1999/html"></div>
 
-<%= render 'form' %>
+<div class="document_frame">
 
-<%= link_to 'Back', uploads_path %>
+  <!--------------------------------------- list new uploaded pages -->
+
+  <div class="document_page_index" id="sortable1">
+
+    <% unless @pages.nil? then %>
+        <% @pages.each do |page| %>
+            <div class='preview group' id=<%= 'page_'+page.id.to_s %>>
+              <%= render :partial => 'links_page_uploaded', :layout => '/show_page', :locals => {:page => page} %>
+            </div>
+        <% end %>
+        <div style="clear:both;"></div>
+    <% end %>
+
+  </div>
+
+  <!--------------------------------------- create a new document from uploaded pages -->
+  <div class="document_sort_frame" >
+
+    <div style="margin-left: 10px; margin-right: 10px;">
+
+      <%= form_for(@document, :url => uploads_url) do |f| %>
+
+          <div class="document_sort" id="sortable2">
+            <%= render :partial => 'pages_sorted', :locals => {:pages_sorted => @pages_sorted} %>
+          </div>
+
+          <div class="input_area">
+            <p>
+              <%= f.label "Comment:", :class => 'standard_label' %>  <%= f.text_field :comment %>
+              <span style="margin-left:10px"> Folder:    <%= f.select("folder_id", Folder.all.collect { |p| [p.name, p.id] }, {:include_blank => false}) %> </span>
+            </p>
+
+            <%= render :partial => '/keywords', :locals => {:current_keywords => @document.keyword_ids} %>
+
+            <%= f.submit "Sent to Upload",  :id => "upload_btn", :name=> "sfasfd" %>
+          </div>
+      <% end %>
+    </div>
+
+    <!--------------------------------------- Show status -->
+
+    <div class="status_frame" id='upload_status'>
+      No Upload
+    </div>
+
+    <div class="status_frame" id='backup_status'>
+      No Backup
+    </div>
+
+    <div class="status_frame" id='save_status'>
+      OK
+    </div>
+
+
+
+  </div>
+
+
+</div>

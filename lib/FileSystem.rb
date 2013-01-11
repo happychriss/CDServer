@@ -15,9 +15,14 @@ module FileSystem
                                        '_s.jpg'
                                      when :txt
                                        '.txt'
+                                     when :gpg
+                                        '.gpg'
                                      when :all
                                       '*.*'
                                    end
+
+    return file_name
+
   end
 
   def short_path(type)

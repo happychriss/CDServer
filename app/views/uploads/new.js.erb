@@ -1,6 +1,6 @@
 $('#new_document')[0].reset();
 $('.page_sort').fadeOut('slow', function () {
-    $('.page_sort').remove()
+    $('.page_sort').remove();
     $("#save_status").html("<%= escape_javascript(render(:partial => 'save_status', :locals => { :error => @error, :result =>@result})) %>");
 });
 

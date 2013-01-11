@@ -8,15 +8,24 @@
 <% end %>
 
 
-<% unless @pages.nil? then %>
-
-    <% @pages.each do |page| %>
-        <div class='preview'  id=<%= 'page_'+page.id.to_s %>>
-          <%= render :partial => "pages/show_page", :locals => {:page => page} %>
+<% unless @pages_new_document.nil? then %>
+    <% Page.new_document_pages.each do |page| %>
+        <div class='<%= search_class(page)%>'  id='<%= 'page_'+page.id.to_s %>'>
+          <%= render :partial => 'links_page_search', :layout => '/show_page', :locals => {:page => page} %>
         </div>
     <% end %>
-    <div style="clear:both;"></div>
 <% end %>
+
+
+<% unless @pages.nil? then %>
+    <% @pages.each do |page| %>
+        <div class='<%= search_class(page)%>'  id='<%= 'page_'+page.id.to_s %>'>
+            <%= render :partial => 'links_page_search', :layout => '/show_page', :locals => {:page => page} %>
+        </div>
+    <% end %>
+<% end %>
+
+<div style="clear:both;"></div>
 
 <%= will_paginate @pages unless @pages.nil?%>
 
