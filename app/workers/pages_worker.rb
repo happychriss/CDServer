@@ -17,10 +17,10 @@ class PagesWorker
 
     logger.info "Converting file: #{f}"
 
-    res=%x[convert '#{f}' -resize 22% '#{page.path(:jpg)}']
+    res=%x[convert '#{f}'[0] -resize 22% '#{page.path(:jpg)}']
     logger.info "ERROR - Fist conversion with result: #{res}" unless res==""
 
-    res=%x[convert '#{f}' -resize 220x320  '#{page.path(:s_jpg)}']
+    res=%x[convert '#{f}'[0] -resize 220x320  '#{page.path(:s_jpg)}']
     logger.info "ERROR - Third conversion with result: #{res}" unless res==""
 
     ## Extract text data and store in database

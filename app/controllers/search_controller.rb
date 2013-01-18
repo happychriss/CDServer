@@ -3,18 +3,22 @@ class SearchController < ApplicationController
 
   def search
     @current_keywords||= []
+    @sort_mode||= :relevance
   end
 
   def found
 
     session[:search_results] = request.url
+    session[:sort_mode]=params[:sort_mode]
+    @sort_mode=params[:sort_mode].to_sym
 
     @current_keywords=params[:document].nil? ? []:params[:document][:keyword_list]
 
     @pages_new_document=Page.new_document_pages ##pages that have been assigned a new document (remove action in document.edit)
-    @pages=Page.search_index(params[:q],@current_keywords, params[:page],@pages_new_document)
+    @pages=Page.search_index(params[:q],@current_keywords, params[:page],@pages_new_document,@sort_mode)
 
     @q=params[:q]
+
 
     render :action => 'search'
 
@@ -43,6 +47,10 @@ end
     send_file(pdf.path, :type => 'application/pdf', :page => '1')
     pdf.close
     return
+  end
+
+  def show_document_pages
+    @pages=Document.find(params[:id]).pages.limit(4)
   end
 
 end

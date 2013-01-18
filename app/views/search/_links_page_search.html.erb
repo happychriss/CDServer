@@ -1,4 +1,6 @@
 <!-- will be yielded into /pages/show_page -->
 <div style="float:right;">
 <%= link_to 'Edit', edit_document_path(page.document.id)  %>
+<%= link_to('| Show', show_document_pages_path(page.document.id),:class=>"link_show_pages",:remote => true) if page.document.page_count>1  %>
+  <a class='close_pages_link' style="display: none;">Close</a>
 </div>

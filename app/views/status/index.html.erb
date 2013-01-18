@@ -1,0 +1,15 @@
+<h2>Status Information</h2>
+<h1>Documents without backup: <%= @pages_no_backup %></h1>
+
+
+<h2>Logging Information</h2>
+
+<table>
+  <% @logs.each do |log| %>
+      <tr>
+        <td><%= log.created_at %></td>
+        <td><%= log.source %></td>
+        <td><%= log.message %></td>
+      </tr>
+  <% end %>
+</table>

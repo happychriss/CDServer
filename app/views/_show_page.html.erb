@@ -11,11 +11,13 @@
         <%= "Page #{page.position+1}/#{page.document.pages.length}" %> |
     <% end %>
 
-    <%= "#{page.id} - #{page.created_at.strftime("%d.%m.%y")} - #{page.source}" %> |
+    <%= "ID#{page.id} | #{page.created_at.strftime("%d.%m.%y")} | #{page.source}" %>
 
-    <%= link_to "RTF", rtf_path(page.id) %> | <%= link_to("PDF", pdf_path(page.id)) unless page.document.nil?%>
 
+    <div style="padding-right: 5px;">
+      <%= link_to "RTF", rtf_path(page.id) %> | <%= link_to("PDF", pdf_path(page.id)) unless page.document.nil?%>
     <%= yield %>  <!-- !!!!HERE IS THE YIELD -->
+    </div>
   </div>
 
 

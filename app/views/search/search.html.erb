@@ -1,6 +1,11 @@
-<%= form_tag('/found', :method => "get", :class=>"input_area") do %>
+<%= form_tag('/found', :method => "get", :class => "input_area") do %>
 
-    <%= text_field_tag(:q, @q, :size => 40, :id=>'search_input') %>
+    <%= text_field_tag(:q, @q, :size => 40, :id => 'search_input') %>
+
+    <span style="margin-left: 20px; font-size: large;">
+    Relevance:<%= radio_button_tag 'sort_mode', 'relevance', @sort_mode==:relevance %>
+      Time:<%= radio_button_tag 'sort_mode', 'time', @sort_mode==:time %>
+    </span>
 
     <%= render :partial => 'keywords', :locals => {:current_keywords => @current_keywords} %>
 
@@ -8,24 +13,32 @@
 <% end %>
 
 
+
 <% unless @pages_new_document.nil? then %>
     <% Page.new_document_pages.each do |page| %>
-        <div class='<%= search_class(page)%>'  id='<%= 'page_'+page.id.to_s %>'>
+        <div class='<%= search_class(page) %>' id='<%= 'page_'+page.id.to_s %>'>
           <%= render :partial => 'links_page_search', :layout => '/show_page', :locals => {:page => page} %>
         </div>
     <% end %>
 <% end %>
 
 
+
 <% unless @pages.nil? then %>
+    <% current_month=0; current_year=1900 %>
     <% @pages.each do |page| %>
-        <div class='<%= search_class(page)%>'  id='<%= 'page_'+page.id.to_s %>'>
-            <%= render :partial => 'links_page_search', :layout => '/show_page', :locals => {:page => page} %>
+
+        <% if @sort_mode == :time and current_month!=page.created_at.month then %>
+            <% current_month=page.created_at.month; current_year=page.created_at.year %>
+            <%= render :partial => 'show_month_page', :locals => {:month => current_month, :year => current_year} %>
+        <% end %>
+
+        <div class='<%= search_class(page) %>' id='<%= 'page_'+page.id.to_s %>'>
+          <%= render :partial => 'links_page_search', :layout => '/show_page', :locals => {:page => page} %>
         </div>
     <% end %>
 <% end %>
 
 <div style="clear:both;"></div>
 
-<%= will_paginate @pages unless @pages.nil?%>
-
+<%= will_paginate @pages unless @pages.nil? %>

@@ -15,9 +15,12 @@
   <div id="menu">
     <ul>
       <li><%= link_to "Search", search_path %></li>
-      <li><%= link_to "Uploaded Files", new_upload_path %></li>
-      <li><%= link_to "Maintain Folders", folders_path %></li>
-      <li><%= link_to "Maintain Tags", tags_path %></li>
+      <li><%= link_to "Sort Uploaded Files", new_upload_sorting_path %></li>
+      <li><%= link_to "Upload a File", new_upload_path %></li>
+      <li><%= link_to "(Maintain Folders)", folders_path %></li>
+      <li><%= link_to "(Maintain Tags)", tags_path %></li>
+      <li><%= link_to "(Check Status)", status_path %></li>
+
 
     </ul>
   </div>
@@ -26,3 +29,5 @@
 </div>
 </body>
 </html>
+
+
