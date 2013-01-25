@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(:version => 20130102204645) do
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
     t.boolean  "first_page_only", :default => false, :null => false
+    t.integer  "page_count",      :default => 0,     :null => false
   end
 
   create_table "folders", :force => true do |t|
@@ -36,16 +37,17 @@ ActiveRecord::Schema.define(:version => 20130102204645) do
   end
 
   create_table "pages", :force => true do |t|
-    t.integer  "folder_id",                           :null => false
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.integer  "folder_id",                            :null => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
     t.string   "original_filename"
     t.string   "source"
     t.text     "content"
     t.integer  "document_id"
-    t.integer  "position"
-    t.integer  "status",            :default => 0,    :null => false
-    t.boolean  "delta",             :default => true, :null => false
+    t.integer  "position",          :default => 0,     :null => false
+    t.integer  "status",            :default => 0,     :null => false
+    t.boolean  "delta",             :default => true,  :null => false
+    t.boolean  "backup",            :default => false, :null => false
   end
 
   create_table "taggings", :force => true do |t|
