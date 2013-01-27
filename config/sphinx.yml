@@ -7,6 +7,8 @@ production:
   enable_star: true
   port: 9313
   bin_path: /opt/bin
+  searchd_file_path: /share/Storage/sphinx_index
+
 
 
 
