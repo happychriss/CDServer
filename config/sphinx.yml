@@ -7,7 +7,7 @@ production:
   enable_star: true
   port: 9312
   bin_path: /opt/bin
-  searchd_file_path: /share/Storage/sphinx_index
+  searchd_file_path: /share/Storage/DataCLeanDesk/sphinx_index
   address: qnas
 
 
