@@ -53,10 +53,10 @@ ActiveRecord::Schema.define(:version => 20130102204645) do
   create_table "taggings", :force => true do |t|
     t.integer  "tag_id"
     t.integer  "taggable_id"
-    t.string   "taggable_type"
+    t.string   "taggable_type", :limit => 20
     t.integer  "tagger_id"
-    t.string   "tagger_type"
-    t.string   "context",       :limit => 128
+    t.string   "tagger_type",   :limit => 20
+    t.string   "context",       :limit => 50
     t.datetime "created_at"
   end
 
