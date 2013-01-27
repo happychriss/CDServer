@@ -6,7 +6,7 @@ production:
   morphology: libstemmer_de
   enable_star: true
   port: 9313
-  bin_path: /usr/local/bin
+  bin_path: /opt/bin
 
 
 
