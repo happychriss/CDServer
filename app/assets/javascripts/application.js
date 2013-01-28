@@ -25,7 +25,7 @@
 //= require pages
 //= require search
 //= require upload_sorting_new
-//= require upload
+//= require uploads
 
 
 
