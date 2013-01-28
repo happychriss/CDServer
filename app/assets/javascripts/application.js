@@ -11,20 +11,11 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
-//= require jquery_ujs
 //= require jquery.ui.effect.all
 //= require jquery.ui.draggable
 //= require jquery.ui.droppable
 //= require jquery.ui.resizable
 //= require jquery.ui.selectable
 //= require jquery.ui.sortable
-//= require clickzoom
-//= require documents_edit
-//= require folders
-//= require pages
-//= require search
-//= require upload_sorting_new
-//= require uploads
-//
-
-
+//= require jquery_ujs
+//= require_tree .
