@@ -19,4 +19,13 @@
 //= require jquery.ui.selectable
 //= require jquery.ui.sortable
 //= require jquery.ui.touch-punch
-//= require_tree .
+//= require clickzoom
+//= require documents_edit
+//= require folders
+//= require pages
+//= require search
+//= require upload_sorting_new
+//= require upload
+
+
+
