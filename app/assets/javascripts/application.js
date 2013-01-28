@@ -11,6 +11,7 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
+//= require jquery_ujs
 //= require jquery.ui.effect.all
 //= require jquery.ui.draggable
 //= require jquery.ui.droppable
