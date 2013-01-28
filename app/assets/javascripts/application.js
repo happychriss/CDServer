@@ -18,7 +18,6 @@
 //= require jquery.ui.resizable
 //= require jquery.ui.selectable
 //= require jquery.ui.sortable
-//= require jquery.ui.touch-punch
 //= require clickzoom
 //= require documents_edit
 //= require folders
@@ -26,6 +25,6 @@
 //= require search
 //= require upload_sorting_new
 //= require uploads
-
+//
 
 
