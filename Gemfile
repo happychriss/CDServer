@@ -29,7 +29,7 @@ gem 'will_paginate'
 gem 'acts-as-taggable-on', '~> 2.3.1'
 gem 'acts_as_list', '~> 0.1.8'
 gem 'thinking-sphinx', '2.0.10'
-gem 'aws-s3', :require => 'aws/s3'
+gem 'aws-s3'
 gem 'gpgr'
 
 
