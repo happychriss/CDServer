@@ -66,6 +66,6 @@ module CDServer
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
-    config.assets.precompile += ['*.js', '*.css', '*.jpg', '*.png']
+    config.assets.precompile += ['*.jpg', '*.png']
   end
 end
