@@ -3,6 +3,7 @@ db/*.sqlite3
 log/*
 tmp/*
 Public/docstore
+public/assets/
 Public/assets/*
 db/sphinx/*
 verbose/*
