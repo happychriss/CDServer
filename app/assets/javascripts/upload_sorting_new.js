@@ -1,10 +1,12 @@
 this.SortPages = function () {
 
+//
+
 // sorted pages, on mouseover make page top (z-index, store old index), on mouse out reset z-indes
-    $('.page_sort .preview_footer').live('mouseover mouseout', function (event) {
+    $('#sortable2').on('mouseenter mouseleave','.page_sort .preview_footer', function (event) {
         var page = $(this).parent();
 
-        if (event.type == 'mouseover') {
+        if (event.type == 'mouseenter') {
             page.data("old-z-index", page.css("z-index"));
 
             page.css("z-index", "10000");
@@ -30,10 +32,11 @@ this.SortPages = function () {
 
     // sort page
     $("#sortable2").sortable({
-        tolerance:'pointer',
+        tolerance:'intersect',
         connectWith:'.document_page_index',
         update:function (event, ui) {
             align_pages();
+            ui.item.find('.clickzoom').addClass("no_clickzoom"); //prevent event propagation, so clickzoom will not be triggerd
         },
         remove:function (event, ui) {
             ui.item.removeClass('page_sort')
@@ -57,41 +60,43 @@ this.SortPages = function () {
     });
 
 
-    function align_pages() {
-        var items = $('.document_sort_frame .preview');
-        items.fadeTo(0, 1);
 
-        var page_size = 230;
-        var sort_box_with = $('.document_sort_frame').innerWidth();
-        var max_size = sort_box_with - page_size - 110;
-        var n = items.length;
-        var z = n + 1
-
-        var margin = ((n * page_size) - max_size) / (n - 1);
-        if (margin < 0) {
-            margin = 0
-        }
-
-        var b_margin = false;
-        items.each(function () {
-
-            if (b_margin) {
-                $(this).css("margin-left", -margin + 'px');
-            }
-            else {
-                $(this).css("margin-left", '0px');
-            }
-            $(this).css("z-index", z);
-            z = z - 1
-
-            b_margin = true;
-        });
-
-    }
 
 
 }
 
+
+function align_pages() {
+    var items = $('.document_sort_frame .preview');
+    items.fadeTo(0, 1);
+
+    var page_size = 230;
+    var sort_box_with = $('.document_sort_frame').innerWidth();
+    var max_size = sort_box_with - page_size - 110;
+    var n = items.length;
+    var z = n + 1
+
+    var margin = ((n * page_size) - max_size) / (n - 1);
+    if (margin < 0) {
+        margin = 0
+    }
+
+    var b_margin = false;
+    items.each(function () {
+
+        if (b_margin) {
+            $(this).css("margin-left", -margin + 'px');
+        }
+        else {
+            $(this).css("margin-left", '0px');
+        }
+        $(this).css("z-index", z);
+        z = z - 1
+
+        b_margin = true;
+    });
+
+}
 
 //****************************************************************************************
 this.IndexPages = function () {
@@ -120,8 +125,8 @@ this.SimplePollStatus= function () {
 //****************************************************************************************
 
 $(document).ready(function () {
-    IndexPages();
     SortPages();
+    IndexPages();
 //    SimplePollStatus();
 
 });

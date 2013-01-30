@@ -3,7 +3,11 @@
 this.DropPages = function () {
     $(".search_draggable").draggable({
         revert: 'invalid',
-        zIndex: 2000
+        zIndex: 2000,
+        stop: function(event,ui) {
+            $(this).find('.clickzoom').addClass("no_clickzoom"); //prevent event propagation, so clickzoom will not be triggerd
+        }
+
     });
 
     $(".search_droppable").droppable({
@@ -15,7 +19,9 @@ this.DropPages = function () {
 
             var parameters = 'drop_id='+drop_id+"&"+'drag_id='+drag_id;
             $.post("add_page", parameters);
+
         }
+
     });
 
 };

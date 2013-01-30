@@ -8,7 +8,7 @@
   <div class="preview_footer">
 
     <% if page.has_document? %>
-        <%= "Page #{page.position+1}/#{page.document.pages.length}" %> |
+        <%= "Page #{page.position+1}/#{page.document_pages}" %> |
     <% end %>
 
     <%= "ID#{page.id} | #{page.created_at.strftime("%d.%m.%y")} | #{page.source}" %>

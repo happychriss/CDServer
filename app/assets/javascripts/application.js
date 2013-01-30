@@ -11,11 +11,10 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
-//= require jquery.ui.effect.all
+//= require jquery_ujs
+//= require jquery.ui.effect-fade
 //= require jquery.ui.draggable
 //= require jquery.ui.droppable
-//= require jquery.ui.resizable
 //= require jquery.ui.selectable
 //= require jquery.ui.sortable
-//= require jquery_ujs
 //= require_tree .

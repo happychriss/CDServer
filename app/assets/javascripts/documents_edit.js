@@ -6,7 +6,7 @@ this.UpdateDocumentPages = function () {
         items: 'li',
         opacity: 0.4,
         scroll: true,
-        update: function() {
+        update: function(e,ui) {
             $.ajax({
                 type: 'post',
                 data: $('.doc_sort_list').sortable('serialize') ,
@@ -17,6 +17,9 @@ this.UpdateDocumentPages = function () {
 
                 url: '/sort_pages'
             })
+
+            ui.item.find('.clickzoom').addClass("no_clickzoom"); //prevent event propagation, so clickzoom will not be triggerd
+
         }
 
     });

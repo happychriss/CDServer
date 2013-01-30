@@ -9,8 +9,12 @@
 
 clickzoom = function() {
 
+    $(".clickzoom").on('click',function(e) {
 
-    $(".clickzoom").live('click',function(e) {
+        if ($(this).hasClass('no_clickzoom')){
+            $(this).removeClass('no_clickzoom')
+            return
+        }
 
         if ($("#click_zoom").length!=0){
             $("#click_zoom").remove();
@@ -35,7 +39,7 @@ clickzoom = function() {
 
         e.stopPropagation();
 
-        new_window.live('click',function() {
+        new_window.on('click',function() {
             $("#click_zoom").remove();
         })
         }
