@@ -36,13 +36,15 @@ this.SortPages = function () {
         connectWith:'.document_page_index',
         update:function (event, ui) {
             align_pages();
-            ui.item.find('.clickzoom').addClass("no_clickzoom"); //prevent event propagation, so clickzoom will not be triggerd
         },
         remove:function (event, ui) {
             ui.item.removeClass('page_sort')
         },
         receive:function (event, ui) {
             ui.item.addClass('page_sort')
+        }        ,
+        stop:function (event, ui) {
+            ui.item.find('.clickzoom').addClass("no_clickzoom"); //prevent event propagation, so clickzoom will not be triggerd
         }
 
     });
@@ -110,6 +112,11 @@ this.IndexPages = function () {
             ui.item.removeAttr('style');
             ui.item.removeClass('page_sort').addClass('preview');
         }
+        ,
+        stop:function (event, ui) {
+            ui.item.find('.clickzoom').addClass("no_clickzoom"); //prevent event propagation, so clickzoom will not be triggerd
+        }
+
 
     });
 
