@@ -39,6 +39,11 @@ class Page < ActiveRecord::Base
 
 ########################################################################################################
 
+  def encoding
+    puts "hallo world"
+  end
+
+
   def self.get_search_config(page_no, sort_mode)
     search_config = {:match_mode => :extended,
                      :group_by => 'group_document', #shows only one page, if  more than one pages per document

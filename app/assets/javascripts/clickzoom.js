@@ -9,10 +9,10 @@
 
 clickzoom = function() {
 
-    $(".clickzoom").on('click',function(e) {
+    $("#container").on('click','.clickzoom',function(e) {
 
         if ($(this).hasClass('no_clickzoom')){
-            $(this).removeClass('no_clickzoom')
+            $(this).removeClass('no_clickzoom');
             return
         }
 

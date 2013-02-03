@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 3.2.6'
+gem 'rails', '~> 3.2.11'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -31,6 +31,7 @@ gem 'acts_as_list', '~> 0.1.8'
 gem 'thinking-sphinx', '2.0.10'
 gem 'aws-s3'
 gem 'gpgr'
+gem 'rjb'
 
 
 # To use ActiveModel has_secure_password
