@@ -1,7 +1,6 @@
 class Document < ActiveRecord::Base
 
   require 'tempfile'
-  require 'rjb'
 
   attr_accessible :comment, :folder_id, :status, :keywords, :keyword_list, :page_count,:pages_attributes
   has_many :pages, :order => :position, :dependent => :destroy
@@ -19,19 +18,12 @@ class Document < ActiveRecord::Base
   DOCUMENT_FROM_PAGE_REMOVED = 1 ##document was created, as a page was removed from an existing doc
 
   def pdf_file
-
+    docs='';self.pages.each  {|p| docs+=' '+p.path(:pdf)}
     pdf=Tempfile.new(["cd_#{self.id}",".pdf"])
-    filestream = $filestream.new(pdf.path)
-    copy = $pdfcopyfields.new(filestream)
-
-    self.pages.each do |p|
-      new_doc=$pdfreader.new(p.path(:pdf))
-      copy.addDocument(new_doc)
-    end
-    copy.close()
+    java_merge_pdf="java -classpath './java_itext/.:./java_itext/itext-5.3.5/*' MergePDF"
+    res=%x[#{java_merge_pdf} #{docs} #{pdf.path}]
     return pdf
   end
-
   def backup?
     self.pages.where("backup = 0").count==0
   end
