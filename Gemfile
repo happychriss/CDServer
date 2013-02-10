@@ -31,6 +31,7 @@ gem 'acts_as_list', '~> 0.1.8'
 gem 'thinking-sphinx', '2.0.10'
 gem 'aws-s3'
 gem 'gpgr'
+gem 'thin'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
