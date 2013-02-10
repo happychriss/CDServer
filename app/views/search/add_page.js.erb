@@ -1,4 +1,4 @@
-$("#page_<%=@drop_page.id%>").draggable( "disable" );
+
 $("#page_<%=@drag_page.id%>").remove();
 $("#page_<%=@drop_page.id%>").html("<%= escape_javascript(render :partial => 'links_page_search', :layout => '/show_page', :locals => {:page => @drop_page}) %>");
 

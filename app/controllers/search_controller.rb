@@ -33,6 +33,7 @@ end
     @drop_page=Page.find(drop_id)
 
     @drag_page.add_to_document(@drop_page.document)
+    @drop_page.reload
   end
 
   ### Show document PDF and RTF
