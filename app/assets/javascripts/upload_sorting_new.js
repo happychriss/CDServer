@@ -134,6 +134,6 @@ this.SimplePollStatus= function () {
 $(document).ready(function () {
     SortPages();
     IndexPages();
-//    SimplePollStatus();
+    SimplePollStatus();
 
 });
