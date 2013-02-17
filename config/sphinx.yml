@@ -9,7 +9,7 @@ production:
   bin_path: /opt/bin
   searchd_file_path: /share/Storage/DataCLeanDesk/sphinx_index
   address: qnas
-  pid_file: //var/run/sphinx.pid
+
 
 
 

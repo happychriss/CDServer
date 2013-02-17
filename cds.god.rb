@@ -28,11 +28,11 @@ God.watch do |w|
   w.restart_grace = 10.seconds
   w.interval      = 60.seconds
   w.dir           = RAILS_PROJECT_ROOT
-  w.env 	    = {'RAILS_ENV' => "production" }
+  w.env 	        = {'RAILS_ENV' => "production" }
   w.start         = "#{RAKE_ROOT} ts:rebuild"
   w.stop          = "#{RAKE_ROOT} ts:stop"
   w.restart       = "#{RAKE_ROOT} ts:restart"
-  w.pid_file      = "//var/run/sphinx.pid"
+  w.pid_file      = File.join(RAILS_PROJECT_ROOT, 'log', 'searchd.production.pid')
   w.keepalive
 end
 
