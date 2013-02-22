@@ -1,9 +1,17 @@
+## this does overwrite gpgr.rb - command for gpg path, as it assumes it in '/usr/bin/env gpg'
+module Gpgr
+
+  def self.command
+    'gpg'
+  end
+end
+
 class BackupWorker
   require 'tmpdir'
   include Sidekiq::Worker
   sidekiq_options :retry => true
 
-  def perform(document_id)
+    def perform(document_id)
 
     # create a connection
     gpg_email=Array.new(1, AWS_S3::GPG_EMAIL_ADDRESS)
