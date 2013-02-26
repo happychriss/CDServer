@@ -22,8 +22,7 @@ CDServer::Application.routes.draw do
   get 'documents/remove_page/:id' => 'documents#remove_page'
   get 'documents/destroy_page' => 'documents#destroy_page'
 
-  ## Status
-  get 'status/index' => 'status#index'
+  get 'status/clear' => 'status#clear'
 
   resources :folders
   resources :tags

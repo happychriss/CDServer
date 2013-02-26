@@ -53,14 +53,14 @@ God.watch do |w|
 end
 
 God.watch do |w|
-  w.name          = "sidekiq"
+  w.name          = 'sidekiq'
   w.group         = 'cds'
   w.start_grace   = 10.seconds
   w.restart_grace = 10.seconds
   w.stop_grace    = 10.seconds
   w.interval      = 60.seconds
   w.dir           = RAILS_PROJECT_ROOT
-  w.start         = "bundle exec sidekiq -e production"
+  w.start         = 'bundle exec sidekiq -e production'
   w.stop          = "bundle exec sidekiqctl stop #{RAILS_PROJECT_ROOT}/tmp/pids/sidekiq.pid 5"
   w.keepalive
   w.log         = File.join(RAILS_PROJECT_ROOT, 'log', 'sidekiq.log')
@@ -69,7 +69,7 @@ God.watch do |w|
 end
 
 God.watch do |w|
-  w.name          = "nginx"
+  w.name          = 'nginx'
   w.group         ='cds'
   w.start_grace   = 10.seconds
   w.restart_grace = 10.seconds
@@ -77,7 +77,7 @@ God.watch do |w|
   w.start         = File.join(NGINX_ROOT,'nginx')
   w.stop          = File.join(NGINX_ROOT,'nginx -s stop')
   w.restart       = File.join(NGINX_ROOT,'nginx -s reload')
-  w.pid_file      = "//var/run/nginx.pid";
+  w.pid_file      = '//var/run/nginx.pid'
   w.keepalive
 end
 
@@ -88,7 +88,7 @@ God.watch do |w|
   w.start_grace   = 10.seconds
   w.restart_grace = 10.seconds
   w.interval      = 60.seconds
-  w.start         = "thin start --config ./thin_nginx.yml"
+  w.start         = 'thin start --config ./thin_nginx.yml'
   w.stop          = "thin stop"
   w.restart	    = "thin restart"
   w.pid_file      = File.join(RAILS_PROJECT_ROOT,"tmp","pids","thin.pid")

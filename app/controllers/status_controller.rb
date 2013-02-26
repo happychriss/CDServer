@@ -13,5 +13,9 @@ class StatusController < ApplicationController
     end
   end
 
+  def clear
+    Log.delete_all
+    redirect_to :action => :index
+  end
 
 end

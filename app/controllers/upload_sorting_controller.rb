@@ -51,6 +51,7 @@ class UploadSortingController < ApplicationController
 
     def upload_status
       @upload_count=$redis.get('upload_count')
+      @backup_status=$redis.get('backup_status')
       @backup_count=$redis.get('backup_count')
     end
 

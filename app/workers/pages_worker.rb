@@ -37,7 +37,7 @@ class PagesWorker
     logger.info "Conversion completed"
     upload_count=$redis.decr('upload_count')
     logger.info "STOP Redis Initial Upload Count #{upload_count}"
-    Log.write("Upload","Completed upload for page #{page.id}")
+    Log.write("Upload","Completed conversion and upload for page_id: #{page.id}")
   end
 
 end
