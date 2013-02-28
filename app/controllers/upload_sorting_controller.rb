@@ -37,23 +37,32 @@ class UploadSortingController < ApplicationController
     render action: "new"
 
   end
-##### NON HABTM Action
+
+  ##### NON HABTM Action
 
 
-   #### Action triggered by CDClient UPload program
+  #### Action triggered by CDClient UPload program
 
 
-    def destroy_page
-      @page = Page.find(params[:id])
-      @page.destroy_with_file
-    end
-
-
-    def upload_status
-      @upload_count=$redis.get('upload_count')
-      @backup_status=$redis.get('backup_status')
-      @backup_count=$redis.get('backup_count')
-    end
-
-
+  def destroy_page
+    @page = Page.find(params[:id])
+    @page.destroy_with_file
   end
+
+
+  def upload_status
+
+    @converted_pages=Array.new
+
+    while (true)
+      page_id=$redis.rpop('converted_pages')
+      break if page_id.nil?
+      @converted_pages.push(Page.find(page_id.to_i))
+    end
+
+    @backup_status=$redis.get('backup_status')
+    @backup_count=$redis.get('backup_count')
+  end
+
+
+end

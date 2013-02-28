@@ -8,20 +8,22 @@ class PagesWorker
   sidekiq_options :retry => false
 
   def perform(page_id)
+    logger.info "SLEEP"
 
-    upload_count=$redis.incr('upload_count')
-    logger.info "START Redis Initial Upload Count #{upload_count}"
+    logger.info "START Redis Upload for page_id #{page_id}"
 
     page=Page.find(page_id)
     f=page.path(:pdf)
 
     logger.info "Converting file: #{f}"
 
-    res=%x[convert '#{f}'[0] -resize x770 '#{page.path(:jpg)}']
-    logger.info "ERROR - Fist conversion with result: #{res}" unless res==""
-
     res=%x[convert '#{f}'[0] -resize 220x320  '#{page.path(:s_jpg)}']
     logger.info "ERROR - Third conversion with result: #{res}" unless res==""
+    $redis.lpush('converted_pages',page.id.to_s) ### pages processed
+
+
+    res=%x[convert '#{f}'[0] -resize x770 '#{page.path(:jpg)}']
+    logger.info "ERROR - Fist conversion with result: #{res}" unless res==""
 
     ## Extract text data and store in database
     res=%x[pdftotext -layout '#{f}']
@@ -34,10 +36,9 @@ class PagesWorker
 
     FileUtils.rm(page.path(:txt))
 
-    logger.info "Conversion completed"
-    upload_count=$redis.decr('upload_count')
-    logger.info "STOP Redis Initial Upload Count #{upload_count}"
+    logger.info "STOP Completed conversion for page_id #{page_id}"
     Log.write("Upload","Completed conversion and upload for page_id: #{page.id}")
+
   end
 
 end

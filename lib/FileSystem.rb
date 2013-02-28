@@ -30,6 +30,10 @@ module FileSystem
   end
 
   def path(type)
-    File.join(Rails.public_path,'docstore',self.file_name(type))
+    File.join(self.docstore_path,self.file_name(type))
+  end
+
+  def docstore_path
+    File.join(Rails.public_path,'docstore')
   end
 end

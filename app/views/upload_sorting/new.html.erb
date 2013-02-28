@@ -8,9 +8,7 @@
 
     <% unless @pages.nil? then %>
         <% @pages.each do |page| %>
-            <div class='preview group' id=<%= 'page_'+page.id.to_s %>>
-              <%= render :partial => 'links_page_uploaded', :layout => '/show_page', :locals => {:page => page} %>
-            </div>
+            <%= render :partial => 'page_uploaded', :locals => {:page => page} %>
         <% end %>
         <div style="clear:both;"></div>
     <% end %>
@@ -42,10 +40,6 @@
     </div>
 
     <!--------------------------------------- Show status -->
-
-    <div class="status_frame" id='upload_status'>
-      No Upload
-    </div>
 
     <div class="status_frame" id='backup_status'>
       No Backup
