@@ -57,7 +57,7 @@ class Page < ActiveRecord::Base
     }
 
     # http://rdoc.info/github/freelancing-god/thinking-sphinx/ThinkingSphinx/SearchMethods/ClassMethods
-    (search_config.merge!({ :group_clause => "document_created_at DESC, page_id DESC"})) if sort_mode==:time
+    (search_config.merge!({ :group_clause => "page_id DESC"})) if sort_mode==:time
 
     return search_config
   end
@@ -157,7 +157,7 @@ class Page < ActiveRecord::Base
     old_document=self.document
 
     Page.transaction do
-      doc=Document.new(:status => Document::DOCUMENT_FROM_PAGE_REMOVED, :folder_id => self.document.folder_id)
+      doc=Document.new(:status => Document::DOCUMENT_FROM_PAGE_REMOVED, :folder_id => self.document.folder_id, :page_count => 1)
       doc.save!
       self.document_id=doc.id
       self.position=0
@@ -170,7 +170,7 @@ class Page < ActiveRecord::Base
   end
 
   ## add new page to a document
-  def add_to_document(document, position=document.page_count)
+  def add_to_document(document, position=document.page_count-1)
 
     self.transaction do
 

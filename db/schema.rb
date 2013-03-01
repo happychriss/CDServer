@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130130193932) do
+ActiveRecord::Schema.define(:version => 20130301220256) do
 
   create_table "documents", :force => true do |t|
     t.string   "comment"
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(:version => 20130130193932) do
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
     t.boolean  "first_page_only", :default => false, :null => false
-    t.integer  "page_count",      :default => 1,     :null => false
+    t.integer  "page_count",      :default => 0,     :null => false
   end
 
   create_table "folders", :force => true do |t|
