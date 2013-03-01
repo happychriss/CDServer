@@ -65,6 +65,7 @@ God.watch do |w|
   w.keepalive
   w.log         = File.join(RAILS_PROJECT_ROOT, 'log', 'sidekiq.log')
   w.behavior(:clean_pid_file)
+  w.env           = {'HOME' => '/root'} ## for gpg
 
 end
 

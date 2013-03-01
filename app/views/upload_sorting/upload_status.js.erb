@@ -7,6 +7,6 @@ $("#backup_status").html("Backup documents: <%=@backup_count%>")
 <%end%>
 
 <% @converted_pages.each do |page| %>
-    $("#sortable1 #page_"+<%= page.id %>).replaceWith("<%= escape_javascript(render :partial => 'page_uploaded', :locals => {:page => page}) %>");
+    $("#page_"+<%= page.id %>).replaceWith("<%= escape_javascript(render :partial => 'page_uploaded', :locals => {:page => page}) %>");
 <% end %>
 
