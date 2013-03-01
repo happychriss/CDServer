@@ -60,7 +60,7 @@ God.watch do |w|
   w.stop_grace    = 10.seconds
   w.interval      = 60.seconds
   w.dir           = RAILS_PROJECT_ROOT
-  w.start         = 'bundle exec sidekiq -e production'
+  w.start         = 'bundle exec sidekiq -e production -c 1'
   w.stop          = "bundle exec sidekiqctl stop #{RAILS_PROJECT_ROOT}/tmp/pids/sidekiq.pid 5"
   w.keepalive
   w.log         = File.join(RAILS_PROJECT_ROOT, 'log', 'sidekiq.log')
