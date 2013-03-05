@@ -33,6 +33,46 @@ class UploadsController < ApplicationController
 
   end
 
+  def create_from_client_jpg
+
+    @page = Page.new(params[:page])
+    @page.original_filename=@page.upload_file.original_filename
+    @page.position=0
+
+    if @page.save
+
+      ## Copy to docstore and update DB
+      tmp = params[:page][:upload_file].tempfile
+
+      FileUtils.cp tmp.path, @page.path(:scanned_jpg)
+
+      ## Background: create smaller images and pdf text
+      RemoteWorker.perform_async(@page.id)
+
+      respond_to do |format|
+        format.html { redirect_to @page, notice: 'Upload was successfully created.' }
+        format.json { render :nothing => true }
+      end
+    else
+      format.html { render action: "new" }
+      format.json { render json: @page.errors, status: :unprocessable_entity }
+    end
+  end
+
+##############################################################################
+  def upload_pdf
+   page=Page.find(params[:page_id].to_i)
+
+   ### Store PDF-File
+   page_pdf= params[:page_pdf]
+   tmp = params[:page_pdf][:upload_file].tempfile
+   FileUtils.cp tmp.path, page.path(:pdf)
+
+   ### Update PDF Test
+   page.add_content(params[:pdf_text])
+  end
+
+
   def create_from_client
 
     @page = Page.new(params[:page])

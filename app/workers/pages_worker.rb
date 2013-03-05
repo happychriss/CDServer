@@ -21,7 +21,6 @@ class PagesWorker
     logger.info "ERROR - Third conversion with result: #{res}" unless res==""
     $redis.lpush('converted_pages',page.id.to_s) ### pages processed
 
-
     res=%x[convert '#{f}'[0] -resize x770 '#{page.path(:jpg)}']
     logger.info "ERROR - Fist conversion with result: #{res}" unless res==""
 

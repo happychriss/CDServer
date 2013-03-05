@@ -17,6 +17,8 @@ module FileSystem
                                        '.txt'
                                      when :gpg
                                         '.gpg'
+                                     when :scanned_jpg
+                                       '.scanned.jpg'
                                      when :all
                                       '*.*'
                                    end
@@ -35,5 +37,9 @@ module FileSystem
 
   def docstore_path
     File.join(Rails.public_path,'docstore')
+  end
+
+  def save_file(data,type)
+    f=File.open(self.path(type),"w");f.write(data);f.close
   end
 end

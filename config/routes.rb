@@ -7,6 +7,7 @@ CDServer::Application.routes.draw do
 
   ### Upload from Client
   post 'upload_page' => 'uploads#create_from_client',:as => :upload_page
+  post 'upload_jpg' => 'uploads#create_from_client_jpg',:as => :upload_jpg
 
   ## Search Controller, non HABTM
   match 'pdf/:id' => 'search#show_pdf', :as => :pdf
