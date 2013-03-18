@@ -1,5 +1,5 @@
 ## Create small preview image in docstore
-## called when a page is uploaded
+################ called when a page is uploaded --- used for local conversions
 
 require "fileutils"
 

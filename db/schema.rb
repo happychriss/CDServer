@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130301220256) do
+ActiveRecord::Schema.define(:version => 20130312203337) do
 
   create_table "documents", :force => true do |t|
     t.string   "comment"
@@ -41,13 +41,14 @@ ActiveRecord::Schema.define(:version => 20130301220256) do
     t.datetime "created_at",                           :null => false
     t.datetime "updated_at",                           :null => false
     t.string   "original_filename"
-    t.string   "source"
+    t.integer  "source"
     t.text     "content"
     t.integer  "document_id"
     t.integer  "position",          :default => 0,     :null => false
     t.integer  "status",            :default => 0,     :null => false
     t.boolean  "delta",             :default => true,  :null => false
     t.boolean  "backup",            :default => false, :null => false
+    t.integer  "format"
   end
 
   create_table "taggings", :force => true do |t|

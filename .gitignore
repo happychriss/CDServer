@@ -66,6 +66,7 @@ tmp/*
 /spec/routing
 /spec/views
 /specifications
+app/jobs/cd_drb_worker.pid
 
 # scm revert files
 **.orig

@@ -2,10 +2,6 @@ class StatusController < ApplicationController
   # GET /status
   # GET /status.json
   def index
-    @logs= Log.order('created_at desc').all
-
-    #### Backup status
-    @pages_no_backup=Page.where('backup=0').count
 
     respond_to do |format|
       format.html # index.html.erb
@@ -15,6 +11,11 @@ class StatusController < ApplicationController
 
   def clear
     Log.delete_all
+    redirect_to :action => :index
+  end
+
+  def start_remote_worker
+    RemoteWorker.perform_async
     redirect_to :action => :index
   end
 

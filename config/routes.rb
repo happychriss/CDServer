@@ -6,7 +6,6 @@ CDServer::Application.routes.draw do
 
 
   ### Upload from Client
-  post 'upload_page' => 'uploads#create_from_client',:as => :upload_page
   post 'upload_jpg' => 'uploads#create_from_client_jpg',:as => :upload_jpg
 
   ## Search Controller, non HABTM
@@ -24,6 +23,7 @@ CDServer::Application.routes.draw do
   get 'documents/destroy_page' => 'documents#destroy_page'
 
   get 'status/clear' => 'status#clear'
+  get 'status/start_remote_worker' => 'status#start_remote_worker'
 
   resources :folders
   resources :tags

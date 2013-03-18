@@ -20,6 +20,13 @@
       <li><%= link_to "(Maintain Tags)", tags_path %></li>
       <li><%= link_to "(Check Status)", status_path %></li>
 
+       <span style="color: orange; font-size: small; float: right;padding-right: 10px">
+                 RemoteWorker: <%= RemoteWorker.connect_to_server %> |
+                 Pending Upload: <%= Page.uploading_status(:no_backup)%> |
+                 Pending Processes: <%= Page.uploading_status(:not_processed)%>
+       </span>
+
+
 
     </ul>
   </div>

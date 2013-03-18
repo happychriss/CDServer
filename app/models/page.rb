@@ -6,10 +6,18 @@ class Page < ActiveRecord::Base
 
   #### Document Status flow
   UPLOADED = 0 # page just uploaded
-  UPLOADED_PROCESSED = 1 # pages is processed by worker
-  ASSIGNED_TO_DOCUMENT =2
+  UPLOADED_PROCESSING = 1 # pages is processed
+  UPLOADED_PROCESSED = 2 # pages was processed by worker (content added)
+  ASSIGNED_TO_DOCUMENT =3
 
-  attr_accessible :content, :document_id, :original_filename, :position, :source, :folder_id, :upload_file
+  PAGE_SOURCE_MIGRATED=0
+  PAGE_SOURCE_SCANNED=1
+  PAGE_SOURCE_UPLOADED=2
+
+  PAGE_FORMAT_PDF=0
+  PAGE_FORMAT_SCANNED_JPG=1
+
+  attr_accessible :content, :document_id, :original_filename, :position, :source, :folder_id, :upload_file, :status, :format
   attr_accessor :upload_file
 
   belongs_to :document
@@ -38,10 +46,6 @@ class Page < ActiveRecord::Base
   end
 
 ########################################################################################################
-
-  def encoding
-    puts "hallo world"
-  end
 
 
   def self.get_search_config(page_no, sort_mode)
@@ -102,6 +106,21 @@ class Page < ActiveRecord::Base
     not self.document.nil?
   end
 
+  def self.uploading_status(mode)
+    result=case mode
+      when :no_backup then Page.where('backup=0').count
+      when :not_processed then Page.where("status < #{Page::UPLOADED_PROCESSED}").count
+      else 'ERROR'
+    end
+  end
+
+  def tmp_docstore_path
+    path=case self.source
+        when Page::PAGE_SOURCE_SCANNED then self.path(:scanned_jpg)
+         when Page::PAGE_SOURCE_UPLOADED then self.path(:pdf)
+         end
+    return path
+  end
 
   def document_pages
     return 0 unless self.has_document?
@@ -192,8 +211,11 @@ class Page < ActiveRecord::Base
   ## called by the worker to add new content
   def add_content(text_data)
     self.content=text_data
-    self.status=UPLOADED_PROCESSED
     self.save!
+  end
+
+  def update_status(status)
+    self.update_attributes(:status => status)
   end
 
   private

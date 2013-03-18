@@ -1,15 +1,35 @@
-<h2>Status Information</h2>
-<h1>Documents without backup: <%= @pages_no_backup %></h1>
-<%=  link_to "Clear Status", status_clear_path %>
+<h2 xmlns="http://www.w3.org/1999/html">Status Information</h2>
 
-<h2>Logging Information</h2>
+<div class="status_frame">
+  Documents without backup: <%= Page.uploading_status(:no_backup) %>
+</div>
 
-<table>
-  <% @logs.each do |log| %>
-      <tr>
-        <td><%= log.created_at %></td>
-        <td><%= log.source %></td>
-        <td><%= log.message %></td>
-      </tr>
+<div class="status_frame">
+ Documents without processing: <%= Page.uploading_status(:not_processed) %>
+</br>
+  Connected to Remote Worker Process: <%= connected=RemoteWorker.connect_to_server %>
+
+  <% if connected then %>
+      </br>
+      <%= link_to "Start Remote Worker", status_start_remote_worker_path %>
   <% end %>
-</table>
+</div>
+
+
+  <h2>Logging Information</h2>
+
+
+  <%= link_to "Clear Status", status_clear_path %>
+
+</br>
+</br>
+
+  <table>
+    <% Log.order('created_at desc').all.each do |log| %>
+        <tr>
+          <td><%= log.created_at %></td>
+          <td><%= log.source %></td>
+          <td><%= log.message %></td>
+        </tr>
+    <% end %>
+  </table>
