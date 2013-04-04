@@ -8,7 +8,6 @@ class Page < ActiveRecord::Base
   UPLOADED = 0 # page just uploaded
   UPLOADED_PROCESSING = 1 # pages is processed
   UPLOADED_PROCESSED = 2 # pages was processed by worker (content added)
-  ASSIGNED_TO_DOCUMENT =3
 
   PAGE_SOURCE_MIGRATED=0
   PAGE_SOURCE_SCANNED=1
@@ -108,7 +107,7 @@ class Page < ActiveRecord::Base
 
   def self.uploading_status(mode)
     result=case mode
-      when :no_backup then Page.where('backup=0').count
+      when :no_backup then Page.where('backup=0 and document_id IS NOT NULL').count
       when :not_processed then Page.where("status < #{Page::UPLOADED_PROCESSED}").count
       else 'ERROR'
     end
@@ -197,7 +196,6 @@ class Page < ActiveRecord::Base
 
       self.document_id=document.id
       self.position=position
-      self.status=ASSIGNED_TO_DOCUMENT
       self.save!
 
       self.document.increment_page_count

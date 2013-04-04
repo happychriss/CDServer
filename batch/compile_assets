@@ -1,0 +1,2 @@
+cd //share/Web/CDServer
+bundle exec rake assets:precompile RAILS_ENV=production

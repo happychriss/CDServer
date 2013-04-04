@@ -33,7 +33,7 @@ class UploadsController < ApplicationController
     FileUtils.cp upload_file.tempfile.path, page.tmp_docstore_path
 
     # Background: create smaller images and pdf text
-    RemoteWorker.perform_async(page.id)
+    ConvertWorker.perform_async(page.id)
 
     redirect_to new_upload_path, notice: 'Upload was successfully created.'
 
@@ -56,7 +56,7 @@ class UploadsController < ApplicationController
       FileUtils.cp tmp.path, @page.tmp_docstore_path
 
       ## Background: create smaller images and pdf text
-      RemoteWorker.perform_async(@page.id)
+      ConvertWorker.perform_async(@page.id)
 
       respond_to do |format|
         format.html { redirect_to @page, notice: 'Upload was successfully created.' }

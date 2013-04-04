@@ -4,9 +4,7 @@
 <% if File.exist?(page.path(:s_jpg)) then %>
     <%= image_tag(page.short_path(:s_jpg), :id => page.id, :bigjpg => page.short_path(:jpg), :class => 'clickzoom') %>
 <% else %>
-    <div class="empty_image">
-      <%= image_tag('upload.gif') %>
-    </div>
+    <%= image_tag('upload.gif', :id => page.id, :bigjpg => page.short_path(:jpg), :class => 'clickzoom', :preview_path=>page.short_path(:s_jpg)) %>
 <% end %>
 
 <div class="clear"></div>

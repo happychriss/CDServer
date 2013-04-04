@@ -1,15 +1,15 @@
+
+
 <h2 xmlns="http://www.w3.org/1999/html">Status Information</h2>
 
 <div class="status_frame">
   Documents without backup: <%= Page.uploading_status(:no_backup) %>
-</div>
-
-<div class="status_frame">
+  </br>
  Documents without processing: <%= Page.uploading_status(:not_processed) %>
 </br>
-  Connected to Remote Worker Process: <%= connected=RemoteWorker.connect_to_server %>
+  Connected to Remote Worker Process: <%= connected=ConvertWorker.connect_to_server %>
 
-  <% if connected then %>
+  <% if connected!= ConvertWorker::NOT_CONNECTED then %>
       </br>
       <%= link_to "Start Remote Worker", status_start_remote_worker_path %>
   <% end %>
@@ -33,3 +33,4 @@
         </tr>
     <% end %>
   </table>
+

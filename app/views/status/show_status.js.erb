@@ -1,10 +1,14 @@
+alert("year")
 $("#upload_status").html("Uploading documents: <%=@upload_count%>")
 $("#backup_status").html("Backup documents: <%=@backup_count%>")
+$("#error_status").html("Backup documents: <%=@error_messages%>")
 
 <% if @backup_status!="ok" %>
         $("#backup_status").css({'background-color':'red'}).animate({'background-color':'yellow'}, 1000);
         $("#backup_status").html("Backup documents: <%=@backup_count%> with status <%=@backup_status%>")
 <%end%>
+
+// this replaces the waiting circle with the real page
 
 <% @converted_pages.each do |page| %>
     $("#page_"+<%= page.id %>).replaceWith("<%= escape_javascript(render :partial => 'page_uploaded', :locals => {:page => page}) %>");

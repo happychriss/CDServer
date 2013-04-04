@@ -1,5 +1,7 @@
 
 // Deletes pages (after deleting from controller,checking first if in index or sort page. sends update trigger to sortable
+console.log("I am before");
+
 $("#page_<%=@page.id%>").fadeOut('slow', function () {
 console.log("I am in");
 

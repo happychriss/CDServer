@@ -1,0 +1,1 @@
+god --config-file //share/Web/CDServer/cds.god.rb --log //share/Web/CDServer/log/god.log --log-level info

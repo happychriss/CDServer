@@ -1,9 +1,8 @@
 CDServer::Application.routes.draw do
 
   ## Upload Sorting, non HABTM
-  get 'upload_status' => 'upload_sorting#upload_status'
+  get 'show_status' => 'status#show_status'
   get 'sorting/destroy_page' => 'upload_sorting#destroy_page'
-
 
   ### Upload from Client
   post 'upload_jpg' => 'uploads#create_from_client_jpg',:as => :upload_jpg

@@ -1,0 +1,2 @@
+cd //share/Web/CDServer
+RAILS_ENV=production rake ts:rebuild

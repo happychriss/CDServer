@@ -7,8 +7,11 @@
   <script src="http://code.jquery.com/jquery-migrate-1.0.0.js"></script>
 
   <%= csrf_meta_tags %>
+
+
 </head>
 <body>
+
 
 <div id="container">
   <div id="menu">
@@ -20,19 +23,19 @@
       <li><%= link_to "(Maintain Tags)", tags_path %></li>
       <li><%= link_to "(Check Status)", status_path %></li>
 
-       <span style="color: orange; font-size: small; float: right;padding-right: 10px">
-                 RemoteWorker: <%= RemoteWorker.connect_to_server %> |
-                 Pending Upload: <%= Page.uploading_status(:no_backup)%> |
-                 Pending Processes: <%= Page.uploading_status(:not_processed)%>
+       <span style="color: orange; font-size: small; float: right;padding-right: 10px" id='application_status'>
+            <%= render(:partial => '/app_status',:locals => {:worker_message =>"hi"})%>
+
        </span>
-
-
 
     </ul>
   </div>
   <%= content_tag :h1, yield(:title) if show_title? %>
   <%= yield %>
 </div>
+
+ <%=  subscribe_to "/app_status" %>
+
 </body>
 </html>
 

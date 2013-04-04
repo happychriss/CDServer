@@ -1,7 +1,5 @@
 this.SortPages = function () {
 
-//
-
 // sorted pages, on mouseover make page top (z-index, store old index), on mouse out reset z-indes
     $('#sortable2').on('mouseenter mouseleave','.page_sort .preview_footer', function (event) {
         var page = $(this).parent();
@@ -123,17 +121,10 @@ this.IndexPages = function () {
 
 };
 
-this.SimplePollStatus= function () {
-    $.ajax("/upload_status");
-    setTimeout(SimplePollStatus, 10000);
-}
-
 
 //****************************************************************************************
 
 $(document).ready(function () {
     SortPages();
     IndexPages();
-   SimplePollStatus();
-
 });

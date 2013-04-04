@@ -1,0 +1,2 @@
+cd //share/Web/CDServer
+bundle exec sidekiq -e production -c 2

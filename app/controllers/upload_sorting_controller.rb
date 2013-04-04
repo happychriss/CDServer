@@ -24,9 +24,10 @@ class UploadSortingController < ApplicationController
           p=Page.find(page_id)
           p.add_to_document(@document, position)
         end
-        @result="Created document with #{@document.reload.page_count} pages!"
+        Log.write_status('ServerCreateDoc', "Created document with #{@document.reload.page_count} pages!")
       rescue
-        @error="ERROR creating document: #{@document.errors.full_messages }!"
+        Log.write_error('ServerCreateDoc', "ERROR creating document: #{@document.errors.full_messages }!")
+        raise
       end
 
     end
@@ -47,22 +48,6 @@ class UploadSortingController < ApplicationController
   def destroy_page
     @page = Page.find(params[:id])
     @page.destroy_with_file
-  end
-
-
-  def upload_status
-
-    @converted_pages=Array.new
-
-    while (true)
-      page_id=$redis.rpop('converted_pages')
-      break if page_id.nil?
-      @converted_pages.push(Page.find(page_id.to_i))
-    end
-
-    @backup_status=$redis.get('backup_status')
-    @backup_count=$redis.get('backup_count')
-
   end
 
 

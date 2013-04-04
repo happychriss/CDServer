@@ -17,4 +17,5 @@
 //= require jquery.ui.droppable
 //= require jquery.ui.selectable
 //= require jquery.ui.sortable
+//=require private_pub
 //= require_tree .

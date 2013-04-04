@@ -18,7 +18,7 @@ class SphinxIndexWorker
     Rails.logger.info "### Sphinx - Start Index"
     SphinxRakeSupport::Schedule.ts_index
     Rails.logger.info "### Sphinx - Index Completed"
-    Log.write("SphinxIndex","*********** Completed Sphinx-Reindex **************")
+    Log.write_status("SphinxIndex","*********** Completed Sphinx-Reindex **************")
   end
 end
 
