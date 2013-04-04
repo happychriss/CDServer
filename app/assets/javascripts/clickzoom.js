@@ -27,15 +27,6 @@ clickzoom = function() {
 
 
         new_window = $("#container").append(newImg);
-//
-//        var left_arrow= new Image();
-//            left_arrow.src='arrow_left.png';
-//            left_arrow.id='left_arrow';
-//            left_arrow.className='left_button';
-//            $(left_arrow).offset({ top: 120 , left: newImg.offsetLeft-100});
-//
-//            new_window.append(left_arrow);
-//
 
         e.stopPropagation();
 
