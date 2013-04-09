@@ -24,6 +24,13 @@ class UploadSortingController < ApplicationController
           p=Page.find(page_id)
           p.add_to_document(@document, position)
         end
+
+
+        folder_id=params[:folder_id]
+        if not folder_id.nil? then
+          @document.update_folder(folder_id)
+        end
+
         Log.write_status('ServerCreateDoc', "Created document with #{@document.reload.page_count} pages!")
       rescue
         Log.write_error('ServerCreateDoc', "ERROR creating document: #{@document.errors.full_messages }!")

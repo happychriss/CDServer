@@ -16,11 +16,17 @@ class Page < ActiveRecord::Base
   PAGE_FORMAT_PDF=0
   PAGE_FORMAT_SCANNED_JPG=1
 
-  attr_accessible :content, :document_id, :original_filename, :position, :source, :folder_id, :upload_file, :status, :format
+  attr_accessible :content, :document_id, :original_filename, :position, :source, :folder_id, :upload_file, :small_upload_file, :status, :format
   attr_accessor :upload_file
 
   belongs_to :document
   belongs_to :folder
+  belongs_to :cover
+
+  ### this provides a lit of all pages belonging to a folder without having a cover page printed
+  scope :no_cover, (lambda do |folder_id|
+    joins(:document).where('documents.folder_id = ? and cover_id is null and position=0',folder_id )
+  end)
 
   ########################################################################################################
   ### Sphinx
@@ -42,6 +48,8 @@ class Page < ActiveRecord::Base
     set_property :delta => true
     set_property :min_prefix_len => 4 ##http://sphinxsearch.com/docs/1.10/conf-min-prefix-len.html
     set_property :field_weights => {:document_comment => 2, :content => 1}
+
+   where "document_id is not null"
   end
 
 ########################################################################################################
@@ -55,8 +63,8 @@ class Page < ActiveRecord::Base
                      :per_page => 30,
                      :star => true,
                      :include => {:document => :pages},
-                     :order => "position ASC", #order in the group
-                     :without => {:status => [UPLOADED, UPLOADED_PROCESSED]} #pages not yet sorted and ready will be ignored
+                     :order => "position ASC" #order in the group
+#                     :without => {:status => [UPLOADED, UPLOADED_PROCESSED]} #pages not yet sorted and ready will be ignored
     }
 
     # http://rdoc.info/github/freelancing-god/thinking-sphinx/ThinkingSphinx/SearchMethods/ClassMethods
@@ -121,7 +129,7 @@ class Page < ActiveRecord::Base
     return path
   end
 
-  def document_pages
+  def document_pages_count
     return 0 unless self.has_document?
     self.document.page_count
   end
@@ -130,10 +138,16 @@ class Page < ActiveRecord::Base
     self.where("document_id is null")
   end
 
+  def self.pages_no_cover(folder)
+    folder.pages.where('cover_id is null')
+  end
+
+
+
   def destroy_with_file
 
     position=self.position
-    last_page=(self.document_pages==1)
+    last_page=(self.document_pages_count==1)
 
     Dir.glob(self.path(:all)) do |filename|
       File.delete(filename)
@@ -148,7 +162,7 @@ class Page < ActiveRecord::Base
     Document.transaction do
 
       ## if only one page is left and this is destroyed, destroy document
-      if self.document_pages==1 then
+      if self.document_pages_count==1 then
         self.document.destroy
       else
 
@@ -215,6 +229,7 @@ class Page < ActiveRecord::Base
   def update_status(status)
     self.update_attributes(:status => status)
   end
+
 
   private
 

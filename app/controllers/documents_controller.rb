@@ -8,12 +8,19 @@ class DocumentsController < ApplicationController
   def update
     @document = Document.find(params[:id])
 
-    if @document.update_attributes(params[:document])
+    begin
+      Document.transaction do
+        @document.update_attributes(params[:document])
+
+        folder_id=params[:folder_id]
+        if not folder_id.nil? then
+          @document.update_folder(folder_id)
+        end
+      end
       redirect_to session[:search_results]+"#page_#{@document.pages.first.id}", :notice => "Successfully updated doc."
-    else
+    rescue
       raise "ERROR"
     end
-
 
   end
 
@@ -24,14 +31,13 @@ class DocumentsController < ApplicationController
 
 
     respond_to do |format|
-      format.html { redirect_to search_url}
-      format.js { }
+      format.html { redirect_to search_url }
+      format.js {}
     end
 
   end
 
   ################################### non HABTM ################################################
-
 
 
   ### UPDATE Document

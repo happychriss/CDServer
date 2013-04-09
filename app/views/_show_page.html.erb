@@ -1,7 +1,7 @@
 <!-- Standard Template to show pages - with yield -->
 <!-- http://railsonedge.blogspot.de/2008/04/dry-up-your-views-with-layouts-for-your.html-->
 
-<% if File.exist?(page.path(:s_jpg)) then %>
+<% if page.file_exist?(:s_jpg) then %>
     <%= image_tag(page.short_path(:s_jpg), :id => page.id, :bigjpg => page.short_path(:jpg), :class => 'clickzoom') %>
 <% else %>
     <%= image_tag('upload.gif', :id => page.id, :bigjpg => page.short_path(:jpg), :class => 'clickzoom', :preview_path=>page.short_path(:s_jpg)) %>
@@ -12,10 +12,10 @@
 <div class="preview_footer">
 
   <% if page.has_document? %>
-      <%= "Page #{page.position+1}/#{page.document_pages}" %> |
+      <%= "Page #{page.position+1}/#{page.document_pages_count}" %> |
   <% end %>
 
-  <%= "ID#{page.id} | #{page.created_at.strftime("%d.%m.%y")} | #{page.source}" %>
+  <%= "ID#{page.id} | #{page.created_at.strftime("%d.%m.%y")}" %>
 
 
   <div style="padding-right: 5px;">

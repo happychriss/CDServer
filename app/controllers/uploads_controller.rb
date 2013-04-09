@@ -51,9 +51,13 @@ class UploadsController < ApplicationController
 
       ## Copy to docstore and update DB
       tmp = params[:page][:upload_file].tempfile
-
-
       FileUtils.cp tmp.path, @page.tmp_docstore_path
+
+      ## just if provided in addition, we are happy
+      if  not params[:small_upload_file].nil? then
+        tmp_small = params[:small_upload_file].tempfile
+        FileUtils.cp tmp_small.path, @page.path(:s_jpg)
+      end
 
       ## Background: create smaller images and pdf text
       ConvertWorker.perform_async(@page.id)

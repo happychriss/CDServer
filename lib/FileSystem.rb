@@ -35,6 +35,10 @@ module FileSystem
     File.join(self.docstore_path,self.file_name(type))
   end
 
+  def file_exist?(type)
+    File.exist?(self.path(type))
+  end
+
   def docstore_path
     File.join(Rails.public_path,'docstore')
   end

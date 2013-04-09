@@ -7,7 +7,7 @@ module Pusher
 
   def push_converted_page(page)
     message= render_anywhere('/upload_sorting/converted_page.js.erb', {:page => page})
-    # GOOD FOR DEBUGGING    logger.info "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Publish: #{message}"
+    logger.info "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Publish: #{message}"
     PrivatePub.publish_to("/converted_page", message)
   end
 

@@ -33,6 +33,7 @@ gem 'aws-s3'
 gem 'thin'
 gem 'god'
 gem 'private_pub'
+gem  'prawn'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

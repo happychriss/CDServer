@@ -11,11 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130324215834) do
+ActiveRecord::Schema.define(:version => 20130409200043) do
+
+  create_table "covers", :force => true do |t|
+    t.integer  "folder_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "documents", :force => true do |t|
     t.string   "comment"
-    t.integer  "folder_id"
     t.integer  "status",          :default => 0,     :null => false
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
@@ -27,6 +32,8 @@ ActiveRecord::Schema.define(:version => 20130324215834) do
     t.string   "name"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.boolean  "cover_ind"
+    t.string   "short_name"
   end
 
   create_table "logs", :force => true do |t|
@@ -50,6 +57,7 @@ ActiveRecord::Schema.define(:version => 20130324215834) do
     t.boolean  "delta",             :default => true,  :null => false
     t.boolean  "backup",            :default => false, :null => false
     t.integer  "format"
+    t.integer  "cover_id"
   end
 
   create_table "taggings", :force => true do |t|

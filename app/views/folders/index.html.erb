@@ -3,6 +3,8 @@
 <table>
   <tr>
     <th>Name</th>
+    <th>Short Name</th>
+    <th>Cover needed</th>
     <th></th>
     <th></th>
     <th></th>
@@ -11,6 +13,9 @@
 <% @folders.each do |folder| %>
   <tr>
     <td><%= folder.name %></td>
+    <td><%= folder.short_name %></td>
+    <td><%= folder.cover_ind %></td>
+
     <td><%= link_to 'Show', folder %></td>
     <td><%= link_to 'Edit', edit_folder_path(folder) %></td>
     <td><%= link_to 'Destroy', folder, method: :delete, data: { confirm: 'Are you sure?' } %></td>

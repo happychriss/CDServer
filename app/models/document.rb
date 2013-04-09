@@ -2,11 +2,11 @@ class Document < ActiveRecord::Base
 
   require 'tempfile'
 
-  attr_accessible :comment, :folder_id, :status, :keywords, :keyword_list, :page_count,:pages_attributes
+  attr_accessible :comment, :status, :keywords, :keyword_list, :page_count,:pages_attributes
   has_many :pages, :order => :position, :dependent => :destroy
+  belongs_to :folder
   accepts_nested_attributes_for :pages, :allow_destroy => true
   acts_as_taggable_on :keywords
-
 
   ### Thinking Sphinx
   after_commit :set_delta_flag
@@ -36,6 +36,10 @@ class Document < ActiveRecord::Base
     self.update_attribute('page_count',self.page_count-1)
   end
 
+  ### update all pages with the same folder
+  def update_folder(folder_id)
+    self.pages.update_all :folder_id=>folder_id
+  end
 
   private
 

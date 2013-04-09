@@ -29,7 +29,8 @@
           <div class="input_area">
             <p>
               <%= f.label "Comment:", :class => 'standard_label' %>  <%= f.text_field :comment %>
-              <span style="margin-left:10px"> Folder:    <%= f.select("folder_id", Folder.all.collect { |p| [p.name, p.id] }, {:include_blank => false}) %> </span>
+              <span style="margin-left:10px"> Change Folder for all pages:    <%= select_tag(:folder_id,  options_from_collection_for_select(Folder.all,'id','name'), {:include_blank => true}) %> </span>
+
             </p>
 
             <%= render :partial => '/keywords', :locals => {:current_keywords => @document.keyword_ids} %>

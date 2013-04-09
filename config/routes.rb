@@ -1,8 +1,13 @@
 CDServer::Application.routes.draw do
 
+  resources :covers
+
+
   ## Upload Sorting, non HABTM
   get 'show_status' => 'status#show_status'
   get 'sorting/destroy_page' => 'upload_sorting#destroy_page'
+  get 'show_cover_pages/:id' => 'covers#show_cover_pages'
+  get 'get_cover/:id' => 'covers#create'
 
   ### Upload from Client
   post 'upload_jpg' => 'uploads#create_from_client_jpg',:as => :upload_jpg
