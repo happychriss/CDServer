@@ -138,7 +138,8 @@ class Page < ActiveRecord::Base
     self.where("document_id is null")
   end
 
-  def self.pages_no_cover(folder)
+  def self.pages_no_cover(folder_id)
+    folder=Folder.find(folder_id)
     folder.pages.where('cover_id is null')
   end
 

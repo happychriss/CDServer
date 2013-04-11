@@ -24,6 +24,13 @@ class CoversController < ApplicationController
   # GET /covers/new
   # GET /covers/new.json
   def new
+
+    cover=Cover.find(32)
+    pdf_cover_file=Cover.build_pdf(cover)
+
+    send_file(pdf_cover_file, :type => 'application/pdf', :page => '1')
+    return
+
     @cover = Cover.new
 
     respond_to do |format|
@@ -41,15 +48,8 @@ class CoversController < ApplicationController
   # POST /covers.json
   def create ##excpects json as //get_folder/id <- folder-id
 
-    pdf_cover_file=''
-    Cover.transaction do
-      @cover = Cover.new
-      @cover.folder_id=params[:id]
-      @cover.save!
-#      @cover.pages << Page.pages_no_cover(@cover.folder)
-      pdf_cover_file=Cover.build_pdf(@cover)
-    end
-
+    Cover.new_with_pages_from_folder(5)
+    pdf_cover_file=Cover.build_pdf(@cover)
     send_file(pdf_cover_file, :type => 'application/pdf', :page => '1')
 
     return
