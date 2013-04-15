@@ -2,7 +2,7 @@ class CoversController < ApplicationController
   # GET /covers
   # GET /covers.json
   def index
-    @covers = Cover.all
+    @covers = Cover.order('id desc')
 
     respond_to do |format|
       format.html # index.html.erb
@@ -12,24 +12,21 @@ class CoversController < ApplicationController
 
   # GET /covers/1
   # GET /covers/1.json
+  # Called by CDClient to read the PDF
   def show
     @cover = Cover.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @cover }
+      format.html {send_file(@cover.build_pdf, :type => 'application/pdf', :page => '1')}
+
+      ### returns pdf for the client
+      format.json { send_file(@cover.build_pdf, :type => 'application/pdf', :page => '1')}
     end
   end
 
   # GET /covers/new
   # GET /covers/new.json
   def new
-
-    cover=Cover.find(32)
-    pdf_cover_file=Cover.build_pdf(cover)
-
-    send_file(pdf_cover_file, :type => 'application/pdf', :page => '1')
-    return
 
     @cover = Cover.new
 
@@ -39,20 +36,30 @@ class CoversController < ApplicationController
     end
   end
 
-  # GET /covers/1/edit
-  def edit
-    @cover = Cover.find(params[:id])
-  end
 
   # POST /covers
   # POST /covers.json
-  def create ##excpects json as //get_folder/id <- folder-id
+  # callled by CDclient to create a new cover
 
-    Cover.new_with_pages_from_folder(5)
-    pdf_cover_file=Cover.build_pdf(@cover)
-    send_file(pdf_cover_file, :type => 'application/pdf', :page => '1')
+  def create
 
-    return
+    folder_id=params[:cover][:folder_id]
+
+    @cover=Cover.new_with_pages_from_folder(folder_id)
+
+    respond_to do |format|
+      if @cover.nil? then
+        @cover=Cover.new
+        format.html { redirect_to @cover, notice: 'No pages found for cover' }
+        format.json { render json: @cover, status: :created, location: @cover }
+      elsif @cover.save
+        format.html {send_file(@cover.build_pdf, :type => 'application/pdf', :page => '1') }
+        format.json { render json: @cover, status: :created, location: @cover }
+      else
+        format.html { render action: "new" }
+        format.json { render json: @cover.errors, status: :unprocessable_entity }
+      end
+    end
 
   end
 
@@ -88,8 +95,8 @@ class CoversController < ApplicationController
 
   def show_cover_pages
     @folder=Folder.find(params[:id])
-    @page_count=Page.no_cover(@folder.id).count
-    @pages=Page.no_cover(@folder.id).limit(20)
+    @page_count=Page.pages_no_cover(@folder.id).count
+    @pages=Page.pages_no_cover(@folder.id).limit(20)
   end
 
 end

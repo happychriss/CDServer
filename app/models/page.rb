@@ -24,9 +24,6 @@ class Page < ActiveRecord::Base
   belongs_to :cover
 
   ### this provides a lit of all pages belonging to a folder without having a cover page printed
-  scope :no_cover, (lambda do |folder_id|
-    joins(:document).where('documents.folder_id = ? and cover_id is null and position=0',folder_id )
-  end)
 
   ########################################################################################################
   ### Sphinx
