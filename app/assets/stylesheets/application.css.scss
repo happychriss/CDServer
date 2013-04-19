@@ -16,7 +16,7 @@
 /* Generall Setting */
 
 body {
-    background: url(fading_background.png) repeat-x #e3e3e3;
+    background: url(debut_dark.png) repeat ;
     font-family: Arial, sans-serif;
     font-size: 12px;
     line-height: 1;
@@ -28,6 +28,7 @@ body {
     border-radius: 15px;
     box-shadow: 3px #666;
     padding: 10px;
+    opacity: 0.8;
 
 }
 
@@ -38,7 +39,7 @@ body {
     margin: 10px;
     padding: 7px;
     border-radius: 15px;
-    box-shadow: 5px 5px 5px 5px #888;
+    box-shadow: 3px 3px 3px 3px;
     width: 225px;
     height: 340px;
     background: #d3d3d3;
@@ -63,11 +64,11 @@ body {
 }
 
 h1 {
-    color: #1F1F1F;
+    color: orange;
     font-size: 17px;
     font-weight: 100;
     line-height: 30px;
-    margin: 0;
+    margin: 10px;
 }
 
 a img {

@@ -12,10 +12,20 @@
 <div class="preview_footer">
 
   <% if page.has_document? %>
-      <%= "Page #{page.position+1}/#{page.document_pages_count}" %> |
+      <%= "#{page.position+1}/#{page.document_pages_count}" %> |
   <% end %>
 
-  <%= "ID#{page.id} | #{page.created_at.strftime("%d.%m.%y")}" %>
+  <% unless page.folder.nil? %>
+      <%= "#{page.folder.short_name}" %>
+  <% end %>
+
+
+  <% unless page.cover.nil? %>
+      <%= "#{page.cover.id}*#{page.fid}" %>
+  <% end %>
+
+  <%= "|#{page.id} | #{page.created_at.strftime("%d.%m.%y")}" %>
+
 
 
   <div style="padding-right: 5px;">

@@ -10,7 +10,7 @@ class Cover < ActiveRecord::Base
   PAGE_WITH=130
   PAGE_HEIGHT=200
 
-  X_MAX = Prawn::Document::PageGeometry::SIZES["A4"][0]
+  X_MAX = Prawn::Document::PageGeometry::SIZES["A4"][0]-100
   Y_MAX=Prawn::Document::PageGeometry::SIZES["A4"][1]
   X_MIDDLE=X_MAX/2-30
   Y_MIDDLE=Y_MAX/2-35
@@ -37,9 +37,10 @@ class Cover < ActiveRecord::Base
 
       page_no=1
 
-      cover_line= "  * #{self.counter} *    Folder:#{self.folder.short_name}"
-      cover_line+="          IDs: #{pages.first.id.to_s} to #{pages.last.id.to_s}"
-      cover_line+="          Date: #{self.created_at.strftime('%d.%m.%y')}                Page: #{page_no} (Cover:#{self.id})"
+      cover_line= "Folder:#{self.folder.short_name}  ##{self.counter}      "
+      cover_line+="Created: #{self.created_at.strftime('%d.%m.%y')}       "
+      cover_line+="(Cover:#{self.id} / IDs: #{pages.first.id.to_s} to #{pages.last.id.to_s})     "
+      cover_line+="Page: #{page_no}"
       pdf.text cover_line
 
       pdf.stroke_horizontal_rule
@@ -49,9 +50,9 @@ class Cover < ActiveRecord::Base
 
       pages.each do |page|
         pdf.image page.path(:s_jpg), :width => PAGE_WITH, :at => [x, y]
-        pdf.draw_text "#{page.id}", :at => [x, y], :size => 8
+        pdf.draw_text "*#{self.counter} - #{page.fid}*  (ID#{page.id})", :at => [x, y], :size => 8  ### page cover line
 
-        x=x+PAGE_WITH+10
+        x=x+PAGE_WITH
         if x>X_MAX then ## new row
           y=y-PAGE_HEIGHT
           x=0
@@ -93,10 +94,11 @@ class Cover < ActiveRecord::Base
 
     if pages_no_cover.count>0
       self.transaction do
+        self.connection.execute("SET @fid_count = 0;") #http://stackoverflow.com/questions/6412186/rails-using-sql-variables-in-find-by-sql
         cover = Cover.new
         cover.folder_id=folder_id
         cover.save!
-        pages_no_cover.update_all(:cover_id => cover.id)
+        pages_no_cover.update_all "cover_id = #{cover.id},fid=(@fid_count:= @fid_count+ 1)",nil,:order => 'id asc'
       end
     end
     return cover

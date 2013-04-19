@@ -1,6 +1,5 @@
 .document_page_index {
   width: 50%;
-  border-right-style: solid;
   float: left;
   min-height: 400px;
 }
@@ -20,6 +19,7 @@
   height: 360px;
   padding: 10px;
   z-index: 1;
+  opacity: 0.3;
 
 }
 

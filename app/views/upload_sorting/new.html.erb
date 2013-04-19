@@ -4,6 +4,7 @@
 
   <!--------------------------------------- list new uploaded pages -->
 
+
   <div class="document_page_index" id="sortable1">
 
     <% unless @pages.nil? then %>
@@ -15,9 +16,11 @@
 
   </div>
 
+
+
   <!--------------------------------------- create a new document from uploaded pages -->
   <div class="document_sort_frame" >
-
+    <h1>Drop pages here to sort for upload</h1>
     <div style="margin-left: 10px; margin-right: 10px;">
 
       <%= form_for(@document, :url => {:controller => 'upload_sorting', :action => 'create'}) do |f| %>
@@ -25,6 +28,9 @@
           <div class="document_sort" id="sortable2">
             <%= render :partial => 'pages_sorted', :locals => {:pages_sorted => @pages_sorted} %>
           </div>
+
+          </br>
+          </br>
 
           <div class="input_area">
             <p>
@@ -34,6 +40,8 @@
             </p>
 
             <%= render :partial => '/keywords', :locals => {:current_keywords => @document.keyword_ids} %>
+
+            </br></br>
 
             <%= f.submit "Sent to Upload",  :id => "upload_btn", :name=> "sfasfd" %>
           </div>
