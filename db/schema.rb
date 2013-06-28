@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130416201758) do
+ActiveRecord::Schema.define(:version => 20130612204409) do
 
   create_table "covers", :force => true do |t|
     t.integer  "folder_id"
@@ -57,7 +57,6 @@ ActiveRecord::Schema.define(:version => 20130416201758) do
     t.integer  "status",            :default => 0,     :null => false
     t.boolean  "delta",             :default => true,  :null => false
     t.boolean  "backup",            :default => false, :null => false
-    t.integer  "format"
     t.integer  "cover_id"
     t.integer  "fid"
   end

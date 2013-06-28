@@ -16,9 +16,7 @@
 
 <% unless @pages_new_document.nil? then %>
     <% Page.new_document_pages.each do |page| %>
-        <div class='<%= search_class(page) %>' id='<%= 'page_'+page.id.to_s %>'>
-          <%= render :partial => 'links_page_search', :layout => '/show_page', :locals => {:page => page} %>
-        </div>
+        <%= render :partial => 'page', :locals => {:page => page} %>
     <% end %>
 <% end %>
 
@@ -28,14 +26,13 @@
     <% current_month=0; current_year=1900 %>
     <% @pages.each do |page| %>
 
-        <% if @sort_mode == :time and current_month!=page.created_at.month then %>
+        <% if @sort_mode == :time and (current_month!=page.created_at.month or current_year!=page.created_at.year) then %>
             <% current_month=page.created_at.month; current_year=page.created_at.year %>
             <%= render :partial => 'show_month_page', :locals => {:month => current_month, :year => current_year} %>
         <% end %>
 
-        <div class='<%= search_class(page) %>' id='<%= 'page_'+page.id.to_s %>'>
-          <%= render :partial => 'links_page_search', :layout => '/show_page', :locals => {:page => page} %>
-        </div>
+        <%= render :partial => 'page', :locals => {:page => page} %>
+
     <% end %>
 <% end %>
 

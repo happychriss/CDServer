@@ -30,7 +30,7 @@ this.SortPages = function () {
 
     // sort page
     $("#sortable2").sortable({
-        tolerance:'intersect',
+        tolerance:'pointer',
         connectWith:'.document_page_index',
         update:function (event, ui) {
             align_pages();
@@ -40,9 +40,6 @@ this.SortPages = function () {
         },
         receive:function (event, ui) {
             ui.item.addClass('page_sort')
-        }        ,
-        stop:function (event, ui) {
-            ui.item.find('.clickzoom').addClass("no_clickzoom"); //prevent event propagation, so clickzoom will not be triggerd
         }
 
     });
@@ -59,10 +56,6 @@ this.SortPages = function () {
         return false;
     });
 
-
-
-
-
 }
 
 
@@ -70,9 +63,9 @@ function align_pages() {
     var items = $('.document_sort_frame .preview');
     items.fadeTo(0, 1);
 
-    var page_size = 230;
+    var page_size = 350;
     var sort_box_with = $('.document_sort_frame').innerWidth();
-    var max_size = sort_box_with - page_size - 110;
+    var max_size = sort_box_with-150
     var n = items.length;
     var z = n + 1
 
@@ -103,16 +96,13 @@ this.IndexPages = function () {
 
 // Index page: sortable list for Index Page, remove old class to be ready for the sortable page
     $("#sortable1").sortable({
-        tolerance:'touch',
         connectWith:'.document_sort',
+        placeholder: "spaceholder", //trick not to display any spaceholder
+        tolerance: 'pointer',
         receive:function (event, ui) {
             //        var sort_frame = ui.item.closest('div[class*="document_sort_frame"]');
             ui.item.removeAttr('style');
             ui.item.removeClass('page_sort').addClass('preview');
-        }
-        ,
-        stop:function (event, ui) {
-            ui.item.find('.clickzoom').addClass("no_clickzoom"); //prevent event propagation, so clickzoom will not be triggerd
         }
 
 

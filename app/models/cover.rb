@@ -4,15 +4,15 @@ class Cover < ActiveRecord::Base
   has_many :pages
   belongs_to :folder
 
-  after_validation :set_counter
- before_destroy :update_pages
+  before_destroy :update_pages
 
+  ### scanned document page size
   PAGE_WITH=130
   PAGE_HEIGHT=200
 
   X_MAX = Prawn::Document::PageGeometry::SIZES["A4"][0]-100
-  Y_MAX=Prawn::Document::PageGeometry::SIZES["A4"][1]
-  X_MIDDLE=X_MAX/2-30
+  Y_MAX = Prawn::Document::PageGeometry::SIZES["A4"][1]
+  X_MIDDLE=X_MAX/2
   Y_MIDDLE=Y_MAX/2-35
 
   BOTTOM_SPACE=150 #for folder line
@@ -21,7 +21,7 @@ class Cover < ActiveRecord::Base
   def bottom_page(pdf)
     pdf.move_cursor_to BOTTOM_SPACE
     pdf.stroke_horizontal_rule
-    pdf.fill_circle [X_MIDDLE,BOTTOM_SPACE],10
+    pdf.fill_circle [X_MIDDLE, BOTTOM_SPACE], 10
   end
 
 
@@ -37,9 +37,8 @@ class Cover < ActiveRecord::Base
 
       page_no=1
 
-      cover_line= "Folder:#{self.folder.short_name}  ##{self.counter}      "
+      cover_line= "Cover: #{self.counter}     Folder:#{self.folder.short_name}       "
       cover_line+="Created: #{self.created_at.strftime('%d.%m.%y')}       "
-      cover_line+="(Cover:#{self.id} / IDs: #{pages.first.id.to_s} to #{pages.last.id.to_s})     "
       cover_line+="Page: #{page_no}"
       pdf.text cover_line
 
@@ -50,7 +49,7 @@ class Cover < ActiveRecord::Base
 
       pages.each do |page|
         pdf.image page.path(:s_jpg), :width => PAGE_WITH, :at => [x, y]
-        pdf.draw_text "*#{self.counter} - #{page.fid}*  (ID#{page.id})", :at => [x, y], :size => 8  ### page cover line
+        pdf.draw_text "*#{self.counter} - #{page.fid}*  (ID#{page.id})", :at => [x, y], :size => 8 ### page cover line
 
         x=x+PAGE_WITH
         if x>X_MAX then ## new row
@@ -66,7 +65,7 @@ class Cover < ActiveRecord::Base
             pdf.start_new_page
             pdf.text "Page: #{page_no}"
             pdf.stroke_horizontal_rule
-            pdf.fill_circle [0,Y_MIDDLE],10
+            pdf.fill_circle [0, Y_MIDDLE], 10 ###other sides could by portrait format also
 
             y=pdf.cursor-20
             y_max_pics=5
@@ -84,8 +83,6 @@ class Cover < ActiveRecord::Base
   end
 
 
-
-
   def self.new_with_pages_from_folder(folder_id)
 
     cover=nil
@@ -97,8 +94,9 @@ class Cover < ActiveRecord::Base
         self.connection.execute("SET @fid_count = 0;") #http://stackoverflow.com/questions/6412186/rails-using-sql-variables-in-find-by-sql
         cover = Cover.new
         cover.folder_id=folder_id
+        cover.counter=(Cover.where(:folder_id => folder_id).maximum('counter').to_i)+1
         cover.save!
-        pages_no_cover.update_all "cover_id = #{cover.id},fid=(@fid_count:= @fid_count+ 1)",nil,:order => 'id asc'
+        pages_no_cover.update_all "cover_id = #{cover.id},fid=(@fid_count:= @fid_count+ 1)", nil, :order => 'id asc'
       end
     end
     return cover
@@ -109,9 +107,9 @@ class Cover < ActiveRecord::Base
 
 ### This counts per folder
 
-  def set_counter
-    self.counter=(Cover.where(:folder_id => self.folder_id).maximum('counter').to_i)+1
-  end
+
+
+
 
 
 ### remove cover from all pages

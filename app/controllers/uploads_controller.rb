@@ -24,7 +24,6 @@ class UploadsController < ApplicationController
     page=Page.new(
         :original_filename => upload_file.original_filename,
         :source => Page::PAGE_SOURCE_UPLOADED,
-        :format => Page::PAGE_FORMAT_PDF,
         :folder_id => params[:file_upload][:folder_id])
 
     page.save!
@@ -45,7 +44,7 @@ class UploadsController < ApplicationController
     @page = Page.new(params[:page])
     @page.original_filename=@page.upload_file.original_filename
     @page.position=0
-    @page.format=Page::PAGE_FORMAT_SCANNED_JPG
+    @page.source=Page::PAGE_SOURCE_SCANNED
 
     if @page.save
 

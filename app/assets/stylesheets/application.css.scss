@@ -16,11 +16,11 @@
 /* Generall Setting */
 
 body {
-    background: url(debut_dark.png) repeat ;
+    background: url(debut_dark.png) repeat fixed;
     font-family: Arial, sans-serif;
     font-size: 12px;
     line-height: 1;
-}
+    }
 
 .input_area {
     background: white;
@@ -28,28 +28,33 @@ body {
     border-radius: 15px;
     box-shadow: 3px #666;
     padding: 10px;
-    opacity: 0.8;
+    opacity: 0.9;
 
 }
 
 
 /* Document Preview and document display*/
-.preview {
+
+
+.preview  {
     float: left;
     margin: 10px;
-    padding: 7px;
+    padding: 10px;
     border-radius: 15px;
     box-shadow: 3px 3px 3px 3px;
-    width: 225px;
-    height: 340px;
     background: #d3d3d3;
     position: relative;
+  width: 350px;
+  height: 520px;
 }
 
 .preview.no_backup{
   background: #ff0000;
 }
 
+.clickzoom {
+  cursor: -webkit-zoom-in; cursor: -moz-zoom-in;
+}
 
 .preview_footer {
   float: left;

@@ -7,15 +7,17 @@
 }
 
 #show_document_pages {
-  width: auto;
-  height: auto;
+  position:fixed;
+  left: 50%;
+
+
   border: 15px solid #eee;
   padding-bottom: 5px;
   background: gray;
   color: #333;
-  position: fixed;
+
   top: 60px;
-  left: 33%;
+
   overflow: hidden;
   -moz-box-shadow: 0 0 10px #777;
   -webkit-box-shadow: 0 0 10px #777;

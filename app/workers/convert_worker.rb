@@ -110,7 +110,7 @@ class ConvertWorker
 
         ### REMOTE CALL via DRB - the server can run on any server: ruby DRbProcessor.rb run
 
-        result_jpg, result_sjpg, result_pdf, result_txt=@@processor.convert(scanned_jpg, page.format)
+        result_jpg, result_sjpg, result_pdf, result_txt=@@processor.convert(scanned_jpg, page.source)
 
         page.save_file(result_sjpg, :s_jpg)
         page.save_file(result_jpg, :jpg)

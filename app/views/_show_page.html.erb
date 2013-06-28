@@ -20,11 +20,14 @@
   <% end %>
 
 
-  <% unless page.cover.nil? %>
-      <%= "#{page.cover.id}*#{page.fid}" %>
-  <% end %>
-
-  <%= "|#{page.id} | #{page.created_at.strftime("%d.%m.%y")}" %>
+  <% if page.source==Page::PAGE_SOURCE_MIGRATED %>
+      <%= "| Migration FID:#{page.fid}" %>
+  <% elsif not page.cover.nil?%>
+      <%= "| Cover:#{page.cover.counter} * #{page.fid}" %>
+  <% elsif page.folder.cover_ind%>
+       *No cover*
+      <%end%>
+  <%= "|#{page.created_at.strftime("%d.%m.%y")}|     (#{page.id})" %>
 
 
 

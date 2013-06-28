@@ -12,10 +12,9 @@ class DocumentsController < ApplicationController
       Document.transaction do
         @document.update_attributes(params[:document])
 
-        folder_id=params[:folder_id]
-        if not folder_id.nil? then
-          @document.update_folder(folder_id)
-        end
+        folder_id=params[:folder_id].to_i
+        @document.update_folder(folder_id) unless folder_id==0
+
       end
       redirect_to session[:search_results]+"#page_#{@document.pages.first.id}", :notice => "Successfully updated doc."
     rescue

@@ -2,6 +2,7 @@
 
 <table>
   <tr>
+    <th>ID</th>
     <th>Name</th>
     <th>Short Name</th>
     <th>Cover needed</th>
@@ -12,6 +13,7 @@
 
 <% @folders.each do |folder| %>
   <tr>
+    <td><%= folder.id %></td>
     <td><%= folder.name %></td>
     <td><%= folder.short_name %></td>
     <td><%= folder.cover_ind %></td>

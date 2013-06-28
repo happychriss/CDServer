@@ -15,9 +15,9 @@
         </div>
     <% end %>
 
-    <h1>Select the folder for the cover</h1>
+    Select the folder for the cover
 
-    <%= f.select("folder_id", Folder.all.collect { |p| [p.name, p.id] }, {:include_blank => true}, :id=>'new_cover_folder') %>
+    <%= f.select("folder_id", Folder.where(:cover_ind => 1).collect { |p| [p.name, p.id] }, {:include_blank => true}, :id=>'new_cover_folder') %>
 
     </br></br></br>
 

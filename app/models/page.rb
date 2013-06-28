@@ -9,9 +9,9 @@ class Page < ActiveRecord::Base
   UPLOADED_PROCESSING = 1 # pages is processed
   UPLOADED_PROCESSED = 2 # pages was processed by worker (content added)
 
-  PAGE_SOURCE_MIGRATED=0
-  PAGE_SOURCE_SCANNED=1
-  PAGE_SOURCE_UPLOADED=2
+  PAGE_SOURCE_SCANNED=0
+  PAGE_SOURCE_UPLOADED=1
+  PAGE_SOURCE_MIGRATED=99
 
   PAGE_FORMAT_PDF=0
   PAGE_FORMAT_SCANNED_JPG=1
@@ -136,8 +136,10 @@ class Page < ActiveRecord::Base
   end
 
   def self.pages_no_cover(folder_id)
+    pages=Array.new
     folder=Folder.find(folder_id)
-    folder.pages.where('cover_id is null')
+    pages=folder.pages.where('cover_id is null') if folder.cover_ind
+    return pages
   end
 
 
@@ -187,7 +189,7 @@ class Page < ActiveRecord::Base
     old_document=self.document
 
     Page.transaction do
-      doc=Document.new(:status => Document::DOCUMENT_FROM_PAGE_REMOVED, :folder_id => self.document.folder_id, :page_count => 1)
+      doc=Document.new(:status => Document::DOCUMENT_FROM_PAGE_REMOVED, :page_count => 1)
       doc.save!
       self.document_id=doc.id
       self.position=0
