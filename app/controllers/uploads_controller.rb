@@ -58,7 +58,7 @@ class UploadsController < ApplicationController
       if  not params[:small_upload_file].nil? then
         tmp_small = params[:small_upload_file].tempfile
         FileUtils.cp tmp_small.path, @page.path(:s_jpg)
-        FileUtils.chmod "go=rr",@page.tmp_docstore_path
+        FileUtils.chmod "go=rr",@page.path(:s_jpg)
       end
 
       ## Background: create smaller images and pdf text
