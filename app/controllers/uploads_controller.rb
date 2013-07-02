@@ -30,6 +30,7 @@ class UploadsController < ApplicationController
     page.reload
 
     FileUtils.cp upload_file.tempfile.path, page.tmp_docstore_path
+    FileUtils.chmod "go=rr",page.tmp_docstore_path
 
     # Background: create smaller images and pdf text
     ConvertWorker.perform_async(page.id)
@@ -48,14 +49,16 @@ class UploadsController < ApplicationController
 
     if @page.save
 
-      ## Copy to docstore and update DB
+      ## Copy to docstore and update DB -- will be .scanned.jpg
       tmp = params[:page][:upload_file].tempfile
       FileUtils.cp tmp.path, @page.tmp_docstore_path
+      FileUtils.chmod "go=rr",@page.tmp_docstore_path #happens only on qnas, set group and others to read, otherwise nginx fails
 
-      ## just if provided in addition, we are happy
+      ## just if provided in addition, we are happy, will be _s.jpg
       if  not params[:small_upload_file].nil? then
         tmp_small = params[:small_upload_file].tempfile
         FileUtils.cp tmp_small.path, @page.path(:s_jpg)
+        FileUtils.chmod "go=rr",@page.tmp_docstore_path
       end
 
       ## Background: create smaller images and pdf text

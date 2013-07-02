@@ -1,6 +1,6 @@
 module DRbProcessor
 ## called by convert_worker
-## this is running as a separate ruby daemon on the performand server, to reduce workload from qnap
+## this is running as a separate ruby daemon on a more performant server, to reduce workload from qnap nas
 ## at the end of the file the command is executed.
 
   require 'tempfile'

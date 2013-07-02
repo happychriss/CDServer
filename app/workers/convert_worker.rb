@@ -31,7 +31,7 @@ class ConvertWorker
         @@status=NOT_CONNECTED
       end
     end
-    puts "connec to server"
+    puts "connect to server"
 
     if @@status==NOT_CONNECTED then
 
