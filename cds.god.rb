@@ -95,3 +95,21 @@ God.watch do |w|
   w.pid_file      = File.join(RAILS_PROJECT_ROOT,"tmp","pids","thin.pid")
   w.keepalive
 end
+
+#fayae - privat pub gem from ryan
+God.watch do |w|
+  w.name          = "private_pub"
+  w.group         ='cds'
+  w.dir           = RAILS_PROJECT_ROOT
+  w.start_grace   = 10.seconds
+  w.restart_grace = 10.seconds
+  w.interval      = 60.seconds
+  w.env           = {'RAILS_ENV' => "production" }
+  w.start         = "rackup private_pub.ru -s thin -E production -P #{RAILS_PROJECT_ROOT}/tmp/pids/private_pub.pid"
+  w.log           = File.join(RAILS_PROJECT_ROOT, 'log', 'private_pub.log')
+  w.pid_file      = "#{RAILS_PROJECT_ROOT}/tmp/pids/private_pub.pid"
+  w.stop_signal = 'KILL'
+  w.keepalive
+end
+
+
