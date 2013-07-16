@@ -37,7 +37,7 @@ class ConvertWorker
 
       ## try first to connect to remote host, because he can do all the work
       begin
-        tmp_proc= DRbObject.new(nil, "druby://#{DRB_WORKER::REMOTE_HOST}:#{DRB_WORKER::REMOTE_PORT}") ##
+        tmp_proc= DRbObject.new(nil, "druby://#{DRB_WORKER['remote_host']}:#{DRB_WORKER['remote_port']}") ##
         tmp_alive=tmp_proc.me_alive? ## somehow only this raises the exception in case of error, me_alive? is a custom method
         @@processor=tmp_proc if tmp_alive
         @@status=CONNECTED_TO_REMOTE
@@ -51,7 +51,7 @@ class ConvertWorker
       if @@status==NOT_CONNECTED then
 
         begin
-          tmp_proc= DRbObject.new(nil, "druby://#{DRB_WORKER::QNAS_HOST}:#{DRB_WORKER::QNAS_PORT}") ##
+          tmp_proc= DRbObject.new(nil, "druby://#{DRB_WORKER['qnas_host']}:#{DRB_WORKER['qnas_port']}") ##
           tmp_alive=tmp_proc.me_alive? ## somehow only this raises the exception in case of error, me_alive? is a custom method
           @@processor=tmp_proc if tmp_alive
           @@status=CONNECTED_TO_QNAS

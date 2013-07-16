@@ -20,6 +20,9 @@ config/development.sphinx.conf
 ## Specific files
 config/development.sphinx.conf
 config/database.yml
+config/s3.yml
+config/private_pub.yml
+config/converter.yml
 
 ## generic files to ignore
 *~

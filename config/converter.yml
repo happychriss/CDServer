@@ -1,0 +1,22 @@
+# converter is running on server PC, not on qnas, qnas connection is used as a backup
+
+development:
+  qnas_host: 'donald'
+  qnas_port: 8998
+  remote_host: 'donald'
+  remote_port: 8999
+
+test:
+  qnas_host: 'does not exists'
+  qnas_port: 8998
+  remote_host: 'does not exists'
+  remote_port: 8999
+
+production:
+  qnas_host: 'localhost'
+  qnas_port: 8998
+  remote_host: '192.168.1.16'
+  remote_port: 8999
+
+
+
