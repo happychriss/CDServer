@@ -51,7 +51,7 @@ end
 
 
 module Clockwork
-  every(1.minute, 'BackupWorker.perform_async') do
+  every(1.week, 'BackupWorker.perform_async') do
     DBBackupWorker.perform_async
   end
 
