@@ -10,6 +10,31 @@ require "SphinxRakeSupport"
 require "clockwork"
 
 
+class DBBackupWorker
+  include Sidekiq::Worker
+  sidekiq_options :retry => false
+
+  def perform
+    Rails.logger.info "### DBBackup - Start "
+#    res=%x[backup perform --trigger=cd2_db_backup --config-file='#{Rails.root}/backup/config.rb']
+    Bundler.with_clean_env do ##https://github.com/meskyanichi/backup/issues/306
+
+      res=%x[backup perform --root-path='#{Rails.root}' --trigger=cd2_db_backup --config-file='./db_backup/config.rb' --log-path='./log' --quiet --data-path='./tmp']
+
+      return_value=$?.exitstatus
+
+      if return_value!=0 then
+        Log.write_status("DB-Backup", "*********** ERROR in Backup ************** with result:#{return_value}")
+        Rails.logger.info "### DBBackup - Stop with Error"
+      else
+        Log.write_status("DB-Backup", "*********** Completed Backup ************** with result:#{return_value}")
+        Rails.logger.info "### DBBackup - Stop "
+      end
+    end
+  end
+end
+
+
 class SphinxIndexWorker
   include Sidekiq::Worker
   sidekiq_options :retry => false
@@ -22,8 +47,14 @@ class SphinxIndexWorker
   end
 end
 
+
 module Clockwork
-  every(7.days, 'SphinxIndexWorker.perform_async') do
-    SphinxIndexWorker.perform_async
+  every(1.minute, 'BackupWorker.perform_async') do
+    DBBackupWorker.perform_async
   end
 end
+
+#  every(1.week, 'SphinxIndexWorker.perform_async') do
+#    SphinxIndexWorker.perform_async
+#  end
+

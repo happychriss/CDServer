@@ -41,7 +41,7 @@ class BackupWorker
 
           push_status_update ## send status-update to application main page via private_pub gem, fayes,
 
-          Log.write_status('Backup', "Backup completed for page_id #{page.id} doc_id #{doc.id} to Amazon #{AWS_S3['aws_s3_bucket']} with #{pgp_name}")
+          Log.write_status('backup', "backup completed for page_id #{page.id} doc_id #{doc.id} to Amazon #{AWS_S3['aws_s3_bucket']} with #{pgp_name}")
 
         end
 

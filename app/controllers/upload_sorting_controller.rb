@@ -39,7 +39,7 @@ class UploadSortingController < ApplicationController
 
     end
 
-    ## Backup new document to Amazon
+    ## backup new document to Amazon
     BackupWorker.perform_async(@document.id)
 
     render action: "new"
