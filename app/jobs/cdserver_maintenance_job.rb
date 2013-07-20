@@ -19,12 +19,14 @@ class DBBackupWorker
 #    res=%x[backup perform --trigger=cd2_db_backup --config-file='#{Rails.root}/backup/config.rb']
     Bundler.with_clean_env do ##https://github.com/meskyanichi/backup/issues/306
 
-      res=%x[RAILS_ENV=production backup perform --root-path='#{Rails.root}' --trigger=cd2_db_backup --config-file='./db_backup/config.rb' --log-path='./log' --quiet --data-path='./tmp']
+      Rails.logger.info "** Environment: #{Rails.env}"
+
+      res=%x[RAILS_ENV=#{Rails.env} backup perform --root-path='#{Rails.root}' --trigger=cd2_db_backup --config-file='./db_backup/config.rb' --log-path='./log' --quiet --data-path='./tmp']
 
       return_value=$?.exitstatus
 
       if return_value!=0 then
-        Log.write_status("DB-Backup", "*********** ERROR xxxin Backup ************** with result:#{return_value}")
+        Log.write_status("DB-Backup", "*********** ERROR in Backup ************** with result:#{return_value}")
         Rails.logger.info "### DBBackup - Stop with Error"
       else
         Log.write_status("DB-Backup", "*********** Completed Backup ************** with result:#{return_value}")

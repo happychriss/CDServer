@@ -10,7 +10,7 @@
 
 database_yml = File.expand_path('../config/database.yml',  __FILE__)
 s3_yml = File.expand_path('../config/s3.yml',  __FILE__)
-MY_RAILS_ENV    = ENV['RAILS_ENV'] || 'development'
+MY_RAILS_ENV = Rails.env
 
 require 'yaml'
 db_config = YAML.load_file(database_yml)
