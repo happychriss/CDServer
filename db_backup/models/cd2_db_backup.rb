@@ -6,6 +6,7 @@
 #
 # $ backup perform -t cd2_db_backup [-c <path_to_configuration_file>]
 #
+# yes
 
 database_yml = File.expand_path('../config/database.yml',  __FILE__)
 s3_yml = File.expand_path('../config/s3.yml',  __FILE__)

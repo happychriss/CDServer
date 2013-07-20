@@ -52,9 +52,9 @@ module Clockwork
   every(1.minute, 'BackupWorker.perform_async') do
     DBBackupWorker.perform_async
   end
+
+
+  every(1.week, 'SphinxIndexWorker.perform_async') do
+    SphinxIndexWorker.perform_async
+  end
 end
-
-#  every(1.week, 'SphinxIndexWorker.perform_async') do
-#    SphinxIndexWorker.perform_async
-#  end
-
