@@ -3,6 +3,7 @@ class BackupWorker
   require 'Pusher'
   include Sidekiq::Worker
   include Pusher
+  include ActionView::Helpers::UrlHelper
 
   sidekiq_options :retry => true
 

@@ -114,6 +114,7 @@ class Page < ActiveRecord::Base
     result=case mode
       when :no_backup then Page.where('backup=0 and document_id IS NOT NULL').count
       when :not_processed then Page.where("status < #{Page::UPLOADED_PROCESSED}").count
+      when :not_converted then Page.where("status = #{Page::UPLOADED}").count
       else 'ERROR'
     end
   end

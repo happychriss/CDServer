@@ -93,7 +93,10 @@ class ConvertWorker
         pages=[Page.find(page_id)]
       end
 
-      raise "NoRemoteWorker" if ConvertWorker.connect_to_server==ConvertWorker::NOT_CONNECTED
+
+      if ConvertWorker.connect_to_server==ConvertWorker::NOT_CONNECTED then
+        Log.write_status('ConvertWorker', 'No Convert Worker available')
+      else
 
       logger.info "ConvertWorker called for  #{pages.count} pages!"
 
@@ -124,6 +127,7 @@ class ConvertWorker
         push_status_update ## send status-update to application main page via private_pub gem, fayes,
         push_converted_page(page)
 
+      end
       end
     rescue Exception => e
       PrivatePub.publish_to "/status", :chat_message => "Hello, world!"

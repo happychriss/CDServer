@@ -1,36 +1,43 @@
+<h1 xmlns="http://www.w3.org/1999/html">Status Information</h1>
 
 
-<h2 xmlns="http://www.w3.org/1999/html">Status Information</h2>
 
 <div class="status_frame">
   Documents without backup: <%= Page.uploading_status(:no_backup) %>
   </br>
- Documents without processing: <%= Page.uploading_status(:not_processed) %>
-</br>
-  Connected to Remote Worker Process: <%= connected=ConvertWorker.connect_to_server %>
+  Documents without processing: <%= Page.uploading_status(:not_processed) %>
+  </br>
+</div>
 
-  <% if connected!= ConvertWorker::NOT_CONNECTED then %>
-      </br>
-      <%= link_to "Start Remote Worker", status_start_remote_worker_path %>
+
+<div class="status_frame">
+  <% if @connected!= ConvertWorker::NOT_CONNECTED then %>
+      <%= button_to "Start Remote Worker to process #{Page.uploading_status(:not_converted)} documents ", status_start_remote_worker_path, :method => :get %>
+  <% else %>
+      !! NOT Connected to a remote worker !!
   <% end %>
 </div>
 
 
-  <h2>Logging Information</h2>
+<h1>Logfile</h1>
 
 
-  <%= link_to "Clear Status", status_clear_path %>
 
-</br>
-</br>
+<div class="status_frame">
+
+  </br>
+
+  <%= button_to "Clear Logfile and Errors", status_clear_path,:method => :get %>
+
+  </br>
 
   <table>
-    <% Log.order('created_at desc').all.each do |log| %>
-        <tr>
-          <td><%= log.created_at %></td>
-          <td><%= log.source %></td>
-          <td><%= log.message %></td>
-        </tr>
-    <% end %>
-  </table>
-
+  <% Log.order('created_at desc').all.each do |log| %>
+      <tr>
+        <td><%= log.created_at %></td>
+        <td><%= log.source %></td>
+        <td><%= log.message %></td>
+      </tr>
+  <% end %>
+</table>
+</div>

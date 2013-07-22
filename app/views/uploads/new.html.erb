@@ -1,11 +1,11 @@
-<p id="notice"><%= flash[:notice] %></p>
-<p id="error"><%= flash[:error] %></p>
+<h1 style="color: green" id="notice"><%= flash[:notice] %></h1>
+<h1 style="color: red" id="error"><%= flash[:error] %></h1>
 <h1>Uploads a file</h1>
 <div class="input_area">
-<%= form_for :file_upload, :url=>{:action =>'create'}, :html => {:multipart => true} do |f| %>
-    <%= f.file_field :my_file, :accept => 'text/csv' %></br></br>
-    <%= f.select("folder_id", Folder.all.collect { |p| [p.name, p.id] }, {:include_blank => false}) %></br></br>
-    <%= f.submit "Upload" %>
+  <%= form_for :file_upload, :url => {:action => 'create'}, :html => {:multipart => true} do |f| %>
+      <%= f.file_field :my_file, :accept => 'text/csv' %></br></br>
+      <%= f.select("folder_id", Folder.all.collect { |p| [p.name, p.id] }, {:include_blank => false}) %></br></br>
+      <%= f.submit "Upload" %>
 
-<% end %>
-    </div>
+  <% end %>
+</div>
