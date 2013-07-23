@@ -5,8 +5,8 @@
           <%= check_box_tag("document[keyword_list][]", tag.name, current_keywords.include?(tag.id) || current_keywords.include?(tag.name)) %>
           <label><%= tag.name %>  </label>
         </div>
-
     <% end %>
+
     <div class="clear"></div>
   </div>
 </div>

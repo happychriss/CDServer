@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130612204409) do
+ActiveRecord::Schema.define(:version => 20130723200848) do
 
   create_table "covers", :force => true do |t|
     t.integer  "folder_id"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(:version => 20130612204409) do
     t.datetime "updated_at",                         :null => false
     t.boolean  "first_page_only", :default => false, :null => false
     t.integer  "page_count",      :default => 0,     :null => false
+    t.date     "delete_at"
   end
 
   create_table "folders", :force => true do |t|

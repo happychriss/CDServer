@@ -8,6 +8,9 @@ module ApplicationHelper
     @show_title
   end
 
+  def show_link_pages_sorted
+    "Sort Uploaded Files (#{Page.uploaded_pages.count})"
+  end
 
 
 end
