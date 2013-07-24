@@ -5,6 +5,14 @@
     <p>
       Comment:  <%= f.text_field :comment %>
       <span style="margin-left:10px"> Change Folder for all pages:    <%= select_tag(:folder_id,  options_from_collection_for_select(Folder.all,'id','name'), {:include_blank => true}) %> </span>
+      <span style="margin-left:10px">
+        Document will expire: <%= if @document.delete_at.nil? then "never" else "#{@document.delete_at.strftime('%B %Y')} (in #{(@document.delete_at.year * 12 + @document.delete_at.month) - (Date.today.year * 12 + Date.today.month)} months)" end%>
+        | Change expiration, expires at:
+
+       <%= f.select(:delete_at, options_for_select([[(Date.today+1.year).year, Date.today+1.year], [(Date.today+2.year).year, Date.today+2.year], [(Date.today+5.year).year, Date.today+5.year],['never', Date.new(3000)]]), {:include_blank => ''}) %>
+
+      </span>
+
     </p>
 
 

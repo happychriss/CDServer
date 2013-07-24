@@ -12,6 +12,7 @@ class Document < ActiveRecord::Base
   after_commit :set_delta_flag
 
   before_update :update_status_new_document
+  before_save :update_expiration_date
 
   #### Status
   DOCUMENT=0 ##document was created based on an uploaded document
@@ -54,5 +55,8 @@ class Document < ActiveRecord::Base
     self.status=DOCUMENT if self.status_was==DOCUMENT_FROM_PAGE_REMOVED
   end
 
+  def update_expiration_date
+    self.delete_at=nil if self.delete_at==Date.new(3000) #to allow reset the date back to null (newer expire)
+  end
 ### https://github.com/mperham/sidekiq/blob/master/examples/clockwork.rb
 end

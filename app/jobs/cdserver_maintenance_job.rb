@@ -55,8 +55,11 @@ module Clockwork
     DBBackupWorker.perform_async
   end
 
-
   every(1.week, 'SphinxIndexWorker.perform_async') do
     SphinxIndexWorker.perform_async
+  end
+
+  every(1.month, 'RemoveFromArchiveWorker.perform_async') do
+    RemoveFromArchiveWorker.perform_async
   end
 end
