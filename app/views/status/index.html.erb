@@ -3,15 +3,15 @@
 
 
 <div class="status_frame">
-  Documents without backup: <%= Page.uploading_status(:no_backup) %>
-  </br>
-  Documents without processing: <%= Page.uploading_status(:not_processed) %>
+  <h2>Documents without backup: <%= Page.uploading_status(:no_backup) %></h2>
+  <h2>  Documents without processing: <%= Page.uploading_status(:not_processed) %></h2>
   </br>
 </div>
 
 
 <div class="status_frame">
   <% if @connected!= ConvertWorker::NOT_CONNECTED then %>
+      <h2>Connected to remote worker!</h2>
       <%= button_to "Start Remote Worker to process #{Page.uploading_status(:not_converted)} documents ", status_start_remote_worker_path, :method => :get %>
   <% else %>
       !! NOT Connected to a remote worker !!

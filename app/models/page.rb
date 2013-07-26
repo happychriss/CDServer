@@ -147,6 +147,8 @@ class Page < ActiveRecord::Base
 
   def destroy_with_file
 
+    self.document.check_no_delete #raise exception if document has no deletion flag
+
     position=self.position
     last_page=(self.document_pages_count==1)
 
@@ -237,6 +239,7 @@ class Page < ActiveRecord::Base
   def CleanPositionsOnRemove(document_id, position)
     Page.update_all("position = position -1", "document_id = #{document_id} and position > #{position}")
   end
+
 
 end
 

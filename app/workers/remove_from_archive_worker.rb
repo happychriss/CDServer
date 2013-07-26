@@ -15,6 +15,7 @@ class RemoveFromArchiveWorker
 
         docs.each do |doc|
 
+          doc.check_no_delete #raise exception if document should not be deleted
 
           Document.transaction do
 

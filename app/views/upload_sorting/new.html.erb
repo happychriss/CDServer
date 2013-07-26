@@ -34,18 +34,25 @@
 
           <div class="input_area">
             <p>
-              <%= f.label "Comment:", :class => 'standard_label' %>  <%= f.text_field :comment, size: 28 %>
-              <span style="margin-left:10px">
-                Archive years: <%= f.select(:delete_at, options_for_select([['1', Date.today+1.year], ['2', Date.today+2.year], ['5', Date.today+5.year]]), {:include_blank => ''}) %>
-              </span>
-              <span style="margin-left:10px">
-                Change Folder: <%= select_tag(:folder_id, options_from_collection_for_select(Folder.all, 'id', 'name'), {:include_blank => true}) %>
-              </span>
+              <%= f.label "Comment:", :class => 'standard_label' %>  <%= f.text_field :comment, size: 40 %>
             </p>
 
             <%= render :partial => '/keywords', :locals => {:current_keywords => @document.keyword_ids} %>
 
+            </br></br>
 
+            <div style="background-color:#e3e3e3;">
+            <span style="margin-left:10px">
+                Delete after years: <%= f.select(:delete_at, options_for_select([['1', Date.today+1.year], ['2', Date.today+2.year], ['5', Date.today+5.year]]),{:include_blank => ''},:id => 'lb_no_delete') %>
+              </span>
+              <span style="margin-left:20px">
+                Change Folder: <%= select_tag(:folder_id, options_from_collection_for_select(Folder.all, 'id', 'name'), {:include_blank => true}) %>
+              </span>
+
+              <span style="margin-left:20px">
+                 Never delete this file: <%= f.check_box(:no_delete,:id=>'cb_no_delete') %>
+              </span>
+            </div>
             </br></br>
 
             <%= f.submit "Sent to Upload", :id => "upload_btn", :name => "sfasfd" %>
