@@ -5,6 +5,10 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id], :include => :pages)
   end
 
+  def index
+    @docs=Document.where('delete_at is not null').order('delete_at asc')
+  end
+
   def update
     @document = Document.find(params[:id])
 
@@ -60,6 +64,42 @@ class DocumentsController < ApplicationController
     end
 
     render :nothing => true
+  end
+
+  ##### Maintain Pages
+
+  def search_doc_id
+
+    doc=Document.find_by_id(params[:q])
+    if doc.nil? then
+      flash[:error] = "Document not found"
+      redirect_to :action => 'index'
+    else
+      redirect_to edit_document_url(doc.id)
+    end
+  end
+
+  def search_page_id
+
+    page=Page.find_by_id(params[:q])
+    if page.nil?
+      flash[:error] = "Page not found"
+      redirect_to :action => 'index'
+      return true
+    end
+
+    doc=page.document
+    if doc.nil?
+      flash[:error] = "Page found, but no document"
+      redirect_to :action => 'index'
+      return true
+    end
+
+    redirect_to edit_document_url(doc.id)
+
+  end
+
+  def search_archive
   end
 
 

@@ -1,0 +1,43 @@
+<h1 style="color: green" id="notice"><%= flash[:notice] %></h1>
+<h1 style="color: red" id="error"><%= flash[:error] %></h1>
+
+<h1>Find document by ID</h1>
+<div class="status_frame">
+  <%= form_tag("/search_doc_id", method: "get") do %>
+      <%= label_tag(:q, "Search for:") %>
+      <%= text_field_tag(:q) %>
+      <%= submit_tag("Search") %>
+  <% end %>
+</div>
+<h1>Find page by ID</h1>
+<div class="status_frame">
+  <%= form_tag("/search_page_id", method: "get") do %>
+      <%= label_tag(:q, "Search for:") %>
+      <%= text_field_tag(:q) %>
+      <%= submit_tag("Search") %>
+  <% end %>
+</div>
+
+<h1>Documents to be delete</h1>
+
+<% if @docs.count==0 %>
+    <h1>No documents to be deleted!!</h1>
+<% else %>
+    <div class="status_frame">
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Comment</th>
+          <th>Delete At</th>
+        </tr>
+        <% for doc in @docs %>
+            <tr>
+              <td><%= doc.id %></td>
+              <td><%= doc.comment %></td>
+              <td><%= doc.delete_at %></td>
+              <td><%= link_to "Edit", edit_document_path(doc) %></td>
+            </tr>
+        <% end %>
+      </table>
+    </div>
+<% end %>

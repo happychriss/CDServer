@@ -25,8 +25,13 @@ CDServer::Application.routes.draw do
   get 'documents/remove_page/:id' => 'documents#remove_page'
   get 'documents/destroy_page' => 'documents#destroy_page'
 
+  ## Status Controller
   get 'status/clear' => 'status#clear'
   get 'status/start_remote_worker' => 'status#start_remote_worker'
+  get 'search_doc_id' => 'documents#search_doc_id'
+  get 'search_page_id' => 'documents#search_page_id'
+  get 'search_archive' => 'documents#search_archive'
+
 
   resources :folders
   resources :tags
