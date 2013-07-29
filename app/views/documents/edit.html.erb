@@ -22,7 +22,7 @@
       Never delete this file: <%= f.check_box(:no_delete,:id=>'cb_no_delete') %>
 </span>
     </p>
-
+<p> <%= "Document was created #{@document.created_at.strftime('%B %Y')} stored in folder '#{@document.pages.first.folder.name}' with cover number #{@document.pages.first.cover.id} and document ID:#{@document.id}"%></p>
 
     <%= render :partial => '/keywords', :locals => {:current_keywords => @document.keyword_ids} %>
 
