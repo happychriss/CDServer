@@ -34,11 +34,11 @@ class Page < ActiveRecord::Base
 
     has status
     has position, :as => :position, :sortable => true
-    has  id, :as => :page_id, :sortable => true
+    has id, :as => :page_id, :sortable => true
 
     has document.taggings.tag_id, :as => :tags
     has document.status, :as => :document_status
-    has document.created_at, :as => :document_created_at,:sortable => true
+    has document.created_at, :as => :document_created_at, :sortable => true
     has document.page_count
     has document_id, :as => :group_document
 
@@ -46,7 +46,7 @@ class Page < ActiveRecord::Base
     set_property :min_prefix_len => 4 ##http://sphinxsearch.com/docs/1.10/conf-min-prefix-len.html
     set_property :field_weights => {:document_comment => 2, :content => 1}
 
-   where "document_id is not null"
+    where "document_id is not null"
   end
 
 ########################################################################################################
@@ -61,21 +61,21 @@ class Page < ActiveRecord::Base
                      :star => true,
                      :include => {:document => :pages},
                      :order => "position ASC" #order in the group
-#                     :without => {:status => [UPLOADED, UPLOADED_PROCESSED]} #pages not yet sorted and ready will be ignored
+                     #                     :without => {:status => [UPLOADED, UPLOADED_PROCESSED]} #pages not yet sorted and ready will be ignored
     }
 
     # http://rdoc.info/github/freelancing-god/thinking-sphinx/ThinkingSphinx/SearchMethods/ClassMethods
-    (search_config.merge!({ :group_clause => "page_id DESC"})) if sort_mode==:time
+    (search_config.merge!({:group_clause => "page_id DESC"})) if sort_mode==:time
 
     return search_config
   end
 
   ########################################################################################################
 
-  def self.search_index(search_string, keywords, page_no, pages_ignore,sort_mode)
-  ###https://groups.google.com/forum/?fromgroups=#!msg/thinking-sphinx/WvOTN6NABN0/vzKnhx5CIvAJ
+  def self.search_index(search_string, keywords, page_no, pages_ignore, sort_mode)
+    ###https://groups.google.com/forum/?fromgroups=#!msg/thinking-sphinx/WvOTN6NABN0/vzKnhx5CIvAJ
 
-    search_config = Page.get_search_config(page_no,sort_mode)
+    search_config = Page.get_search_config(page_no, sort_mode)
 
     if search_string.nil? or keywords.empty? then
       pages=Page.search(search_string, search_config)
@@ -101,7 +101,7 @@ class Page < ActiveRecord::Base
   ########################################################################################################
   ### this page is displayed first in search results with all pages that have been removed from document
   def self.new_document_pages
-    pages=Page.search("", Page.get_search_config(1,:relevance).merge!({:with => {:document_status => Document::DOCUMENT_FROM_PAGE_REMOVED}}))
+    pages=Page.search("", Page.get_search_config(1, :relevance).merge!({:with => {:document_status => Document::DOCUMENT_FROM_PAGE_REMOVED}}))
   end
 
   ########################################################################################################
@@ -112,17 +112,23 @@ class Page < ActiveRecord::Base
 
   def self.uploading_status(mode)
     result=case mode
-      when :no_backup then Page.where('backup=0 and document_id IS NOT NULL').count
-      when :not_processed then Page.where("status < #{Page::UPLOADED_PROCESSED}").count
-      when :not_converted then Page.where("status = #{Page::UPLOADED}").count
-      else 'ERROR'
-    end
+             when :no_backup then
+               Page.where('backup=0 and document_id IS NOT NULL').count
+             when :not_processed then
+               Page.where("status < #{Page::UPLOADED_PROCESSED}").count
+             when :not_converted then
+               Page.where("status = #{Page::UPLOADED}").count
+             else
+               'ERROR'
+           end
   end
 
   def tmp_docstore_path
     path=case self.source
-        when Page::PAGE_SOURCE_SCANNED then self.path(:scanned_jpg)
-         when Page::PAGE_SOURCE_UPLOADED then self.path(:pdf)
+           when Page::PAGE_SOURCE_SCANNED then
+             self.path(:scanned_jpg)
+           when Page::PAGE_SOURCE_UPLOADED then
+             self.path(:pdf)
          end
     return path
   end
@@ -142,7 +148,6 @@ class Page < ActiveRecord::Base
     pages=folder.pages.where('cover_id is null') if folder.cover_ind
     return pages
   end
-
 
 
   def destroy_with_file
@@ -233,6 +238,21 @@ class Page < ActiveRecord::Base
     self.update_attributes(:status => status)
   end
 
+
+  def status_text
+    status=''
+    if self.source==Page::PAGE_SOURCE_MIGRATED
+      status= "* Migrated Document stored in FID #{self.fid} *"
+    elsif self.cover.nil? and self.folder.cover_ind? then
+      status= 'No cover created yet'
+    elsif not(self.folder.cover_ind?)
+      status= 'Document is only stored electronically'
+    else
+      status= "Cover ##{self.cover.counter} created on #{self.cover.created_at.strftime "%B %Y"}"
+    end
+    status='| '+ status unless status==''
+    return status
+  end
 
   private
 
