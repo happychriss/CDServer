@@ -1,0 +1,324 @@
+### Grundlagen:
+http://www.chil.dk/index.php/qnap-nas/10-nas-file-system-layout
+
+
+##### Upload key for SSH access
+ssh-copy-id -i ./id_rsa.pub admin@qnas, mit awg
+
+
+############# Implemented via autorun.sh (see file) ###################
+
+//share/MD0_DATA/.qpkg/autorun
+
+
+##### Correct Path
+
+[admin@qnas ~]# echo $PATH    
+/usr/local/bin:/opt/bin:/opt/sbin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/bin/X11:/usr/local/sbin:/opt/bin:/opt/sbin
+export PATH=/opt/bin:/opt/sbin:$PATH
+
+### setting correct library path
+#export Optware PATH
+echo "export PATH=$PATH:/opt/bin:/opt/sbin:/usr/local/sbin" >> /etc/profile
+echo "/opt/lib" >> /etc/ld.so.conf
+/sbin/ldconfig
+
+
+
+# more /etc/ld.so.conf                                          
+/opt/lib  <- MUST BE FIRST !!!!!!!!!!!!!!!!!!!
+/lib
+/usr/lib
+/usr/local/lib
+/opt/share/v8
+
+
+####################################################################
+User einrichten auf qnas mit gleicher ID wie in linux
+
+addgroup -g 1000 cneuhaus   
+adduser -u 1000 -p xxxx -G cneuhaus cneuhaus
+
+
+#### fix missing openssl
+[//share/source/ruby-1.9.3-p194/ext/openssl] # ipkg install openssl-dev
+Installing openssl-dev (0.9.8v-2) to root...
+Downloading http://ipkg.nslu2-linux.org/feeds/optware/cs08q1armel/cross/unstable/openssl-dev_0.9.8v-2_arm.ipk
+Configuring openssl-dev
+Successfully terminated.
+[//share/source/ruby-1.9.3-p194/ext/openssl] # ruby extconf.rb  
+    cd to the folder containing the ruby source
+    cd to ext/openssl
+    ruby extconf.rb
+    make && sudo make install
+
+############# Install Ruby
+wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p0.tar.gz
+tar zxf ruby-1.9.3-p0.tar.gz
+cd ruby-1.9.3-p0
+./configure --prefix=/usr/local --disable-install-doc --with-opt-dir=/usr/local/lib
+make 
+make install
+
+############# rename libssl.so to old, so the new version is accessed, maybe not needed
+[//lib] # cd //lib  
+[//lib] # ls -l libssl.so
+lrwxrwxrwx    1 admin    administ       15 Mar  1 21:51 libssl.so -> libssl.so.0.9.7*
+[//lib] # mv libssl.so libssl.so_old
+
+
+###### Java
+/usr/local/jre/bin/java -version
+Public Share: ejre-7u4-fcs-b20-linux-arm-sflt-headless-12_apr_2012.tar.gz
+Execute: JRE_7.qpkg
+
+
+###################################### Install v8 for ARM
+http://forum.qnap.com/viewtopic.php?p=242405
+Code: Select all
+    cd /shares/myname/Sources/
+    git clone https://github.com/v8/v8.git
+    cd v8
+    nano SConstruct
+
+
+
+ipgk install scons
+
+## export the CCFLAGS to match architecture here armv5te
+export CCFLAGS="-march=armv5te"
+
+## now run scons with the following params to build v8
+## armeabi=soft uses emulated software floating point unit, important for armv5te
+## sample=shell builds a v8 shell (so you can test if v8 works)
+### scons wordsize=32 snapshot=off arch=arm armeabi=soft library=shared
+scons wordsize=32 snapshot=off arch=arm armeabi=soft library=shared sample=shell
+
+
+ln -sf //share/linux/source/node/deps/v8/libv8.so //usr/lib/libv8.so
+
+test with .shell
+
+[//share/linux/source/node/deps] # cp -a v8 //share/linux/libs/.
+[//share/linux/source/node/deps] # cd //share/linux/libs/
+
+[//share/linux/libs] # echo "/opt/share/v8" >> /etc/ld.so.conf
+[//share/linux/libs] # ldconfig
+[//share/linux/libs] # 
+
+
+## go to node js src dir
+cd /share/Download/NodeJS/node-v0.6.6
+## run configure
+
+./configure --shared-v8 --shared-v8-libpath=/share/linux/libs/v8 --shared-v8-includes=/share/linux/libs/v8/include --prefix=/share/linux/libs/nodejs
+
+ln -sf //share/linux/libs/nodejs/bin/node //usr/local/bin/node
+
+### Autostart with autorun.sh
+mount -t ext2 /dev/mtdblock5 /tmp/config
+# vi /tmp/config/autorun.sh
+
+File:
+#!/bin/sh
+//share/MD0_DATA/.qpkg/autorun/autorun.sh &
+
+umount /tmp/config
+
+#### text for autorun.sh:
+
+cp --force //share/MD0_DATA/.qpkg/autorun/ld.so.conf.extra //share/MD0_DATA/.qpkg/autorun/ld.so.conf.tmp
+cat /etc/ld.so.conf >> //share/MD0_DATA/.qpkg/autorun/ld.so.conf.tmp
+cp --force //share/MD0_DATA/.qpkg/autorun/ld.so.conf.tmp /etc/ld.so.conf
+/sbin/ldconfig
+
+### text for ld.so.conf.extra
+/opt/lib 
+/usr/local/lib
+/opt/share/v8
+
+
+################ QNAP Mysql
+
+
+### Using Thin
+gem install thin
+thin start
+thin install
+
+##################   change startfile
+//opt/etc/init.d] # cat S90thin    
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          thin
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:     $local_fs $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      S 0 1 6
+# Short-Description: thin initscript
+# Description:       thin
+### END INIT INFO
+
+# Original author: Forrest Robertson
+
+# Do NOT "set -e"
+
+DAEMON=/usr/local/bin/thin
+SCRIPT_NAME=/usr/local/etc/init.d/thin
+CONFIG_PATH=/usr/local/etc/thin
+
+
+
+
+....
+tinyproxy/tiny3000.3000.pid
+mkdir /var/run/tinyproxy/
+chmod 666 tinyproxy
+## also all logfiles must be set to chmod 666
+
+
+
+
+######### Create thin config file in rails root
+[//share/Web/first] # cat thin.yml 
+port: 3000
+environment: development 
+chdir: /share/Web/first
+servers: 1
+user: httpdusr
+group: everyone
+pid: /var/run/tinyproxy/tiny.pid
+
+
+### create link
+ln -s //share/Web/first/thin.yml //usr/local/etc/thin/first_thin.yml
+
+
+##### Imagemagick
+ipkg install imagemagick
+
+#### Sphinx
+
+export PATH=/opt/bin:/opt/sbin:$PATH
+
+tar xzvf sphinx-2.0.5-release.tar.gz
+cd sphinx-2.0.5-release
+
+cd libstemmer_c/
+wget http://snowball.tartarus.org/dist/libstemmer_c.tgz
+ tar xf libstemmer_c.tgz
+mv libstemmer_c/* . -f
+cd ,,
+./configure --with-libstemmer
+make
+make install
+
+cd //var
+mkdir dat  <<<<< Hier werden die Index-Dateien gespeichert, muss auf dem Share liegen
+
+        # index files path and file name, without extension
+        # mandatory, path must be writable, extensions will be auto-appended
+        path                    = /var/data/test1
+
+[//usr/local/etc] # ls
+example.sql           netatalk/             redis/                snmp/                 sphinx-min.conf.dist  sphinx.conf           sphinx.conf.dist      thin/
+
+
+******************
+new version
+download pkg-config-0.27.1.tar.gz (version contained in ipkg is 0.15 and much too old)
+
+Code: Alles auswählen
+        # tar xzf ../Download/pkg-config-0.27.1.tar.gz
+        # ./configure --prefix=/opt --disable-install-doc --with-opt-dir=/opt/local/lib
+        # make
+        # make install
+        # pkg-config --version
+            0.27.1
+
+
+yaml
+
+download yaml-0.1.4.tar.gz
+
+Code: Alles auswählen
+        # tar xzf ../Download/yaml-0.1.4.tar.gz
+        # ln -s yaml-0.1.4/ yaml
+        # cd yaml
+        # ./configure --prefix=/opt
+        # make
+        # make install
+
+
+next ruby
+
+Code: Alles auswählen
+        # ipkg install openssl-dev
+
+
+>> download ruby-1.9.3-p327.tar.bz2
+
+Code: Alles auswählen
+        # tar xfvj ../Download/ruby-1.9.3-p327.tar.bz2
+        # ln -s ruby-193-p327 ruby
+        # chown -R thomas:everyone ruby (user may vary)
+        # cd ruby
+        # ./configure --prefix=/opt --disable-install-doc --with-opt-dir=/opt/lib
+        # make
+        # ipkg remove ruby
+        # make install
+        ruby --version
+            ruby 1.9.3p327 (2012-11-10 revision 37606) [x86_64-linux]
+
+
+No Rdoc:
+
+
+Just add these two lines to your ~/.gemrc 
+
+install: --no-rdoc --no-ri 
+update:  --no-rdoc --no-ri
+
+
+
+***********************************************************************************************
+        # tar xzf ../Download/pkg-config-0.27.1.tar.gz
+        # ./configure --prefix=/opt --disable-install-doc --with-opt-dir=/opt/local/lib
+        # make
+        # make install
+        # pkg-config --version
+            0.27.1
+
+
+
+        # tar xzf ../Download/yaml-0.1.4.tar.gz
+        # ln -s yaml-0.1.4/ yaml
+        # cd yaml
+        # ./configure --prefix=/opt
+        # make
+        # make install
+
+        # ipkg install openssl-dev
+
+        # tar xfvj ../Download/ruby-1.9.3-p327.tar.bz2
+        # ln -s ruby-193-p327 ruby
+        # chown -R thomas:everyone ruby (user may vary)
+        # cd ruby
+        # ./configure --prefix=/opt --disable-install-doc --with-opt-dir=/opt/lib
+        # make
+        # ipkg remove ruby
+        # make install
+        ruby --version
+            ruby 1.9.3p327 (2012-11-10 revision 37606) [x86_64-linux]
+
+
+-------------------------------- Update for V8 to get in path
+ cd //share/linux/source/node_7/deps/v8
+  308  cp libv8.so //opt/share/v8/libv8.so
+because ldconfig loads
+
+nodesjs config
+./configure --shared-v8 --shared-v8-libpath=/share/linux/libs/v8 --shared-v8-includes=/share/linux/libs/v8/include --prefix=/opt
+
+
+

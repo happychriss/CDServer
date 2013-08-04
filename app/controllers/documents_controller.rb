@@ -20,7 +20,7 @@ class DocumentsController < ApplicationController
         @document.update_folder(folder_id) unless folder_id==0
 
       end
-      redirect_to session[:search_results]+"#page_#{@document.pages.first.id}", :notice => "Successfully updated doc."
+      redirect_to session[:search_results]+"#page_#{@document.pages.first.id}", :notice => "Successfully updated doc." unless session[:search_results].nil?
     rescue
       raise "ERROR"
     end

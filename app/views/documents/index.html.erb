@@ -1,18 +1,18 @@
 <h1 style="color: green" id="notice"><%= flash[:notice] %></h1>
 <h1 style="color: red" id="error"><%= flash[:error] %></h1>
 
-<h1>Find document by ID</h1>
+<h1>Document by ID</h1>
 <div class="status_frame">
   <%= form_tag("/search_doc_id", method: "get") do %>
-      <%= label_tag(:q, "Search for:") %>
+      <%= label_tag(:q, "Search:") %>
       <%= text_field_tag(:q) %>
       <%= submit_tag("Search") %>
   <% end %>
 </div>
-<h1>Find page by ID</h1>
+<h1>Page by ID</h1>
 <div class="status_frame">
   <%= form_tag("/search_page_id", method: "get") do %>
-      <%= label_tag(:q, "Search for:") %>
+      <%= label_tag(:q, "Search:") %>
       <%= text_field_tag(:q) %>
       <%= submit_tag("Search") %>
   <% end %>
@@ -26,10 +26,10 @@
     <div class="status_frame">
       <table>
         <tr>
-          <th>ID</th>
+          <th>Document ID</th>
           <th>Comment</th>
-          <th>Delete At</th>
-          <th>EDIT</th>
+          <th>Delete on</th>
+          <th></th>
         </tr>
         <% for doc in @docs %>
             <tr>
