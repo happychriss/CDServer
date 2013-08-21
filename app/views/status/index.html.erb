@@ -10,7 +10,7 @@
 
 
 <div class="status_frame">
-  <% if @connected!= ConvertWorker::NOT_CONNECTED then %>
+  <% if @connected!= RemoteConvertWorker::NOT_CONNECTED then %>
       <h2>Connected to remote worker!</h2>
       <%= button_to "Start Remote Worker to process #{Page.uploading_status(:not_converted)} documents ", status_start_remote_worker_path, :method => :get %>
   <% else %>

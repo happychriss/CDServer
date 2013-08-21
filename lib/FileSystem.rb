@@ -17,8 +17,8 @@ module FileSystem
                                        '.txt'
                                      when :gpg
                                         '.gpg'
-                                     when :scanned_jpg
-                                       '.scanned.jpg'
+                                     when :orginal
+                                       '.org'
                                      when :all
                                       '*.*'
                                    end

@@ -3,6 +3,9 @@ module DRbProcessor
 ## this is running as a separate ruby daemon on a more performant server, to reduce workload from qnap nas
 ## at the end of the file the command is executed.
 
+
+
+
   require 'tempfile'
 
 
@@ -17,6 +20,8 @@ module DRbProcessor
       return true
     end
 
+
+    ### this part is running on the remove server (desktop) not on the qnas, should have convert and pdftotext installed
     def convert(data, source)
 
       raise 'Processor-Client *CONVERT* command missing' unless Processor.command_exits?('convert')

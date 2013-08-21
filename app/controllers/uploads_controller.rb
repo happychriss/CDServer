@@ -5,7 +5,7 @@ class UploadsController < ApplicationController
 
   end
 
-  #### Upload file directly from CDServer via Upload Dialogue
+  #### Upload file directly from CDServer via Upload Dialogue, PDF currently
   def create
 
     if params[:file_upload].nil? or params[:file_upload][:my_file].nil?
@@ -15,8 +15,9 @@ class UploadsController < ApplicationController
     end
 
     upload_file= params[:file_upload][:my_file]
-    if upload_file.content_type != "application/pdf" then
-      flash[:error] = "Only PDF Files supported for upload."
+
+    unless Page::PAGE_ALLOWED_MIME_TYPES.include? upload_file.content_type
+      flash[:error] = "File format not supported, detected type: #{upload_file.content_type} - supportet tpyes: #{Page::PAGE_ALLOWED_MIME_TYPES}."
       render :action => 'new'
       return
     end
@@ -24,22 +25,27 @@ class UploadsController < ApplicationController
     page=Page.new(
         :original_filename => upload_file.original_filename,
         :source => Page::PAGE_SOURCE_UPLOADED,
-        :folder_id => params[:file_upload][:folder_id])
+        :folder_id => params[:file_upload][:folder_id],
+        :mime_type => upload_file.content_type)
 
     page.save!
     page.reload
 
-    FileUtils.cp upload_file.tempfile.path, page.tmp_docstore_path
-    FileUtils.chmod "go=rr",page.tmp_docstore_path
+    FileUtils.cp upload_file.tempfile.path, page.path(:orginal)
+    FileUtils.chmod "go=rr", page.path(:orginal)
 
     # Background: create smaller images and pdf text
-    ConvertWorker.perform_async(page.id)
+    if RemoteConvertWorker.connected? then
+      RemoteConvertWorker.perform_async([page.id])
+    else
+      LocalConvertWorker.perform_async(page.id)
+    end
 
     redirect_to new_upload_path, notice: 'Upload was successfully created.'
 
   end
 
-  ### Upload from CDClient (Scanner) - file uploaded as JPG
+  ### Upload from CDClient (Scanner) - file uploaded as JPG - single pages as jpg
   def create_from_client_jpg
 
     @page = Page.new(params[:page])
@@ -51,18 +57,23 @@ class UploadsController < ApplicationController
 
       ## Copy to docstore and update DB -- will be .scanned.jpg
       tmp = params[:page][:upload_file].tempfile
-      FileUtils.cp tmp.path, @page.tmp_docstore_path
-      FileUtils.chmod "go=rr",@page.tmp_docstore_path #happens only on qnas, set group and others to read, otherwise nginx fails
+      FileUtils.cp tmp.path, @page.path(:orginal)
+      FileUtils.chmod "go=rr", @page.path(:orginal) #happens only on qnas, set group and others to read, otherwise nginx fails
 
       ## just if provided in addition, we are happy, will be _s.jpg
       if  not params[:small_upload_file].nil? then
         tmp_small = params[:small_upload_file].tempfile
         FileUtils.cp tmp_small.path, @page.path(:s_jpg)
-        FileUtils.chmod "go=rr",@page.path(:s_jpg)
+        FileUtils.chmod "go=rr", @page.path(:s_jpg)
       end
 
       ## Background: create smaller images and pdf text
-      ConvertWorker.perform_async(@page.id)
+
+      if RemoteConvertWorker.connected? then
+        RemoteConvertWorker.perform_async([@page.id])
+      else
+        @page.update_status(Page::UPLOADED_NOT_PROCESSED)
+      end
 
       respond_to do |format|
         format.html { redirect_to @page, notice: 'Upload was successfully created.' }

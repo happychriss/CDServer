@@ -4,10 +4,11 @@ class Page < ActiveRecord::Base
   require 'FileSystem'
   include FileSystem
 
-  #### Document Status flow
+  #### Page Status flow
   UPLOADED = 0 # page just uploaded
   UPLOADED_PROCESSING = 1 # pages is processed
   UPLOADED_PROCESSED = 2 # pages was processed by worker (content added)
+  UPLOADED_NOT_PROCESSED = 3 # pages could not be processed, as worker was not available
 
   PAGE_SOURCE_SCANNED=0
   PAGE_SOURCE_UPLOADED=1
@@ -16,7 +17,9 @@ class Page < ActiveRecord::Base
   PAGE_FORMAT_PDF=0
   PAGE_FORMAT_SCANNED_JPG=1
 
-  attr_accessible :content, :document_id, :original_filename, :position, :source, :folder_id, :upload_file, :small_upload_file, :status, :format
+  PAGE_ALLOWED_MIME_TYPES=["application/pdf","application/msword","application/excel"]
+
+  attr_accessible :content, :document_id, :original_filename, :position, :source, :folder_id, :upload_file, :small_upload_file, :status, :format, :mime_type
   attr_accessor :upload_file
 
   belongs_to :document
@@ -121,16 +124,6 @@ class Page < ActiveRecord::Base
              else
                'ERROR'
            end
-  end
-
-  def tmp_docstore_path
-    path=case self.source
-           when Page::PAGE_SOURCE_SCANNED then
-             self.path(:scanned_jpg)
-           when Page::PAGE_SOURCE_UPLOADED then
-             self.path(:pdf)
-         end
-    return path
   end
 
   def document_pages_count
@@ -253,6 +246,7 @@ class Page < ActiveRecord::Base
     status='| '+ status unless status==''
     return status
   end
+
 
   private
 

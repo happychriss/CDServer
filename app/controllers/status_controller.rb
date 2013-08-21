@@ -3,7 +3,7 @@ class StatusController < ApplicationController
   # GET /status.json
   def index
 
-    @connected=ConvertWorker.connect_to_server
+    @connected=RemoteConvertWorker.connect_to_server
 
     respond_to do |format|
       format.html # index.html.erb
@@ -18,8 +18,8 @@ class StatusController < ApplicationController
   end
 
   def start_remote_worker
-    ConvertWorker.connect_to_server
-    ConvertWorker.perform_async
+    RemoteConvertWorker.connect_to_server
+    RemoteConvertWorker.perform_async
     redirect_to :action => :index
   end
 
