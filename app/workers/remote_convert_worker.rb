@@ -23,9 +23,9 @@ class RemoteConvertWorker
   @@status=NOT_CONNECTED
 
 
-def self.connected?
-  not self.connect_to_server==RemoteConvertWorker::NOT_CONNECTED
-end
+  def self.connected?
+    not self.connect_to_server==RemoteConvertWorker::NOT_CONNECTED
+  end
 
 
 ###############################################################################################
@@ -35,32 +35,43 @@ end
 
     begin
 
-     logger.info "RemoteConvertWorker called for  #{page_ids.count} pages!"
+      logger.info "RemoteConvertWorker called for  #{page_ids.count} pages!"
 
-      pages_ids.each do |page_id|
+      page_ids.each do |page_id|
 
         page=Page.find(page_id)
 
         logger.info "Processing started for page_id #{page.id}"
 
-        page.update_status(Page::UPLOADED_PROCESSING)
+        page.update_status_preview(Page::UPLOADED_PROCESSING)
 
         push_status_update ## send status-update to application main page via private_pub gem, fayes,
 
-        logger.info "Processing file remote: #{page.id}"
+        logger.info "Processing scanned file remote: #{page.id}"
 
         scanned_jpg=File.read(page.path(:orginal))
 
         ### REMOTE CALL via DRB - the server can run on any server: ruby DRbProcessor.rb run
 
-        result_jpg, result_sjpg, result_pdf, result_txt=@@processor.convert(scanned_jpg, page.source)
+        if page.source==Page::PAGE_SOURCE_SCANNED then
+          tmp_mime_type = :JPG_SCANNED
+        else
+          tmp_mime_type = page.mime_type
+        end
+
+        result_jpg, result_sjpg, result_pdf, result_txt, result_status=@@processor.convert(scanned_jpg, tmp_mime_type)
+        if result_status !='OK' then
+          Log.write_error('RemoteConvertWorker', "Remote Converting: #{result_status}")
+          push_status_update ## send status-update to application main page via private_pub gem, fayes,
+          return
+        end
 
         page.save_file(result_sjpg, :s_jpg)
         page.save_file(result_jpg, :jpg)
         page.save_file(result_pdf, :pdf)
         page.add_content(result_txt)
 
-        page.update_status(Page::UPLOADED_PROCESSED)
+        page.update_status_preview(Page::UPLOADED_PROCESSED)
 
         logger.info "Processing file remote: page_id #{page.id}  completed"
 

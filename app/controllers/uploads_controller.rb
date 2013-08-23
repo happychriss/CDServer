@@ -16,8 +16,8 @@ class UploadsController < ApplicationController
 
     upload_file= params[:file_upload][:my_file]
 
-    unless Page::PAGE_ALLOWED_MIME_TYPES.include? upload_file.content_type
-      flash[:error] = "File format not supported, detected type: #{upload_file.content_type} - supportet tpyes: #{Page::PAGE_ALLOWED_MIME_TYPES}."
+    unless Page::PAGE_MIME_TYPES.has_key?(upload_file.content_type)
+      flash[:error] = "File format not supported, detected type: #{upload_file.content_type} - supportet tpyes: #{Page::PAGE_MIME_TYPES.to_s}."
       render :action => 'new'
       return
     end
@@ -26,7 +26,7 @@ class UploadsController < ApplicationController
         :original_filename => upload_file.original_filename,
         :source => Page::PAGE_SOURCE_UPLOADED,
         :folder_id => params[:file_upload][:folder_id],
-        :mime_type => upload_file.content_type)
+        :mime_type => Page::PAGE_MIME_TYPES[upload_file.content_type])
 
     page.save!
     page.reload
@@ -36,7 +36,9 @@ class UploadsController < ApplicationController
 
     # Background: create smaller images and pdf text
     if RemoteConvertWorker.connected? then
-      RemoteConvertWorker.perform_async([page.id])
+      rm=RemoteConvertWorker.new
+      rm.perform([page.id])
+#      RemoteConvertWorker.perform([page.id])
     else
       LocalConvertWorker.perform_async(page.id)
     end
@@ -72,7 +74,7 @@ class UploadsController < ApplicationController
       if RemoteConvertWorker.connected? then
         RemoteConvertWorker.perform_async([@page.id])
       else
-        @page.update_status(Page::UPLOADED_NOT_PROCESSED)
+        @page.update_status_preview(Page::UPLOADED_NOT_PROCESSED)
       end
 
       respond_to do |format|

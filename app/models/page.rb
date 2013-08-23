@@ -17,14 +17,21 @@ class Page < ActiveRecord::Base
   PAGE_FORMAT_PDF=0
   PAGE_FORMAT_SCANNED_JPG=1
 
-  PAGE_ALLOWED_MIME_TYPES=["application/pdf","application/msword","application/excel"]
+  PAGE_MIME_TYPES={'application/pdf' => :PDF,
+                   'application/msword' => :MS_WORD,
+                   'application/excel' => :MS_EXCEL,
+                   'application/vnd.ms-excel'=> :MS_EXCEL,
+                   'application/vnd.oasis.opendocument.text' => :ODF_WRITER,
+                   'application/vnd.oasis.opendocument.spreadsheet' => :ODF_CALC
+  }
 
-  attr_accessible :content, :document_id, :original_filename, :position, :source, :folder_id, :upload_file, :small_upload_file, :status, :format, :mime_type
+  attr_accessible :content, :document_id, :original_filename, :position, :source, :folder_id, :upload_file, :small_upload_file, :status, :format, :mime_type, :preview
   attr_accessor :upload_file
 
   belongs_to :document
   belongs_to :folder
   belongs_to :cover
+  belongs_to :upload
 
   ### this provides a lit of all pages belonging to a folder without having a cover page printed
 
@@ -111,6 +118,11 @@ class Page < ActiveRecord::Base
 
   def has_document?
     not self.document.nil?
+  end
+
+  ## to read PDF and so on as symbols
+  def mime_type
+    super.to_sym
   end
 
   def self.uploading_status(mode)
@@ -227,8 +239,12 @@ class Page < ActiveRecord::Base
     self.save!
   end
 
-  def update_status(status)
-    self.update_attributes(:status => status)
+  def update_status_preview(status,preview= {})
+     if preview.nil? then
+        self.update_attributes(:status => status)
+     else
+       self.update_attributes(:status => status,:preview => preview)
+    end
   end
 
 
