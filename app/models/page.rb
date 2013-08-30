@@ -17,6 +17,9 @@ class Page < ActiveRecord::Base
   PAGE_FORMAT_PDF=0
   PAGE_FORMAT_SCANNED_JPG=1
 
+  PAGE_PREVIEW = 1
+  PAGE_NO_PREVIEW = 0
+
   PAGE_MIME_TYPES={'application/pdf' => :PDF,
                    'application/msword' => :MS_WORD,
                    'application/excel' => :MS_EXCEL,
@@ -121,9 +124,6 @@ class Page < ActiveRecord::Base
   end
 
   ## to read PDF and so on as symbols
-  def mime_type
-    super.to_sym
-  end
 
   def self.uploading_status(mode)
     result=case mode
@@ -263,6 +263,23 @@ class Page < ActiveRecord::Base
     return status
   end
 
+  ##### mime type is stored in database as long text application/pdf for example
+
+  # mime type of stored document
+
+  def short_mime_type
+    Page::PAGE_MIME_TYPES[self.mime_type]
+  end
+
+  ## mime type of uploaded document
+
+  def orig_short_mime_type
+    if self.source==Page::PAGE_SOURCE_SCANNED then
+      return :JPG_SCANNED
+    else
+      return self.short_mime_type
+    end
+  end
 
   private
 

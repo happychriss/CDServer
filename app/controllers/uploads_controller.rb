@@ -26,19 +26,19 @@ class UploadsController < ApplicationController
         :original_filename => upload_file.original_filename,
         :source => Page::PAGE_SOURCE_UPLOADED,
         :folder_id => params[:file_upload][:folder_id],
-        :mime_type => Page::PAGE_MIME_TYPES[upload_file.content_type])
+        :mime_type => upload_file.content_type)
 
     page.save!
     page.reload
 
-    FileUtils.cp upload_file.tempfile.path, page.path(:orginal)
-    FileUtils.chmod "go=rr", page.path(:orginal)
+    FileUtils.cp upload_file.tempfile.path, page.path(:original)
+    FileUtils.chmod "go=rr", page.path(:original)
 
     # Background: create smaller images and pdf text
     if RemoteConvertWorker.connected? then
-      rm=RemoteConvertWorker.new
-      rm.perform([page.id])
-#      RemoteConvertWorker.perform([page.id])
+#      rm=RemoteConvertWorker.new #direct calling
+#      rm.perform([page.id]) #direct calling
+      RemoteConvertWorker.perform_async([page.id])
     else
       LocalConvertWorker.perform_async(page.id)
     end
@@ -59,8 +59,8 @@ class UploadsController < ApplicationController
 
       ## Copy to docstore and update DB -- will be .scanned.jpg
       tmp = params[:page][:upload_file].tempfile
-      FileUtils.cp tmp.path, @page.path(:orginal)
-      FileUtils.chmod "go=rr", @page.path(:orginal) #happens only on qnas, set group and others to read, otherwise nginx fails
+      FileUtils.cp tmp.path, @page.path(:original)
+      FileUtils.chmod "go=rr", @page.path(:original) #happens only on qnas, set group and others to read, otherwise nginx fails
 
       ## just if provided in addition, we are happy, will be _s.jpg
       if  not params[:small_upload_file].nil? then

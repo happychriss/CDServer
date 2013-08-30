@@ -50,6 +50,12 @@ end
     return
   end
 
+  def show_original
+    @page=Page.find(params[:id])
+    send_file(@page.path(:original), :type => @page.mime_type, :page => '1')
+    return
+  end
+
   def show_document_pages
     @pages=Document.find(params[:id]).pages.limit(4)
   end

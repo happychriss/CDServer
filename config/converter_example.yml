@@ -1,16 +1,17 @@
-# converter is running on server PC, not on qnas, qnas connection is used as a backup
+#how to connect from qnas to remote convert worker
 
 development:
-  remote_host: 'qnas'
-  remote_port: 8999
+  remote_host: 'xxxx'
+  remote_port: 1000
 
 test:
   remote_host: 'does not exists'
-  remote_port: 8999
+  remote_port: 1000
 
 production:
-  remote_host: 'remote'
+  remote_host: '192.168.1.0'
   remote_port: 8999
+
 
 
 

@@ -1,1 +1,1 @@
-ruby ../drb/drb_processor_daemon.rb run remote
+ruby ../drb/remote_convert_server_daemon.rb run remote

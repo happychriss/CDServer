@@ -17,7 +17,7 @@ module FileSystem
                                        '.txt'
                                      when :gpg
                                         '.gpg'
-                                     when :orginal
+                                     when :original
                                        '.org'
                                      when :all
                                       '*.*'

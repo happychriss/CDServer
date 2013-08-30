@@ -47,19 +47,17 @@ class RemoteConvertWorker
 
         push_status_update ## send status-update to application main page via private_pub gem, fayes,
 
-        logger.info "Processing scanned file remote: #{page.id}"
+        logger.info "Processing scanned file remote: #{page.id} with path: #{page.path(:original)} and mime type #{page.orig_short_mime_type}"
 
-        scanned_jpg=File.read(page.path(:orginal))
+        scanned_jpg=File.read(page.path(:original))
 
-        ### REMOTE CALL via DRB - the server can run on any server: ruby DRbProcessor.rb run
+        ### REMOTE CALL via DRB - the server can run on any server: distributed ruby
 
-        if page.source==Page::PAGE_SOURCE_SCANNED then
-          tmp_mime_type = :JPG_SCANNED
-        else
-          tmp_mime_type = page.mime_type
-        end
+        logger.info "start remote call to DRB"
 
-        result_jpg, result_sjpg, result_pdf, result_txt, result_status=@@processor.convert(scanned_jpg, tmp_mime_type)
+        result_jpg, result_sjpg, result_pdf, result_txt, result_status=@@processor.converter(scanned_jpg, page.orig_short_mime_type)
+        logger.info "complete remote call to DRB"
+
         if result_status !='OK' then
           Log.write_error('RemoteConvertWorker', "Remote Converting: #{result_status}")
           push_status_update ## send status-update to application main page via private_pub gem, fayes,
@@ -68,10 +66,14 @@ class RemoteConvertWorker
 
         page.save_file(result_sjpg, :s_jpg)
         page.save_file(result_jpg, :jpg)
-        page.save_file(result_pdf, :pdf)
+        page.save_file(result_pdf, :pdf) unless result_pdf.nil?
         page.add_content(result_txt)
 
-        page.update_status_preview(Page::UPLOADED_PROCESSED)
+        if result_sjpg.nil? then
+          page.update_status_preview(Page::UPLOADED_PROCESSED,Page::PAGE_NO_PREVIEW)
+        else
+          page.update_status_preview(Page::UPLOADED_PROCESSED,Page::PAGE_PREVIEW)
+        end
 
         logger.info "Processing file remote: page_id #{page.id}  completed"
 
@@ -91,7 +93,6 @@ class RemoteConvertWorker
 
 ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  private
 
   def self.proc
     @@processor

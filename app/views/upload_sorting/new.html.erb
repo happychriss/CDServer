@@ -5,7 +5,7 @@
   <!--------------------------------------- list new uploaded pages -->
 
 
-  <div class="document_page_index" id="sortable1">
+  <ul class="document_page_index" id="sortable1">
 
     <% unless @pages.nil? then %>
         <% @pages.each do |page| %>
@@ -14,7 +14,7 @@
         <div style="clear:both;"></div>
     <% end %>
 
-  </div>
+  </ul>
 
 
   <!--------------------------------------- create a new document from uploaded pages -->
@@ -25,9 +25,9 @@
 
       <%= form_for(@document, :url => {:controller => 'upload_sorting', :action => 'create'}) do |f| %>
 
-          <div class="document_sort" id="sortable2">
+          <ul class="document_sort" id="sortable2">
             <%= render :partial => 'pages_sorted', :locals => {:pages_sorted => @pages_sorted} %>
-          </div>
+          </ul>
 
           </br>
           </br>

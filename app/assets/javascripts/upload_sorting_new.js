@@ -29,47 +29,44 @@ this.SortPages = function () {
     });
 
 // Index page: sortable list for Index Page, remove old class to be ready for the sortable page
-    $("#sortable1").sortable({
-
-        connectWith: '.document_sort',
+    $("li","#sortable1").draggable({
         placeholder: "spaceholder", //trick not to display any spaceholder
-        tolerance: 'pointer',
-        helper: 'clone', // needed fro dragging list, to have a copy to add to elements
-
-        receive: function (event, ui) {
-            ui.item.removeAttr('style');
-            ui.item.removeClass('page_sort').addClass('preview');
-       }
-
+        cancel: "a.ui-icon", // clicking an icon won't initiate dragging
+        revert: "invalid", // when not dropped, the item will revert back to its initial position
+        containment: "document",
+        helper: 'clone', // needed for dragging list, to have a copy to add to elements
+        cursor: "move"
     });
 
-
-    $("#sortable2").droppable({
-        accept: ":not(.ui-sortable-helper)",
-        drop: function (ev, ui) {
-            a=ui.helper.clone()
-//            a.removeClass('ui-sortable-helper')
-            a.removeAttr( 'style' );
-            a.addClass('page_sort');
-            a.appendTo(this);
-            ui.draggable.remove();
-            align_pages();
-
+    $("#sortable1").droppable({
+        accept: "#sortable2 li",
+        activeClass: "ui-state-highlight",
+        drop: function( event, ui ) {
+            ui.item.removeAttr('style');
+            ui.item.removeClass('page_sort').addClass('preview');
         }
     });
 
-   // sort page
-       $("#sortable2").sortable({
-           tolerance: 'pointer',
-           connectWith: '.document_page_index',
-           update: function (event, ui) {
-               align_pages();
-           },
-           sort: function (event, ui) {
-               align_pages();
-           }
+    $("#sortable2").droppable({
+        accept: "#sortable1 > li",
+        drop: function (ev, ui) {
+            a=ui.helper.clone();
+            a.removeAttr( 'style' );
+            a.addClass('page_sort');
+            a.appendTo(this);
+            a.draggable({
+                placeholder: "spaceholder", //trick not to display any spaceholder
+                cancel: "a.ui-icon", // clicking an icon won't initiate dragging
+                revert: "invalid", // when not dropped, the item will revert back to its initial position
+                containment: "document",
+                helper: 'clone', // needed for dragging list, to have a copy to add to elements
+                cursor: "move"
+            });
+            ui.draggable.remove();
+            align_pages();
+        }
+    });
 
-       });
 
     // when a sortable page is removed, the destroy_page.js.erb sends updatesort to re-sort the pages
     $("#sortable2").bind('updatesort', function () {
@@ -78,7 +75,7 @@ this.SortPages = function () {
 
     // submit button for upload
     $('#new_document').submit(function () {
-        $.post($(this).attr('action'), $(this).serialize() + "&" + $('#sortable2').sortable('serialize'), null, "script");
+        $.post($(this).attr('action'), $(this).serialize() + "&" + $('#sortable2').droppable('serialize'), null, "script");
         return false;
     });
 
