@@ -28,59 +28,56 @@ this.SortPages = function () {
         }
     });
 
-// Index page: sortable list for Index Page, remove old class to be ready for the sortable page
+
     $("li","#sortable1").draggable({
         placeholder: "spaceholder", //trick not to display any spaceholder
         cancel: "a.ui-icon", // clicking an icon won't initiate dragging
         revert: "invalid", // when not dropped, the item will revert back to its initial position
         containment: "document",
-        helper: 'clone', // needed for dragging list, to have a copy to add to elements
-        cursor: "move"
-    });
-
-    $("#sortable1").droppable({
-        accept: "#sortable2 li",
-        activeClass: "ui-state-highlight",
-        drop: function( event, ui ) {
-            ui.item.removeAttr('style');
-            ui.item.removeClass('page_sort').addClass('preview');
-        }
-    });
-
-    $("#sortable2").droppable({
-        accept: "#sortable1 > li",
-        drop: function (ev, ui) {
-            a=ui.helper.clone();
-            a.removeAttr( 'style' );
-            a.addClass('page_sort');
-            a.appendTo(this);
-            a.draggable({
-                placeholder: "spaceholder", //trick not to display any spaceholder
-                cancel: "a.ui-icon", // clicking an icon won't initiate dragging
-                revert: "invalid", // when not dropped, the item will revert back to its initial position
-                containment: "document",
-                helper: 'clone', // needed for dragging list, to have a copy to add to elements
-                cursor: "move"
-            });
-            ui.draggable.remove();
+        cursor: "move",
+        zIndex:10        ,
+        stop: function (ev, ui) {
             align_pages();
         }
     });
 
 
-    // when a sortable page is removed, the destroy_page.js.erb sends updatesort to re-sort the pages
+    $("#sortable1").droppable({
+        accept: "#sortable2 li",
+        activeClass: "ui-state-highlight",
+        drop: function( event, ui ) {
+            a=ui.draggable;
+            a.removeAttr('style');
+            a.removeClass('page_sort').addClass('preview');
+            a.appendTo(this);
+            a.css("z-index", 'auto');
+        }
+    });
+
+    $("#sortable2").droppable({
+        drop: function (ev, ui) {
+            a=ui.draggable;
+            a.removeAttr( 'style' );
+            a.addClass('page_sort');
+            a.appendTo(this);
+        }
+    });
+
+    // when a sortable page is deleted, the destroy_page.js.erb sends updatesort to re-sort the pages
     $("#sortable2").bind('updatesort', function () {
         align_pages();
     });
 
+
+
     // submit button for upload
     $('#new_document').submit(function () {
-        $.post($(this).attr('action'), $(this).serialize() + "&" + $('#sortable2').droppable('serialize'), null, "script");
+        $('#sortable2').sortable();
+        $.post($(this).attr('action'), $(this).serialize() + "&" + $('#sortable2').sortable('serialize'), null, "script");
         return false;
     });
 
 }
-
 
 function align_pages() {
     var items = $('.document_sort_frame .preview');
@@ -90,7 +87,7 @@ function align_pages() {
     var sort_box_with = $('.document_sort_frame').innerWidth();
     var max_size = sort_box_with - 150
     var n = items.length;
-    var z = n + 1
+    var z = n + 100
 
     var margin = ((n * page_size) - max_size) / (n - 1);
     if (margin < 0) {
