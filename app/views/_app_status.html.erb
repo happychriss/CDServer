@@ -13,7 +13,7 @@ Wait for Convert:<%= status_summary[Page::UPLOADED_NOT_PROCESSED].presence || '0
 
 <% if Log.check_errors? == true then %>
     | <span style="background: red"><a href="/status">ERROR</a></span>
-<% elsif RemoteConvertWorker.connect_to_server==RemoteConvertWorker::NOT_CONNECTED %>
+<% elsif not DRBConnector.instance.connected? %>
     | <span style="background: lightskyblue"><a href="/status">NO WORKER</a></span>
 <% else %>
     | <span><a href="/status">STATUS:OK</a></span>

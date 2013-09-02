@@ -4,17 +4,19 @@
 
 <div class="status_frame">
   <h2>Documents without backup: <%= Page.uploading_status(:no_backup) %></h2>
-  <h2>  Documents without processing: <%= Page.uploading_status(:not_processed) %></h2>
+  <h2>Documents without processing: <%= Page.uploading_status(:not_processed) %></h2>
   </br>
 </div>
 
 
 <div class="status_frame">
-  <% if @connected!= RemoteConvertWorker::NOT_CONNECTED then %>
+  <% if DRBConnector.instance.connected? then %>
       <h2>Connected to remote worker!</h2>
       <%= button_to "Start Remote Worker to process #{Page.uploading_status(:not_converted)} documents ", status_start_remote_worker_path, :method => :get %>
   <% else %>
-      !! NOT Connected to a remote worker !!
+      <h2>
+      Not connected !!! <%= button_to "Try to connect", status_try_to_connect_path, :method => :get %>
+      </h2>
   <% end %>
 </div>
 

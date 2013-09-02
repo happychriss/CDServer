@@ -3,8 +3,6 @@ class StatusController < ApplicationController
   # GET /status.json
   def index
 
-    @connected=RemoteConvertWorker.connect_to_server
-
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @status }
@@ -18,11 +16,14 @@ class StatusController < ApplicationController
   end
 
   def start_remote_worker
-    RemoteConvertWorker.connect_to_server
-    RemoteConvertWorker.perform_async
-    redirect_to :action => :index
+      RemoteConvertWorker.perform_async(Page.for_batch_conversion)
+      redirect_to :action => :index
   end
 
+  def try_to_connect
+    DRBConnector.instance.connect
+    redirect_to :action => :index
+  end
 
 
 end

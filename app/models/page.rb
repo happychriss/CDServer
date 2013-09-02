@@ -7,8 +7,9 @@ class Page < ActiveRecord::Base
   #### Page Status flow
   UPLOADED = 0 # page just uploaded
   UPLOADED_PROCESSING = 1 # pages is processed
-  UPLOADED_PROCESSED = 2 # pages was processed by worker (content added)
-  UPLOADED_NOT_PROCESSED = 3 # pages could not be processed, as worker was not available
+  UPLOADED_NOT_PROCESSED = 2 # pages could not be processed, as worker was not available
+  UPLOADED_PROCESSED = 3 # pages was processed by worker (content added)
+
 
   PAGE_SOURCE_SCANNED=0
   PAGE_SOURCE_UPLOADED=1
@@ -125,6 +126,9 @@ class Page < ActiveRecord::Base
 
   ## to read PDF and so on as symbols
 
+
+
+
   def self.uploading_status(mode)
     result=case mode
              when :no_backup then
@@ -132,7 +136,7 @@ class Page < ActiveRecord::Base
              when :not_processed then
                Page.where("status < #{Page::UPLOADED_PROCESSED}").count
              when :not_converted then
-               Page.where("status = #{Page::UPLOADED}").count
+               Page.where("status = #{Page::UPLOADED_NOT_PROCESSED}").count
              else
                'ERROR'
            end
@@ -145,6 +149,10 @@ class Page < ActiveRecord::Base
 
   def self.uploaded_pages
     self.where("document_id is null")
+  end
+
+  def self.for_batch_conversion
+    self.where("status < #{Page::UPLOADED_PROCESSED}").select('id').map {|x| x.id}
   end
 
   def self.pages_no_cover(folder_id)

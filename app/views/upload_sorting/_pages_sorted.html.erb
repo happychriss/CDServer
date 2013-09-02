@@ -9,7 +9,7 @@
           <div class="preview_footer">
             <%= "#{page.id} - #{page.created_at.strftime("%d.%m.%y")} - #{page.source}" %>
             <div class="clear"></div>
-            <%= (link_to "Delete", page, :remote => true, :confirm => 'Are you sure?', :method => :delete) if p==1 %>
+            <%= (link_to "| Delete", page, :remote => true, :confirm => 'Are you sure?', :method => :delete) if p==1 %>
           </div>
         </li>
 

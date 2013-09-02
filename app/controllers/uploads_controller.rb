@@ -35,7 +35,7 @@ class UploadsController < ApplicationController
     FileUtils.chmod "go=rr", page.path(:original)
 
     # Background: create smaller images and pdf text
-    if RemoteConvertWorker.connected? then
+    if DRBConnector.instance.connected? then
 #      rm=RemoteConvertWorker.new #direct calling
 #      rm.perform([page.id]) #direct calling
       RemoteConvertWorker.perform_async([page.id])
@@ -71,7 +71,7 @@ class UploadsController < ApplicationController
 
       ## Background: create smaller images and pdf text
 
-      if RemoteConvertWorker.connected? then
+      if DRBConnector.instance.connected? then
         RemoteConvertWorker.perform_async([@page.id])
       else
         @page.update_status_preview(Page::UPLOADED_NOT_PROCESSED)

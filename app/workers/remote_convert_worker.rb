@@ -7,6 +7,7 @@ require 'drb'
 require 'sidekiq'
 require 'Pusher'
 
+
 class RemoteConvertWorker
 
 
@@ -47,7 +48,7 @@ class RemoteConvertWorker
 
         logger.info "start remote call to DRB"
 
-        result_jpg, result_sjpg, result_pdf, result_txt, result_status=@@processor.converter(scanned_jpg, page.orig_short_mime_type)
+        result_jpg, result_sjpg, result_pdf, result_txt, result_status=DRBConnector.instance.processor.converter(scanned_jpg, page.orig_short_mime_type)
         logger.info "complete remote call to DRB"
 
         if result_status !='OK' then

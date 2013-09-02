@@ -1,4 +1,6 @@
 require 'singleton'
+require 'drb'
+
 
 class DRBConnector
 
@@ -6,50 +8,50 @@ class DRBConnector
 
   def initialize
     @processor=0
-    @status=NOT_CONNECTED
+    @connected=false
   end
 
-
   def connected?
-    self.connect==NOT_CONNECTED
+    self.connect==true
   end
 
   def processor
-    if self.connect then
-    return @processor
+    if self.connected? then
+      return @processor
     else
       raise "DRB Connection ERROR"
     end
   end
 
-  private
+
   def connect
     if @processor!=0 then
       begin
-        @processor.tmp_alive?
-      rescue
-        @status=NOT_CONNECTED
+        @connected=@processor.me_alive?
+        puts "DRB Status: Connected"
+       rescue
+     puts "DRB Status: Not connected, need to re-connect"
+        @connected=false
       end
     end
-    puts "connect to server"
 
-    if @status==NOT_CONNECTED then
-
+    unless @connected then
+      puts "connect to server"
       ## try first to connect to remote host, because he can do all the work
       begin
-        tmp_proc= DRbObject.new(nil, "druby://#{DRB_WORKER['remote_host']}:#{DRB_WORKER['remote_port']}") ##
+        tmp_proc= DRbObject.new_with_uri("druby://#{DRB_WORKER['remote_host']}:#{DRB_WORKER['remote_port']}") ##
         tmp_alive=tmp_proc.me_alive? ## somehow only this raises the exception in case of error, me_alive? is a custom method
         @processor=tmp_proc if tmp_alive
-        @status=CONNECTED_TO_REMOTE
+        @connected=true
       rescue DRb::DRbConnError => e
-        @status=NOT_CONNECTED
+        @connected=false
         @processor =0
         puts "not connected to remote host: #{e.message}"
       end
 
     end
 
-    return @status
+    return @connected
 
   end
 

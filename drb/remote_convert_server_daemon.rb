@@ -7,6 +7,7 @@ require 'tempfile'
 class Processor
 
 
+  ### needed to test if the processor is really working
   def me_alive?
     return true
   end
