@@ -23,19 +23,20 @@ class Page < ActiveRecord::Base
 
   PAGE_MIME_TYPES={'application/pdf' => :PDF,
                    'application/msword' => :MS_WORD,
+                   'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => :MS_WORD,
                    'application/excel' => :MS_EXCEL,
+                   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => :MS_EXCEL,
                    'application/vnd.ms-excel'=> :MS_EXCEL,
                    'application/vnd.oasis.opendocument.text' => :ODF_WRITER,
                    'application/vnd.oasis.opendocument.spreadsheet' => :ODF_CALC
   }
 
-  attr_accessible :content, :document_id, :original_filename, :position, :source, :folder_id, :upload_file, :small_upload_file, :status, :format, :mime_type, :preview
+  attr_accessible :content, :document_id, :original_filename, :position, :source, :folder_id, :upload_file, :status, :mime_type, :preview
   attr_accessor :upload_file
 
   belongs_to :document
   belongs_to :folder
   belongs_to :cover
-  belongs_to :upload
 
   ### this provides a lit of all pages belonging to a folder without having a cover page printed
 
@@ -54,6 +55,7 @@ class Page < ActiveRecord::Base
     has document.status, :as => :document_status
     has document.created_at, :as => :document_created_at, :sortable => true
     has document.page_count
+    has document.complete_pdf
     has document_id, :as => :group_document
 
     set_property :delta => true
@@ -192,7 +194,7 @@ class Page < ActiveRecord::Base
 
         ### Clean up the document and the remaining pages
         CleanPositionsOnRemove(document.id, position) ## update position of remaining pages
-        document.decrement_page_count
+        document.update_after_page_change
 
       end
     end
@@ -216,7 +218,7 @@ class Page < ActiveRecord::Base
       self.position=0
       self.save!
       CleanPositionsOnRemove(old_document.id, position)
-      old_document.decrement_page_count
+      old_document.update_after_page_change
 
     end
 
@@ -233,7 +235,7 @@ class Page < ActiveRecord::Base
       self.position=position
       self.save!
 
-      self.document.increment_page_count
+      self.document.update_after_page_change
 
       Document.find(old_document_id).destroy unless old_document_id.nil?
 

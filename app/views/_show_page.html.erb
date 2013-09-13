@@ -32,13 +32,13 @@
        *No cover*
       <%end%>
   <%= "|#{page.created_at.strftime("%d.%m.%y")}|     (#{page.id})" %>
-  <%= " | File: #{page.original_filename[0..18]}..." if page.source==Page::PAGE_SOURCE_UPLOADED%>
+  <%= " | File: #{page.original_filename[0..15]}..." if page.source==Page::PAGE_SOURCE_UPLOADED%>
 
 
   <div style="padding-right: 5px;">
     <%= link_to "RTF", rtf_path(page.id) %> |
-    <%= link_to("PDF", pdf_path(page.id))+' |' unless (page.document.nil? or page.source==Page::PAGE_SOURCE_UPLOADED)  %>
-    <%= link_to(page.short_mime_type, original_path(page.id))  if page.source==Page::PAGE_SOURCE_UPLOADED %>
+    <%= link_to("PDF", pdf_path(page.id))+' |' if  ((not page.document.nil?) and page.document.complete_pdf?)  %>
+    <%= link_to(page.short_mime_type, original_path(page.id)) +' |' unless (page.document.nil? or page.document_pages_count>1 or page.document.complete_pdf?)  %>
     <%= yield %>  <!-- !!!!HERE IS THE YIELD -->
   </div>
 </div>

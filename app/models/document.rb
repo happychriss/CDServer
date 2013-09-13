@@ -30,13 +30,20 @@ class Document < ActiveRecord::Base
     self.pages.where("backup = 0").count==0
   end
 
-  def increment_page_count
-    self.update_attribute('page_count',self.page_count+1)
+  def update_after_page_change
+    self.page_count=self.pages.count
+
+    ### if documents has pages with non-pdf-mime type, no complete PDF page can be generated
+    if self.pages.where("mime_type <> '#{Page::PAGE_MIME_TYPES.key(:PDF)}'").count>0
+        self.complete_pdf=false
+    else
+      self.complete_pdf=true
+      end
+
+    self.save!
+
   end
 
-  def decrement_page_count
-    self.update_attribute('page_count',self.page_count-1)
-  end
 
   ### update all pages with the same folder
   def update_folder(folder_id)
@@ -50,6 +57,11 @@ class Document < ActiveRecord::Base
     end
   end
 
+  # a summary page can only be displayed
+  def show_summary_page?
+    return true if (self.no_complete_pdf==false or self.page_count==1)
+    return false
+  end
 
   private
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130822185152) do
+ActiveRecord::Schema.define(:version => 20130903201042) do
 
   create_table "covers", :force => true do |t|
     t.integer  "folder_id"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(:version => 20130822185152) do
     t.integer  "page_count",      :default => 0,     :null => false
     t.date     "delete_at"
     t.boolean  "no_delete"
+    t.boolean  "complete_pdf",    :default => false
   end
 
   create_table "folders", :force => true do |t|

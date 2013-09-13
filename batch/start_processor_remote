@@ -1,1 +1,2 @@
-ruby ../drb/remote_convert_server_daemon.rb run remote
+cd /home/development/Projects/CD2/CDServer/batch
+ruby /home/development/Projects/CD2/CDServer/drb/remote_convert_server_daemon.rb run remote $PWD
