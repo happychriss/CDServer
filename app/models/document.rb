@@ -2,7 +2,7 @@ class Document < ActiveRecord::Base
 
   require 'tempfile'
 
-  attr_accessible :comment, :status, :keywords, :keyword_list, :page_count,:pages_attributes, :delete_at, :no_delete
+  attr_accessible :comment, :status, :keywords, :keyword_list, :page_count,:pages_attributes, :delete_at, :no_delete, :created_at
   has_many :pages, :order => :position, :dependent => :destroy
   belongs_to :folder
   accepts_nested_attributes_for :pages, :allow_destroy => true

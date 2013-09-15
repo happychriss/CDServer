@@ -81,7 +81,9 @@ class Page < ActiveRecord::Base
     }
 
     # http://rdoc.info/github/freelancing-god/thinking-sphinx/ThinkingSphinx/SearchMethods/ClassMethods
-    (search_config.merge!({:group_clause => "page_id DESC"})) if sort_mode==:time
+    (search_config.merge!({:group_clause => "document_created_at desc, id DESC"})) if sort_mode==:time
+
+
 
     return search_config
   end

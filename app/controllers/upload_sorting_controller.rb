@@ -3,6 +3,7 @@ class UploadSortingController < ApplicationController
   def new
 
     @document=Document.new
+    @document.created_at=Date.today.strftime("%d.%m.%Y")
 
     respond_to do |format|
       format.html { @pages=Page.uploaded_pages } # new.html.erb
@@ -40,7 +41,7 @@ class UploadSortingController < ApplicationController
     end
 
     ## backup new document to Amazon
-    BackupWorker.perform_async(@document.id,DRBConnector.instance.processor)
+    BackupWorker.perform_async(@document.id)
     render action: "new"
 
   end

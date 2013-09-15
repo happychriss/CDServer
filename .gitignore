@@ -25,6 +25,7 @@ config/s3.yml
 config/private_pub.yml
 config/converter.yml
 batch/DRbProcessor_remote.rb.pid
+batch/DRbProcessorRemoveServer.rb.pid
 
 ## generic files to ignore
 *~

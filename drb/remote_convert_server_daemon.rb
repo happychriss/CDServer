@@ -36,8 +36,12 @@ class Processor
         command="abbyyocr -fm -rl German GermanNewSpelling  -if '#{f.path}' -f PDF -tet UTF8 -of '#{f.path}.conv.txt'"
         res = %x[#{command}]
 
-        result_txt = read_txt_from_conv_txt(f)
-        result_pdf=File.read(f) # original file
+
+        result_txt = read_txt_from_conv_txt(f.untaint)
+
+        puts "Read original file..."
+        result_pdf=File.read(f.path.untaint) # original file
+        puts "ok"
 
       elsif [:JPG, :JPG_SCANNED].include?(mime_type) then
 
@@ -50,7 +54,8 @@ class Processor
         puts "Start abbyyocr..."
         command="abbyyocr -rl German GermanNewSpelling  -if '#{f.path}'  -f PDF -pem ImageOnText -pfpr original -of '#{f.path}.conv'"
         res = %x[#{command}]
-        result_pdf=File.read(f.path+'.conv')
+
+        result_pdf=File.read(f.path.untaint+'.conv')
         puts "ok with res: #{res}"
 
         puts "Start pdftotxt..."
@@ -91,12 +96,13 @@ class Processor
         raise "Unkonw mime -type  *#{mime_type}*"
       end
 
+      puts "Clean-up with: #{f.path+'*'}..."
       #### Cleanup and return
       Dir.glob(f.path+'*').each do |l|
         l.untaint
         File.delete(l)
       end
-
+      puts "ok"
       puts "--------- Completed and  file deleted------------"
       return result_jpg, result_sjpg, result_pdf, result_txt, 'OK'
 

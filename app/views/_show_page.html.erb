@@ -31,7 +31,7 @@
   <% elsif page.folder.cover_ind%>
        *No cover*
       <%end%>
-  <%= "|#{page.created_at.strftime("%d.%m.%y")}|     (#{page.id})" %>
+  <%= "|#{if page.document.nil? then page.created_at.strftime("%d.%m.%y") else page.document.created_at.strftime("%d.%m.%y")end}|     (#{page.id})" %>
   <%= " | File: #{page.original_filename[0..15]}..." if page.source==Page::PAGE_SOURCE_UPLOADED%>
 
 
