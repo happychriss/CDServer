@@ -20,7 +20,11 @@ class DocumentsController < ApplicationController
         @document.update_folder(folder_id) unless folder_id==0
 
       end
-      redirect_to session[:search_results]+"#page_#{@document.pages.first.id}", :notice => "Successfully updated doc." unless session[:search_results].nil?
+      unless session[:search_results].nil?
+            redirect_to session[:search_results]+"#page_#{@document.pages.first.id}", :notice => "Successfully updated doc."
+      else
+        redirect_to  root_url
+        end
     rescue
       raise "ERROR"
     end
@@ -97,6 +101,12 @@ class DocumentsController < ApplicationController
 
     redirect_to edit_document_url(doc.id)
 
+  end
+
+  def delete_documents
+    flash[:notice] = "Deleting documents end of lifecycle triggered"
+    RemoveFromArchiveWorker.perform_async
+    redirect_to :action => 'index'
   end
 
   def search_archive

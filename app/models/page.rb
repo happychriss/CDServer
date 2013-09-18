@@ -275,6 +275,16 @@ class Page < ActiveRecord::Base
     return status
   end
 
+
+  ### determines which source is used for S3 uploads
+  ### for scanned documents this is the PDF
+  ### for uploaded documents this is the ORG, if no PDF is available
+  def extension_for_s3_upload
+    return :pdf if self.source==PAGE_SOURCE_SCANNED
+    return :pdf if self.short_mime_type==:PDF
+    return :original
+  end
+
   ##### mime type is stored in database as long text application/pdf for example
 
   # mime type of stored document

@@ -1,5 +1,5 @@
 require "fileutils"
-require 'sidekiq'
+include Sidekiq::Worker
 
 class RemoveFromArchiveWorker
 
@@ -7,7 +7,9 @@ class RemoveFromArchiveWorker
 
     begin
 
-      docs=Document.where("delete_at > ?", Date.today-1.year)
+      ThinkingSphinx.deltas_enabled = false
+
+      docs=Document.where("delete_at is not null and delete_at < ?", Date.today) ### be carefuls with this line !!!!1
 
       unless docs.count.nil? then
 
@@ -44,5 +46,8 @@ class RemoveFromArchiveWorker
   rescue Exception => e
     Log.write_error('ArchiveClean', 'Delete: ' + '->' +e.message)
     raise
-  end
+  ensure
+    ThinkingSphinx.deltas_enabled = true
+    SphinxIndexWorker.perform_async
+    end
 end

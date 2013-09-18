@@ -20,6 +20,11 @@ class StatusController < ApplicationController
       redirect_to :action => :index
   end
 
+  def trigger_backup
+    BackupWorker.perform_async
+    redirect_to :action => :index
+  end
+
   def try_to_connect
     DRBConnector.instance.connect
     redirect_to :action => :index

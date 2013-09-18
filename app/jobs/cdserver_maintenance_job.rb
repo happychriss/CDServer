@@ -59,7 +59,7 @@ module Clockwork
     SphinxIndexWorker.perform_async
   end
 
-  every(1.month, 'RemoveFromArchiveWorker.perform_async') do
-    RemoveFromArchiveWorker.perform_async
-  end
+ # every(1.month, 'RemoveFromArchiveWorker.perform_async') do
+ #   RemoveFromArchiveWorker.perform_async
+ # end
 end

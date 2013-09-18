@@ -3,7 +3,7 @@
 
 
 <div class="status_frame">
-  <h2>Documents without backup: <%= Page.uploading_status(:no_backup) %></h2>
+  <h2>Documents without backup: <%= Page.uploading_status(:no_backup) %> <%= button_to "Trigger backup now", trigger_backup_path,:method => :get if Page.uploading_status(:no_backup)>0 %></h2>
   <h2>Documents without processing: <%= Page.uploading_status(:not_processed) %></h2>
   </br>
 </div>

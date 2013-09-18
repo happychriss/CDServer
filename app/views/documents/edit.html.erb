@@ -4,7 +4,7 @@
 
     <p>
       Comment:  <%= f.text_field :comment %>
-      <span style="margin-left: 20px"> Created at:  <%= f.datepicker "created_at",:value => @document.created_at.to_s,:dateFormat => "dd.mm.yy", :maxDate => 0 , size:8%></span>
+      <span style="margin-left: 20px"> Created at:  <%= f.datepicker "created_at",:value => @document.created_at.to_s,:dateFormat => "dd.mm.yy",:changeYear => true,:changeMonth => true, :maxDate => 0 , size:8%></span>
       <span style="margin-left:10px">Change Folder for all pages:    <%= select_tag(:folder_id, options_from_collection_for_select(Folder.all, 'id', 'name'), {:include_blank => true}) %> </span>
       <span style="margin-left:10px">
         <%= if @document.delete_at.nil? then

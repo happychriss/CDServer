@@ -19,10 +19,11 @@
       <li><%= link_to "Search", search_path %></li>
       <li><%= link_to  show_link_pages_sorted, new_upload_sorting_path, :id=>'link_sort_count' %></li>
       <li><%= link_to "Upload a File", new_upload_path %></li>
+      <li><%= link_to "Maintain Documents", documents_path%></li>
       <li><%= link_to "(Print Cover)", new_cover_path,:style => 'color:gray'  %></li>
       <li><%= link_to "(Maintain Folders)", folders_path,:style => 'color:gray' %></li>
       <li><%= link_to "(Maintain Tags)", tags_path,:style => 'color:gray' %></li>
-      <li><%= link_to "(Maintain Documents)", documents_path,:style => 'color:gray' %></li>
+
 
        <span style="color: orange; font-size: small; float: right;padding-right: 10px" id='application_status'>
             <%= render(:partial => '/app_status',:locals => {:worker_message =>"hi"})%>

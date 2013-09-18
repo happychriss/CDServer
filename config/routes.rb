@@ -26,10 +26,12 @@ CDServer::Application.routes.draw do
   post 'sort_pages' => 'documents#sort_pages'
   get 'documents/remove_page/:id' => 'documents#remove_page'
   get 'documents/destroy_page' => 'documents#destroy_page'
+  get 'delete_documents' => 'documents#delete_documents'
 
   ## Status Controller
   get 'status/clear' => 'status#clear'
   get 'status/start_remote_worker' => 'status#start_remote_worker'
+  get 'trigger_backup' => 'status#trigger_backup'
   get 'status/try_to_connect' => 'status#try_to_connect'
   get 'search_doc_id' => 'documents#search_doc_id'
   get 'search_page_id' => 'documents#search_page_id'
