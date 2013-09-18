@@ -42,6 +42,7 @@ class BackupWorker
           command = "gpg -q --no-verbose --yes -a -o #{pgp_name} -r " + AWS_S3['gpg_email_address'] + " -e #{source_name}"
           system(command)
 
+          logger.info "### LOAD DAEMON:---Start Uploading page: #{page.id} to S3 #{AWS_S3['aws_s3_bucket']}------------"
           result=AWS::S3::S3Object.store(File.basename(pgp_name), open(pgp_name), AWS_S3['aws_s3_bucket'])
           File.delete(pgp_name);
           page.update_attribute('backup', true)
