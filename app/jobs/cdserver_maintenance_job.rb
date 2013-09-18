@@ -51,11 +51,11 @@ end
 
 
 module Clockwork
-  every(1.week, 'BackupWorker.perform_async') do
+  every(1.week, 'BackupWorker.perform_async', :at => '19:00') do
     DBBackupWorker.perform_async
   end
 
-  every(1.week, 'SphinxIndexWorker.perform_async') do
+  every(1.week, 'SphinxIndexWorker.perform_async', :at => '19:30') do
     SphinxIndexWorker.perform_async
   end
 
