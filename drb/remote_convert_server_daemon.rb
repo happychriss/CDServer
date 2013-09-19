@@ -33,14 +33,14 @@ class Processor
         result_jpg = convert_jpg(f)
 
         puts "Start abbyyocr..."
-        command="abbyyocr -fm -rl German GermanNewSpelling  -if '#{f.path}' -f PDF -tet UTF8 -of '#{f.path}.conv.txt'"
+        command="abbyyocr -fm -rl German GermanNewSpelling  -if '#{f.path}' -tet UTF8 -of '#{f.path}.conv.txt'"
         res = %x[#{command}]
-
 
         result_txt = read_txt_from_conv_txt(f.untaint)
 
         puts "Read original file..."
         result_pdf=File.read(f.path.untaint) # original file
+
         puts "ok"
 
       elsif [:JPG, :JPG_SCANNED].include?(mime_type) then
@@ -100,7 +100,7 @@ class Processor
       #### Cleanup and return
       Dir.glob(f.path+'*').each do |l|
         l.untaint
-        File.delete(l)
+      File.delete(l)
       end
       puts "ok"
       puts "--------- Completed and  file deleted------------"
@@ -120,7 +120,7 @@ class Processor
     result_txt=''
     File.open(f.path+'.conv.txt', 'r') { |l| result_txt=l.read }
     puts "ok"
-    result_txt
+    return result_txt
   end
 
   def convert_jpg(f, source_extension='')
