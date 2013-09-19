@@ -18,7 +18,7 @@ class BackupWorker
       connection= AWS::S3::Base.establish_connection!(:access_key_id => AWS_S3['aws_s3_access_key'], :secret_access_key => AWS_S3['aws_s3_secret_key'])
 
       if document_id.nil? then
-        backup_pages=Page.where("backup = 0 and status=#{Page.UPLOADED_PROCESSED}")
+        backup_pages=Page.where("backup = 0 and status=#{Page::UPLOADED_PROCESSED}")
         logger.info "### LOAD DAEMON:---Start Uploading for pages without backup, count: #{backup_pages.count} pages ------------"
       else
         doc=Document.find(document_id)
@@ -28,7 +28,7 @@ class BackupWorker
 
       backup_pages.each do |page|
 
-        if page.backup==false and page.status==Page.UPLOADED_PROCESSED then
+        if page.backup==false and page.status==Page::UPLOADED_PROCESSED then
 
           push_status_update ## send status-update to application main page via private_pub gem, fayes,
 
