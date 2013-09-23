@@ -154,6 +154,9 @@ end
 
 # ***************************************************************************************************
 
+#DRb.start_service("druby://0.0.0.0:8999", Processor.new) # replace localhost with 0.0.0.0 to allow conns from outside
+#DRb.thread.join
+
 Daemons.run_proc("DRbProcessorRemoveServer.rb", options = {:dir_mode => :normal, :ARGV => ARGV, :log_output => true}) do
 
   $SAFE = 1 # disable eval() and friends
