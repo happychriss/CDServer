@@ -11,8 +11,6 @@ class BackupWorker
 
     begin
 
-      ThinkingSphinx.deltas_enabled = false
-
       info_text=''
 
       # create a connection
@@ -31,8 +29,6 @@ class BackupWorker
       backup_pages.each do |page|
 
         if page.backup==false and page.status==Page::UPLOADED_PROCESSED then
-
-          logger.info "###    LOAD DAEMON:---Start Uploading for page #{page.id} "
 
           push_status_update ## send status-update to application main page via private_pub gem, fayes,
 
@@ -63,9 +59,6 @@ class BackupWorker
     Log.write_error('BackupWorker', info_text + '->' +e.message)
     push_status_update ## send status-update to application main page via private_pub gem, fayes,
     raise
-  ensure
-    ThinkingSphinx.deltas_enabled = true
-    SphinxIndexWorker.perform_async
   end
 
 
