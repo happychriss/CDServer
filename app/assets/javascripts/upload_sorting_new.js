@@ -1,3 +1,31 @@
+this.Sortable1 = function (){
+    $("li","#sortable1").draggable({
+        placeholder: "spaceholder", //trick not to display any spaceholder
+        cancel: "a.ui-icon", // clicking an icon won't initiate dragging
+        revert: "invalid", // when not dropped, the item will revert back to its initial position
+        containment: "document",
+        cursor: "move",
+        zIndex:10        ,
+        stop: function (ev, ui) {
+            align_pages();
+        }
+    });
+
+
+    $("#sortable1").droppable({
+        accept: "#sortable2 li",
+        activeClass: "ui-state-highlight",
+        drop: function( event, ui ) {
+            a=ui.draggable;
+            a.removeAttr('style');
+            a.removeClass('page_sort').addClass('preview');
+            a.appendTo(this);
+            a.css("z-index", 'auto');
+        }
+    });
+}
+
+
 this.SortPages = function () {
 
 // sorted pages, on mouseover make page top (z-index, store old index), on mouse out reset z-indes
@@ -29,30 +57,6 @@ this.SortPages = function () {
     });
 
 
-    $("li","#sortable1").draggable({
-        placeholder: "spaceholder", //trick not to display any spaceholder
-        cancel: "a.ui-icon", // clicking an icon won't initiate dragging
-        revert: "invalid", // when not dropped, the item will revert back to its initial position
-        containment: "document",
-        cursor: "move",
-        zIndex:10        ,
-        stop: function (ev, ui) {
-            align_pages();
-        }
-    });
-
-
-    $("#sortable1").droppable({
-        accept: "#sortable2 li",
-        activeClass: "ui-state-highlight",
-        drop: function( event, ui ) {
-            a=ui.draggable;
-            a.removeAttr('style');
-            a.removeClass('page_sort').addClass('preview');
-            a.appendTo(this);
-            a.css("z-index", 'auto');
-        }
-    });
 
     $("#sortable2").droppable({
         drop: function (ev, ui) {
@@ -111,11 +115,22 @@ function align_pages() {
 
 }
 
+this.AddScannerSpinner = function () {
+
+$('#scan_menu_link').bind('ajax:beforeSend', function() {
+    $('#scan_menu_spinner').show();
+});
+
+}
+
+
 //****************************************************************************************
 
 
 //****************************************************************************************
 
 $(document).ready(function () {
+    Sortable1();
     SortPages();
+    AddScannerSpinner();
 });

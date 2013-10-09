@@ -1,0 +1,14 @@
+<div class="input_area">
+  <%= form_tag start_scanner_path, :remote => true do %>
+      <%= select_tag(:scanner_name, options_for_select(@scanner_device_list), {:include_blank => false}) %>
+      Color: <%= check_box_tag(:color) %>
+      <%= submit_tag("Scann", :id => :scann_button) %>
+      <span id="scanner_status" style="background: gray; margin-left: 30px;">Status: No Message</span>
+      <%= image_tag('small_spinner2.gif', :style => 'display:none;float:right', :id => 'scann_working_spinner') %>
+  <% end %>
+
+
+</div>
+
+
+

@@ -46,9 +46,10 @@ class RemoteConvertWorker
 
         ### REMOTE CALL via DRB - the server can run on any server: distributed ruby
 
-        logger.info "start remote call to DRB"
+        logger.info "start remote call to DRB Converter: #{DRBConverter}"
 
-        result_jpg, result_sjpg, result_pdf, result_txt, result_status=DRBConnector.instance.processor.converter(scanned_jpg, page.orig_short_mime_type)
+        result_jpg, result_sjpg, result_pdf, result_txt, result_status=DRBConverter.instance.processor.run_conversion(scanned_jpg, page.orig_short_mime_type)
+
         logger.info "complete remote call to DRB"
 
         if result_status !='OK' then

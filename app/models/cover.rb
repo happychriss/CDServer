@@ -1,7 +1,7 @@
 class Cover < ActiveRecord::Base
 
   attr_accessible :folder_id
-  has_many :pages
+  has_many :documents
   belongs_to :folder
 
   before_destroy :update_pages
@@ -31,7 +31,7 @@ class Cover < ActiveRecord::Base
 
     y_max_pics=BOTTOM_SPACE ##y=0 is bottom of page
 
-    pages=self.pages.order('id asc')
+    pages=Page.per_cover(self.id).order('id asc')
 
     my_pdf=Prawn::Document.generate(tmp_file, :page_size => 'A4') do |pdf|
 
@@ -83,33 +83,35 @@ class Cover < ActiveRecord::Base
   end
 
 
-  def self.new_with_pages_from_folder(folder_id)
+
+  def self.new_for_folder(folder_id)
+
+    f=Folder.find(folder_id)
+    retun nil unless f.cover_ind?
 
     cover=nil
 
-    pages_no_cover=Page.pages_no_cover(folder_id)
+    self.transaction do
 
-    if pages_no_cover.count>0
-      self.transaction do
-        self.connection.execute("SET @fid_count = 0;") #http://stackoverflow.com/questions/6412186/rails-using-sql-variables-in-find-by-sql
-        cover = Cover.new
-        cover.folder_id=folder_id
-        cover.counter=(Cover.where(:folder_id => folder_id).maximum('counter').to_i)+1
-        cover.save!
-        pages_no_cover.update_all "cover_id = #{cover.id},fid=(@fid_count:= @fid_count+ 1)", nil, :order => 'id asc'
-      end
+      # Create new cover
+      cover = Cover.new
+      cover.folder_id=folder_id
+      cover.counter=(Cover.where(:folder_id => folder_id).maximum('counter').to_i)+1
+      cover.save!
+
+      # update documents (update, condition)
+      Document.update_all("cover_id = #{cover.id}", "folder_id = #{folder_id} and cover_id is null")
+
+      # up pages
+      self.connection.execute("SET @fid_count = 0;") #http://stackoverflow.com/questions/6412186/rails-using-sql-variables-in-find-by-sql
+      Page.per_folder(folder_id).update_all "fid=(@fid_count:= @fid_count+ 1)", nil, :order => 'id asc'
+
     end
+
     return cover
   end
 
   private
-
-
-### This counts per folder
-
-
-
-
 
 
 ### remove cover from all pages

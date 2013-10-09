@@ -31,12 +31,27 @@ class Page < ActiveRecord::Base
                    'application/vnd.oasis.opendocument.spreadsheet' => :ODF_CALC
   }
 
-  attr_accessible :content, :document_id, :original_filename, :position, :source, :folder_id, :upload_file, :status, :mime_type, :preview
+  attr_accessible :content, :document_id, :original_filename, :position, :source, :upload_file, :status, :mime_type, :preview
   attr_accessor :upload_file
 
   belongs_to :document
-  belongs_to :folder
-  belongs_to :cover
+
+
+  ## all pages per folder
+  scope :per_folder, lambda { |fid|
+    joins("LEFT OUTER JOIN `documents` ON `documents`.`id` = `pages`.`document_id`").joins("LEFT OUTER JOIN folders ON folders.id = documents.folder_id").where("documents.folder_id=#{fid}")
+  }
+
+  ## all pages without  cover
+  scope :per_folder_no_cover, lambda { |fid|
+    joins(:document).where("cover_id is null and folder_id=#{fid}")
+  }
+
+  ## all pages per cover
+  scope :per_cover, lambda { |cid|
+    joins("LEFT OUTER JOIN `documents` ON `documents`.`id` = `pages`.`document_id`").joins("LEFT OUTER JOIN covers ON covers.id = documents.cover_id").where("documents.cover_id=#{cid}")
+  }
+
 
   ### this provides a lit of all pages belonging to a folder without having a cover page printed
 
@@ -124,13 +139,22 @@ class Page < ActiveRecord::Base
 
   ########################################################################################################
 
+  def folder
+    return nil if self.document.nil?
+    return self.document.folder
+  end
+
+  def cover
+    return nil if self.document.nil?
+    return self.document.cover
+  end
+
+
   def has_document?
     not self.document.nil?
   end
 
   ## to read PDF and so on as symbols
-
-
 
 
   def self.uploading_status(mode)
@@ -158,14 +182,6 @@ class Page < ActiveRecord::Base
   def self.for_batch_conversion
     self.where("status < #{Page::UPLOADED_PROCESSED}").select('id').map {|x| x.id}
   end
-
-  def self.pages_no_cover(folder_id)
-    pages=Array.new
-    folder=Folder.find(folder_id)
-    pages=folder.pages.where('cover_id is null') if folder.cover_ind
-    return pages
-  end
-
 
   def destroy_with_file
 
@@ -214,7 +230,7 @@ class Page < ActiveRecord::Base
     old_document=self.document
 
     Page.transaction do
-      doc=Document.new(:status => Document::DOCUMENT_FROM_PAGE_REMOVED, :page_count => 1)
+      doc=Document.new(:status => Document::DOCUMENT_FROM_PAGE_REMOVED, :page_count => 1, :folder_id => old_document.folder_id)
       doc.save!
       self.document_id=doc.id
       self.position=0
@@ -264,12 +280,12 @@ class Page < ActiveRecord::Base
     status=''
     if self.source==Page::PAGE_SOURCE_MIGRATED
       status= "* Migrated Document stored in FID #{self.fid} *"
-    elsif self.cover.nil? and self.folder.cover_ind? then
+    elsif self.document.nil? or (self.document.cover.nil? and self.document.folder.cover_ind?) then
       status= 'No cover created yet'
-    elsif not(self.folder.cover_ind?)
+    elsif not(self.document.folder.cover_ind?)
       status= 'Document is only stored electronically'
     else
-      status= "Cover ##{self.cover.counter} created on #{self.cover.created_at.strftime "%B %Y"}"
+      status= "Cover ##{self.document.cover.counter} created on #{self.document.cover.created_at.strftime "%B %Y"}"
     end
     status='| '+ status unless status==''
     return status

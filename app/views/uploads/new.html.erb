@@ -4,8 +4,6 @@
 <div class="input_area">
   <%= form_for :file_upload, :url => {:action => 'create'}, :html => {:multipart => true} do |f| %>
       <%= f.file_field :my_file, :accept => 'text/csv' %></br></br>
-      <%= f.select("folder_id", Folder.all.collect { |p| [p.name, p.id] }, {:include_blank => false}) %></br></br>
       <%= f.submit "Upload" %>
-
   <% end %>
 </div>

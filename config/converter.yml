@@ -1,17 +1,20 @@
 # converter is running on server PC, not on qnas, qnas connection is used as a backup
 
 development:
+  remote_port_converter: 8999
+  remote_port_scanner: 8998
   remote_host: 'donald'
-  remote_port: 8999
 
 test:
+  remote_port_converter: 8999
+  remote_port_scanner: 8998
   remote_host: 'does not exists'
-  remote_port: 8999
+
 
 production:
+  remote_port_converter: 8999
+  remote_port_scanner: 8998
   remote_host: '192.168.1.16'
-  remote_port: 8999
-
 
 
 

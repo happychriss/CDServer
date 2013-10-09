@@ -13,13 +13,9 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
 
     begin
-      Document.transaction do
+
         @document.update_attributes(params[:document])
 
-        folder_id=params[:folder_id].to_i
-        @document.update_folder(folder_id) unless folder_id==0
-
-      end
       unless session[:search_results].nil?
             redirect_to session[:search_results]+"#page_#{@document.pages.first.id}", :notice => "Successfully updated doc."
       else
@@ -35,7 +31,6 @@ class DocumentsController < ApplicationController
   def destroy_page
     @page = Page.find(params[:id])
     @page.destroy_with_file
-
 
     respond_to do |format|
       format.html { redirect_to search_url }

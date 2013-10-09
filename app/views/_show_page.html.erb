@@ -28,9 +28,11 @@
       <%= "| Migration FID:#{page.fid}" %>
   <% elsif not page.cover.nil?%>
       <%= "| Cover:#{page.cover.counter} * #{page.fid}" %>
-  <% elsif page.folder.cover_ind%>
+  <% elsif not page.folder.nil? and page.folder.cover_ind%>
        *No cover*
-      <%end%>
+   <%end%>
+
+
   <%= "|#{if page.document.nil? then page.created_at.strftime("%d.%m.%y") else page.document.created_at.strftime("%d.%m.%y")end}|     (#{page.id})" %>
   <%= " | File: #{page.original_filename[0..15]}..." if page.source==Page::PAGE_SOURCE_UPLOADED%>
 

@@ -27,11 +27,6 @@ class UploadSortingController < ApplicationController
         end
 
 
-        folder_id=params[:folder_id].to_i
-        @document.update_folder(folder_id)unless folder_id==0
-
-
-
         Log.write_status('ServerCreateDoc', "Created document with #{@document.reload.page_count} pages!")
       rescue
         Log.write_error('ServerCreateDoc', "ERROR creating document: #{@document.errors.full_messages }!")

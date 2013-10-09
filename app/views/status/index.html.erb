@@ -10,7 +10,7 @@
 
 <div class="status_frame">
   <h2>Documents not converted: <%= Page.uploading_status(:not_converted) %></h2>
-  <% if DRBConnector.instance.connected? then %>
+  <% if DRBConverter.instance.connected? then %>
       <h2>Connected to remote worker!</h2>
       <%= button_to "Trigger conversion now ", status_start_remote_worker_path, :method => :get %>
   <% else %>

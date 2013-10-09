@@ -2,9 +2,11 @@ class Document < ActiveRecord::Base
 
   require 'tempfile'
 
-  attr_accessible :comment, :status, :keywords, :keyword_list, :page_count,:pages_attributes, :delete_at, :no_delete, :created_at
+  attr_accessible :comment, :status, :keywords, :keyword_list, :page_count,:pages_attributes, :delete_at, :no_delete, :created_at, :cover_id, :folder_id
   has_many :pages, :order => :position, :dependent => :destroy
   belongs_to :folder
+  belongs_to :cover
+
   accepts_nested_attributes_for :pages, :allow_destroy => true
   acts_as_taggable_on :keywords
 
@@ -14,6 +16,7 @@ class Document < ActiveRecord::Base
   before_update :update_status_new_document
   before_save :update_expiration_date
   before_destroy :check_no_delete
+
 
   #### Status
   DOCUMENT=0 ##document was created based on an uploaded document
@@ -44,11 +47,6 @@ class Document < ActiveRecord::Base
 
   end
 
-
-  ### update all pages with the same folder
-  def update_folder(folder_id)
-    self.pages.update_all :folder_id=>folder_id
-  end
 
   def check_no_delete
     if self.no_delete?

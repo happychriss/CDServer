@@ -1,5 +1,10 @@
+require 'fileutils'
+require 'Pusher'
+
+
 class UploadsController < ApplicationController
-  require 'fileutils'
+
+  include Pusher
 
   def new
 
@@ -25,7 +30,6 @@ class UploadsController < ApplicationController
     page=Page.new(
         :original_filename => upload_file.original_filename,
         :source => Page::PAGE_SOURCE_UPLOADED,
-        :folder_id => params[:file_upload][:folder_id],
         :mime_type => upload_file.content_type)
 
     page.save!
@@ -35,7 +39,7 @@ class UploadsController < ApplicationController
     FileUtils.chmod "go=rr", page.path(:original)
 
     # Background: create smaller images and pdf text
-    if DRBConnector.instance.connected? then
+    if DRBConverter.instance.connected? then
 #      rm=RemoteConvertWorker.new #direct calling
 #      rm.perform([page.id]) #direct calling
       RemoteConvertWorker.perform_async([page.id])
@@ -54,37 +58,33 @@ class UploadsController < ApplicationController
     @page.original_filename=@page.upload_file.original_filename
     @page.position=0
     @page.source=Page::PAGE_SOURCE_SCANNED
+    @page.preview=true
 
-    if @page.save
+    @page.save!
 
-      ## Copy to docstore and update DB -- will be .scanned.jpg
-      tmp = params[:page][:upload_file].tempfile
-      FileUtils.cp tmp.path, @page.path(:original)
-      FileUtils.chmod "go=rr", @page.path(:original) #happens only on qnas, set group and others to read, otherwise nginx fails
+    ## Copy to docstore and update DB -- will be .scanned.jpg
+    tmp = params[:page][:upload_file].tempfile
+    FileUtils.cp tmp.path, @page.path(:original)
+    FileUtils.chmod "go=rr", @page.path(:original) #happens only on qnas, set group and others to read, otherwise nginx fails
 
-      ## just if provided in addition, we are happy, will be _s.jpg
-      if  not params[:small_upload_file].nil? then
-        tmp_small = params[:small_upload_file].tempfile
-        FileUtils.cp tmp_small.path, @page.path(:s_jpg)
-        FileUtils.chmod "go=rr", @page.path(:s_jpg)
-      end
-
-      ## Background: create smaller images and pdf text
-
-      if DRBConnector.instance.connected? then
-        RemoteConvertWorker.perform_async([@page.id])
-      else
-        @page.update_status_preview(Page::UPLOADED_NOT_PROCESSED)
-      end
-
-      respond_to do |format|
-        format.html { redirect_to @page, notice: 'Upload was successfully created.' }
-        format.json { render :nothing => true }
-      end
-    else
-      format.html { render action: "new" }
-      format.json { render json: @page.errors, status: :unprocessable_entity }
+    ## just if provided in addition, we are happy, will be _s.jpg
+    if  not params[:small_upload_file].nil? then
+      tmp_small = params[:small_upload_file].tempfile
+      FileUtils.cp tmp_small.path, @page.path(:s_jpg)
+      FileUtils.chmod "go=rr", @page.path(:s_jpg)
     end
+
+    ## Background: create smaller images and pdf text
+
+    if DRBConverter.instance.connected? then
+      RemoteConvertWorker.perform_async([@page.id])
+    else
+      @page.update_status_preview(Page::UPLOADED_NOT_PROCESSED)
+    end
+
+    ## this triggers the pusher to update the page with new uploaded data
+    render('create_from_client_jpg', :handlers => [:erb], :formats => [:js])
+
   end
 
 

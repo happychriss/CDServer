@@ -1,0 +1,2 @@
+module DrbScannersHelper
+end
