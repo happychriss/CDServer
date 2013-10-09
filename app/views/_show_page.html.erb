@@ -2,7 +2,7 @@
 <!-- http://railsonedge.blogspot.de/2008/04/dry-up-your-views-with-layouts-for-your.html-->
 
 <% if page.status == Page::UPLOADED_PROCESSING then %>
-    <%= image_tag('upload.gif', :id => page.id, :bigjpg => page.short_path(:jpg), :class => 'clickzoom', :preview_path=>page.short_path(:s_jpg)) %>
+    <%= image_tag('upload_no_spinner.gif', :id => page.id, :bigjpg => page.short_path(:jpg), :class => 'clickzoom', :preview_path=>page.short_path(:s_jpg)) %>
 <% elsif not page.preview? %>
     <%= image_tag('no_preview.jpg', :id => page.id, :bigjpg => page.short_path(:jpg), :class => 'clickzoom', :preview_path=>page.short_path(:s_jpg)) %>
 <% else %>
@@ -34,7 +34,7 @@
 
 
   <%= "|#{if page.document.nil? then page.created_at.strftime("%d.%m.%y") else page.document.created_at.strftime("%d.%m.%y")end}|     (#{page.id})" %>
-  <%= " | File: #{page.original_filename[0..15]}..." if page.source==Page::PAGE_SOURCE_UPLOADED%>
+  <%= " | File: #{page.original_filename[0..13]}..." if page.source==Page::PAGE_SOURCE_UPLOADED%>
 
 
   <div style="padding-right: 5px;">

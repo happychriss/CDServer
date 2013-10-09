@@ -5,7 +5,7 @@ class DRBConnector
   def initialize
     @processor=0
     @connected=false
-    @remote_drb_available=true #### set by DRB Daemon on client when active via status controller xxxxx
+    @remote_drb_available=false #### set by DRB Daemon on client when active via status controller xxxxx
   end
 
   def set_uri(uri)
