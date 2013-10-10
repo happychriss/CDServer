@@ -69,9 +69,15 @@ class CoversController < ApplicationController
   ############# non standard action
 
   def show_cover_pages
-    @folder=Folder.find(params[:id])
-    @page_count=Page.per_folder_no_cover(@folder.id).count
-    @pages=Page.per_folder_no_cover(@folder.id).limit(20)
+
+    f=params[:id]
+    unless f.nil?
+
+      @folder=Folder.find(params[:id])
+
+      @page_count=Page.per_folder_no_cover(@folder.id).count
+      @pages=Page.per_folder_no_cover(@folder.id).limit(20)
+    end
 
   end
 
