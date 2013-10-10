@@ -108,7 +108,7 @@ class Cover < ActiveRecord::Base
 
 
         update_pages=pages_no_cover.collect { |p| p.id }.join(",")
-        max_fid=Page.per_folder_with_cover(2).order('fid desc').first.fid
+        max_fid=Page.per_folder_with_cover(folder_id).order('fid desc').first.fid
 
         self.connection.execute("SET @fid_count = #{max_fid};") #http://stackoverflow.com/questions/6412186/rails-using-sql-variables-in-find-by-sql
         Page.update_all "org_folder_id=#{folder_id},org_cover_id=#{cover.id},fid=(@fid_count:= @fid_count+ 1)", "id in (#{update_pages})", :order => 'id asc'
