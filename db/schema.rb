@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131001191907) do
+ActiveRecord::Schema.define(:version => 20131010090651) do
 
   create_table "covers", :force => true do |t|
     t.integer  "folder_id"
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(:version => 20131001191907) do
   end
 
   create_table "pages", :force => true do |t|
-    t.integer  "folder_id",                            :null => false
+    t.integer  "org_folder_id",                        :null => false
     t.datetime "created_at",                           :null => false
     t.datetime "updated_at",                           :null => false
     t.string   "original_filename"
@@ -62,7 +62,7 @@ ActiveRecord::Schema.define(:version => 20131001191907) do
     t.integer  "status",            :default => 0,     :null => false
     t.boolean  "delta",             :default => true,  :null => false
     t.boolean  "backup",            :default => false, :null => false
-    t.integer  "cover_id"
+    t.integer  "org_cover_id"
     t.integer  "fid"
     t.string   "mime_type"
     t.boolean  "preview",           :default => false

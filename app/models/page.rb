@@ -35,17 +35,25 @@ class Page < ActiveRecord::Base
   attr_accessor :upload_file
 
   belongs_to :document
+  belongs_to :org_folder , :class_name => 'Folder'
+  belongs_to :org_cover , :class_name => 'Cover'
+
 
 
   ## all pages per folder
-  scope :per_folder, lambda { |fid|
-    joins("LEFT OUTER JOIN `documents` ON `documents`.`id` = `pages`.`document_id`").joins("LEFT OUTER JOIN folders ON folders.id = documents.folder_id").where("documents.folder_id=#{fid}")
-  }
+  #scope :per_folder, lambda { |fid|
+  #  joins("LEFT OUTER JOIN `documents` ON `documents`.`id` = `pages`.`document_id`").joins("LEFT OUTER JOIN folders ON folders.id = documents.folder_id").where("documents.folder_id=#{fid}")
+ # }
 
   ## all pages without  cover
   scope :per_folder_no_cover, lambda { |fid|
-    joins(:document).where("cover_id is null and folder_id=#{fid}")
+    joins(:document).where("cover_id is null and folder_id=#{fid} and pages.status=#{Page::UPLOADED_PROCESSED}")
   }
+
+  scope :per_folder_with_cover, lambda { |fid|
+    joins(:document).where("cover_id is not null and folder_id=#{fid} and pages.status=#{Page::UPLOADED_PROCESSED}")
+  }
+
 
   ## all pages per cover
   scope :per_cover, lambda { |cid|
@@ -141,11 +149,13 @@ class Page < ActiveRecord::Base
 
   def folder
     return nil if self.document.nil?
+    return self.org_folder unless self.org_folder_id.nil? or self.org_folder_id==0  ## we have an orginal cover_id, normally for scanned documents
     return self.document.folder
   end
 
   def cover
     return nil if self.document.nil?
+    return self.org_cover unless self.org_cover_id.nil? ## we have an orginal cover_id, normally for scanned documents
     return self.document.cover
   end
 
@@ -155,7 +165,6 @@ class Page < ActiveRecord::Base
   end
 
   ## to read PDF and so on as symbols
-
 
   def self.uploading_status(mode)
     result=case mode
@@ -285,7 +294,7 @@ class Page < ActiveRecord::Base
     elsif not(self.document.folder.cover_ind?)
       status= 'Document is only stored electronically'
     else
-      status= "Cover ##{self.document.cover.counter} created on #{self.document.cover.created_at.strftime "%B %Y"}"
+      status= "Cover ##{self.document.cover.counter} in #{self.document.cover.created_at.strftime "%B %Y"}"
     end
     status='| '+ status unless status==''
     return status

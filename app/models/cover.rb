@@ -99,12 +99,15 @@ class Cover < ActiveRecord::Base
       cover.counter=(Cover.where(:folder_id => folder_id).maximum('counter').to_i)+1
       cover.save!
 
+      # up pages
+      update_pages=Page.per_folder_no_cover(folder_id).all.collect{|p|p.id}.join(",")
+      max_fid=Page.per_folder_with_cover(2).order('fid desc').first.fid
+
+      self.connection.execute("SET @fid_count = #{max_fid};") #http://stackoverflow.com/questions/6412186/rails-using-sql-variables-in-find-by-sql
+      Page.update_all "org_folder_id=#{folder_id},org_cover_id=#{cover.id},fid=(@fid_count:= @fid_count+ 1)", "id in (#{update_pages})", :order => 'id asc'
+
       # update documents (update, condition)
       Document.update_all("cover_id = #{cover.id}", "folder_id = #{folder_id} and cover_id is null")
-
-      # up pages
-      self.connection.execute("SET @fid_count = 0;") #http://stackoverflow.com/questions/6412186/rails-using-sql-variables-in-find-by-sql
-      Page.per_folder(folder_id).update_all "fid=(@fid_count:= @fid_count+ 1)", nil, :order => 'id asc'
 
     end
 

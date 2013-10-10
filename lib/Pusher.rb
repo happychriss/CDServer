@@ -3,6 +3,7 @@ module Pusher
   def push_status_update
     message= render_anywhere('/app_status')
     PrivatePub.publish_to("/app_status", message)
+    puts "*********: Remote Status: #{DRBConverter.instance.remote_drb_available}"
   end
 
   def push_converted_page(page)
@@ -16,7 +17,7 @@ module Pusher
   def render_anywhere(partial, locals= {}, assigns = {})
     view = ActionView::Base.new(ActionController::Base.view_paths, assigns)
     view.extend ApplicationHelper
-    view.render(:partial => partial, :locals => locals, :formats => [:erb])
+    view.render(:partial => partial, :locals => locals, :formats => [:js], :handlers => [:erb])
   end
 
 end

@@ -13,6 +13,8 @@ class LocalConvertWorker
 
   def perform(page_id)
 
+    DRBConverter.instance.remote_drb_available=false ##this is used in context of push_status_update
+
     page=Page.find(page_id)
 
     logger.info "LocalConvertWorker called for  #{page.path(:original)} with mime_type #{page.mime_type}!"

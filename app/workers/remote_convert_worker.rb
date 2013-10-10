@@ -28,6 +28,8 @@ class RemoteConvertWorker
 
     begin
 
+      DRBConverter.instance.remote_drb_available=true ##this is used in context of push_status_update
+
       logger.info "RemoteConvertWorker called for  #{page_ids.count} pages!"
 
       page_ids.each do |page_id|

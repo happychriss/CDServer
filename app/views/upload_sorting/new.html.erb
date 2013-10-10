@@ -40,7 +40,7 @@
           <div class="input_area">
             <p>
               Comment:  <%= f.text_field :comment, size: 40 %>
-              <span style="margin-left: 20px"> Created at:  <%= f.datepicker "created_at", :dateFormat => "dd.mm.yy", :changeYear => true, :changeMonth => true, :maxDate => 0, size: 8 %></span>
+              <span style="margin-left: 20px"> Created:  <%= f.datepicker "created_at", :dateFormat => "dd.mm.yy", :changeYear => true, :changeMonth => true, :maxDate => 0, size: 8 %></span>
             </p>
 
             <%= render :partial => '/keywords', :locals => {:current_keywords => @document.keyword_ids} %>
