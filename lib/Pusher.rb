@@ -3,7 +3,7 @@ module Pusher
   def push_status_update
     message= render_anywhere('/app_status')
     PrivatePub.publish_to("/app_status", message)
-    puts "*********: Remote Status: #{DRBConverter.instance.remote_drb_available}"
+    puts "*********: Remote Status: #{DaemonConverter.instance.connected?}"
   end
 
   def push_converted_page(page)

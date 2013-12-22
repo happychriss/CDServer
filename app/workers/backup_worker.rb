@@ -32,7 +32,7 @@ class BackupWorker
 
           push_status_update ## send status-update to application main page via private_pub gem, fayes,
 
-          source_name=page.path(page.extension_for_s3_upload)## PDF or orginal
+          source_name=page.path(:org)
           pgp_name=File.join(Dir.tmpdir, page.file_name(:gpg))
 
           ####### Debugging

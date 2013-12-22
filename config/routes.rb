@@ -8,10 +8,15 @@ CDServer::Application.routes.draw do
   get 'show_cover_pages/(:id)' => 'covers#show_cover_pages'
 
   ### Upload from Client
-  post 'upload_jpg' => 'uploads#create_from_client_jpg',:as => :upload_jpg
+  post 'create_from_scanner_jpg' => 'uploads#create_from_scanner_jpg', :as => :create_from_scanner_jpg
+  post 'create_from_upload' => 'uploads#create_from_upload'
+  post 'upload_mobile' => 'uploads#create_from_mobile_jpg',:as => :upload_mobile
+
+  get 'cd_server_status_for_mobile' => 'uploads#cd_server_status_for_mobile',:as => :cd_server_status_for_mobile
+
 
   ## Search Controller, non HABTM
-  match 'pdf/:id' => 'search#show_pdf', :as => :pdf
+  match 'pdf/:id' => 'search#show_pdf_document', :as => :pdf_document
   match 'rtf/:id' => 'search#show_rtf', :as => :rtf
   match 'original/:id' => 'search#show_original', :as => :original
 

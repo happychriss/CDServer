@@ -10,8 +10,7 @@ class DrbScannersController < ApplicationController
 
   #### scanner to list devices - called via remote link
   def scan_info
-    @scanner_available=DRBScanner.instance.scanner_available?
-    @scanner_device_list=DRBScanner.instance.devices if @scanner_available
+    @scanner_device_list=DaemonScanner.instance.connected_devices
     respond_to(:js) #scan_info.js.erb
   end
 
@@ -26,18 +25,18 @@ class DrbScannersController < ApplicationController
 
   def start_scanner
 
-    DRBScanner.instance.color=!params[:color].nil?
-    DRBScanner.instance.current_device=params[:scanner_name]
+    DaemonScanner.instance.color=!params[:color].nil?
+    DaemonScanner.instance.current_device=params[:scanner_name]
 
     if (false) then
       rm=ScannerWorker.new #direct calling
 
       hash=Hash.new
-      DRBScanner.instance.instance_variables.each { |var| hash[var.to_s.delete("@")] = DRBScanner.instance.instance_variable_get(var) }
+      DaemonScanner.instance.instance_variables.each { |var| hash[var.to_s.delete("@")] = DaemonScanner.instance.instance_variable_get(var) }
 
       rm.perform(hash) #direct calling ##attributes to get a hash
     else
-      ScannerWorker.perform_async(DRBScanner.instance)
+      ScannerWorker.perform_async(DaemonScanner.instance)
     end
 
     respond_to(:js)

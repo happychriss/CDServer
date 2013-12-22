@@ -14,7 +14,7 @@ class ScannerWorker
     begin
     puts "** Scanner for device #{scanner_hash['current_device']} called"
 
-    res=DRBScanner.instance.processor.scanner_start_scann(scanner_hash['current_device'],scanner_hash['color'])
+    res=DaemonScanner.instance.processor.scanner_start_scann(scanner_hash['current_device'],scanner_hash['color'])
 
     puts "** Scanner for device #{scanner_hash['current_device']} completed with res: #{res}"
 

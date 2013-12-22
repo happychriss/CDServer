@@ -2,6 +2,8 @@ class Page < ActiveRecord::Base
 
   ## adds function short_path and path to page
   require 'FileSystem'
+  require 'aws/s3'
+
   include FileSystem
 
   #### Page Status flow
@@ -13,6 +15,7 @@ class Page < ActiveRecord::Base
 
   PAGE_SOURCE_SCANNED=0
   PAGE_SOURCE_UPLOADED=1
+  PAGE_SOURCE_MOBILE=2
   PAGE_SOURCE_MIGRATED=99
 
   PAGE_FORMAT_PDF=0
@@ -21,29 +24,35 @@ class Page < ActiveRecord::Base
   PAGE_PREVIEW = 1
   PAGE_NO_PREVIEW = 0
 
+
+  ##
+  PAGE_DEFAULT_SCAN_MIME_TYPE = 'application/pdf'
+  PAGE_DEFAULT_SCAN_MIME_TYPE = 'application/pdf'
+
+
   PAGE_MIME_TYPES={'application/pdf' => :PDF,
                    'application/msword' => :MS_WORD,
                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => :MS_WORD,
                    'application/excel' => :MS_EXCEL,
                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => :MS_EXCEL,
-                   'application/vnd.ms-excel'=> :MS_EXCEL,
+                   'application/vnd.ms-excel' => :MS_EXCEL,
                    'application/vnd.oasis.opendocument.text' => :ODF_WRITER,
-                   'application/vnd.oasis.opendocument.spreadsheet' => :ODF_CALC
+                   'application/vnd.oasis.opendocument.spreadsheet' => :ODF_CALC,
+                   'image/jpeg' => :JPG
   }
 
   attr_accessible :content, :document_id, :original_filename, :position, :source, :upload_file, :status, :mime_type, :preview
   attr_accessor :upload_file
 
   belongs_to :document
-  belongs_to :org_folder , :class_name => 'Folder'
-  belongs_to :org_cover , :class_name => 'Cover'
-
+  belongs_to :org_folder, :class_name => 'Folder'
+  belongs_to :org_cover, :class_name => 'Cover'
 
 
   ## all pages per folder
   #scope :per_folder, lambda { |fid|
   #  joins("LEFT OUTER JOIN `documents` ON `documents`.`id` = `pages`.`document_id`").joins("LEFT OUTER JOIN folders ON folders.id = documents.folder_id").where("documents.folder_id=#{fid}")
- # }
+  # }
 
   ## all pages without  cover
   scope :per_folder_no_cover, lambda { |fid|
@@ -107,7 +116,6 @@ class Page < ActiveRecord::Base
     (search_config.merge!({:group_clause => "document_created_at desc, id DESC"})) if sort_mode==:time
 
 
-
     return search_config
   end
 
@@ -149,7 +157,7 @@ class Page < ActiveRecord::Base
 
   def folder
     return nil if self.document.nil?
-    return self.org_folder unless self.org_folder_id.nil? or self.org_folder_id==0  ## we have an orginal cover_id, normally for scanned documents
+    return self.org_folder unless self.org_folder_id.nil? or self.org_folder_id==0 ## we have an orginal cover_id, normally for scanned documents
     return self.document.folder
   end
 
@@ -189,7 +197,7 @@ class Page < ActiveRecord::Base
   end
 
   def self.for_batch_conversion
-    self.where("status < #{Page::UPLOADED_PROCESSED}").select('id').map {|x| x.id}
+    self.where("status < #{Page::UPLOADED_PROCESSED}").select('id').map { |x| x.id }
   end
 
   def destroy_with_file
@@ -270,17 +278,12 @@ class Page < ActiveRecord::Base
 
   end
 
-  ## called by the worker to add new content
-  def add_content(text_data)
-    self.content=text_data
-    self.save!
-  end
 
-  def update_status_preview(status,preview= {})
-     if preview.nil? then
-        self.update_attributes(:status => status)
-     else
-       self.update_attributes(:status => status,:preview => preview)
+  def update_status_preview(status, preview= {})
+    if preview.nil? then
+      self.update_attributes(:status => status)
+    else
+      self.update_attributes(:status => status, :preview => preview)
     end
   end
 
@@ -291,7 +294,7 @@ class Page < ActiveRecord::Base
       status= "* Migrated Document stored in FID #{self.fid} *"
     elsif self.document.nil? or (self.document.cover.nil? and self.document.folder.cover_ind?) then
       status= 'No cover created yet'
-    elsif not(self.document.folder.cover_ind?)
+    elsif not (self.document.folder.cover_ind?)
       status= 'Document is only stored electronically'
     else
       status= "Cover ##{self.document.cover.counter} in #{self.document.cover.created_at.strftime "%B %Y"}"
@@ -301,31 +304,39 @@ class Page < ActiveRecord::Base
   end
 
 
-  ### determines which source is used for S3 uploads
-  ### for scanned documents this is the PDF
-  ### for uploaded documents this is the ORG, if no PDF is available
-  def extension_for_s3_upload
-    return :pdf if self.source==PAGE_SOURCE_SCANNED
-    return :pdf if self.short_mime_type==:PDF
-    return :original
-  end
-
   ##### mime type is stored in database as long text application/pdf for example
 
-  # mime type of stored document
+  # mime type of original stored document
 
   def short_mime_type
     Page::PAGE_MIME_TYPES[self.mime_type]
   end
 
-  ## mime type of uploaded document
 
-  def orig_short_mime_type
-    if self.source==Page::PAGE_SOURCE_SCANNED then
-      return :JPG_SCANNED
-    else
-      return self.short_mime_type
+  #### updates files system with conversion results and updates database status
+  def update_conversion(result_jpg, result_sjpg, result_orginal, result_txt)
+
+    self.save_file(result_sjpg, :s_jpg) unless result_sjpg.nil? # small preview pic
+    self.save_file(result_jpg, :jpg) unless result_jpg.nil? # medium preview pic
+    self.save_file(result_orginal, :org) unless result_orginal.nil?
+
+    self.status=Page::UPLOADED_PROCESSED
+
+    ### pages scanned as JPG are converted to PDF
+    if self.short_mime_type==:JPG then
+     self.mime_type=PAGE_DEFAULT_SCAN_MIME_TYPE
     end
+
+    if result_sjpg.nil? then
+      self.preview= Page::PAGE_NO_PREVIEW
+    else
+      self.preview= Page::PAGE_PREVIEW
+    end
+
+    self.content=result_txt
+
+    self.save!
+
   end
 
   private

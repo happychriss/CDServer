@@ -1,6 +1,7 @@
 <!-- will be yielded into /pages/show_page -->
-<%= link_to(page.short_mime_type, original_path(page.id)) unless  (page.document.complete_pdf? or page.document_pages_count==1 or page.source==Page::PAGE_SOURCE_SCANNED) %>
-<%= link_to("PDF", pdf_path(page.id))+' |' if  (not page.document.complete_pdf? and page.source==Page::PAGE_SOURCE_SCANNED)  %>
+|
+<%=link_to(page.short_mime_type, original_path(page.id)) %>
+
 <div style="float:right;">
 <%= ( link_to "Delete", {:controller => 'documents', :id=>page.id,:action=>'destroy_page'},
                         {:remote => (page.document_pages_count!=1), :confirm => 'Are you sure?'}) unless page.document.no_delete? %>

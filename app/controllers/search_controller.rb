@@ -42,9 +42,9 @@ end
     @page=Page.find(params[:id])
   end
 
-  def show_pdf
-    @page=Page.find(params[:id])
-    pdf=@page.document.pdf_file
+  def show_pdf_document
+    document=Document.find(params[:id])
+    pdf=document.pdf_file
     send_file(pdf.path, :type => 'application/pdf', :page => '1')
     pdf.close
     return
@@ -52,7 +52,10 @@ end
 
   def show_original
     @page=Page.find(params[:id])
-    send_file(@page.path(:original), :type => @page.mime_type, :page => '1')
+
+    data=File.read(@page.path(:org))
+    send_data( data, :filename => @page.original_filename,:type => @page.mime_type, :page => '1' )
+
     return
   end
 

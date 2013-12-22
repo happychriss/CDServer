@@ -1,12 +1,10 @@
 ## Create small preview image in docstore
 ## called from UploadsController when a page is uploaded
-## source either :scanned_jpg or :pdf
 
 require "fileutils"
 require 'drb'
 require 'sidekiq'
 require 'Pusher'
-
 
 class RemoteConvertWorker
 
@@ -20,6 +18,19 @@ class RemoteConvertWorker
 
   sidekiq_options :retry => false
 
+  ###############################################################################################
+  # allows to start converter locally not via sidekiq if DRB_SIDEKICK is set in initializer for drb
+
+
+  def self.my_perform(page_ids)
+    if DRB_SIDEKICK==true then
+      RemoteConvertWorker.perform_async(page_ids)
+    else
+      rm=RemoteConvertWorker.new #direct calling
+      rm.perform(page_ids) #direct calling
+      end
+
+  end
 
 ###############################################################################################
 # calling remote worker to create small images and PDF OCR. expecting an array of page_ids
@@ -28,7 +39,7 @@ class RemoteConvertWorker
 
     begin
 
-      DRBConverter.instance.remote_drb_available=true ##this is used in context of push_status_update
+      DaemonConverter.instance.connected=true ##this is used in context of push_status_update
 
       logger.info "RemoteConvertWorker called for  #{page_ids.count} pages!"
 
@@ -42,15 +53,15 @@ class RemoteConvertWorker
 
         push_status_update ## send status-update to application main page via private_pub gem, fayes,
 
-        logger.info "Processing scanned file remote: #{page.id} with path: #{page.path(:original)} and mime type #{page.orig_short_mime_type}"
+        logger.info "Processing scanned file remote: #{page.id} with path: #{page.path(:org)} and mime type #{page.short_mime_type}"
 
-        scanned_jpg=File.read(page.path(:original))
+        scanned_jpg=File.read(page.path(:org))
 
         ### REMOTE CALL via DRB - the server can run on any server: distributed ruby
 
-        logger.info "start remote call to DRB Converter: #{DRBConverter}"
+        logger.info "start remote call to DRB Converter: #{DaemonConverter}"
 
-        result_jpg, result_sjpg, result_pdf, result_txt, result_status=DRBConverter.instance.processor.run_conversion(scanned_jpg, page.orig_short_mime_type)
+        result_jpg, result_sjpg, result_orginal, result_txt, result_status=DaemonConverter.instance.processor.run_conversion(scanned_jpg, page.short_mime_type)
 
         logger.info "complete remote call to DRB"
 
@@ -60,16 +71,7 @@ class RemoteConvertWorker
           return
         end
 
-        page.save_file(result_sjpg, :s_jpg)
-        page.save_file(result_jpg, :jpg)
-        page.save_file(result_pdf, :pdf) unless result_pdf.nil?
-        page.add_content(result_txt)
-
-        if result_sjpg.nil? then
-          page.update_status_preview(Page::UPLOADED_PROCESSED,Page::PAGE_NO_PREVIEW)
-        else
-          page.update_status_preview(Page::UPLOADED_PROCESSED,Page::PAGE_PREVIEW)
-        end
+        page.update_conversion(result_jpg, result_sjpg, result_orginal, result_txt)
 
         logger.info "Processing file remote: page_id #{page.id}  completed"
 

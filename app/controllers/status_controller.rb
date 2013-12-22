@@ -23,7 +23,7 @@ class StatusController < ApplicationController
   end
 
   def start_remote_worker
-    RemoteConvertWorker.perform_async(Page.for_batch_conversion)
+    RemoteConvertWorker.my_perform(Page.for_batch_conversion)
     redirect_to :action => :index
   end
 
@@ -33,11 +33,14 @@ class StatusController < ApplicationController
   end
 
   def try_to_connect
-    DRBConverter.instance.connect
+    DaemonConverter.instance.enable_connection(true)
     redirect_to :action => :index
   end
 
   ############################### External calls
+
+
+
 
   ### Called from CDDaemon
   def status_drb
@@ -46,11 +49,10 @@ class StatusController < ApplicationController
 
     if drb_server=='Converter' then
 
-      DRBConverter.instance.remote_drb_available=(running=='true')
+      DaemonConverter.instance.enable_connection(running=='true')
 
-      if DRBConverter.instance.remote_drb_available then
-        DRBConverter.instance.connect # connect and set available = true
-        RemoteConvertWorker.perform_async(Page.for_batch_conversion)
+      if DaemonConverter.instance.connected? then
+#        RemoteConvertWorker.my_perform(Page.for_batch_conversion)
       end
 
       push_status_update
@@ -58,7 +60,7 @@ class StatusController < ApplicationController
     end
 
     if drb_server=='Scanner' then
-      DRBScanner.instance.remote_drb_available=(running=='true')
+      DaemonScanner.instance.enable_connection(running=='true')
     end
 
     render nothing: true

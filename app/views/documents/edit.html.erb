@@ -37,6 +37,10 @@
     <%= f.submit "Update" %>
 <% end %>
 
+<div style="padding-left: 10px; font-size: large">
+<%= link_to("View full PDF Document", pdf_document_path(@document)) if  @document.complete_pdf?  %>
+</div>
+
 <div style="padding-top: 10px">
   <%= render :partial => 'pages_edit', :locals => {:document => @document} %>
 </div>

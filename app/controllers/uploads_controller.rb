@@ -10,8 +10,8 @@ class UploadsController < ApplicationController
 
   end
 
-  #### Upload file directly from CDServer via Upload Dialogue, PDF currently
-  def create
+  #### Upload file directly from CDServer via Upload Dialogue
+  def create_from_upload
 
     if params[:file_upload].nil? or params[:file_upload][:my_file].nil?
       flash[:error] = "No filename entered."
@@ -35,14 +35,12 @@ class UploadsController < ApplicationController
     page.save!
     page.reload
 
-    FileUtils.cp upload_file.tempfile.path, page.path(:original)
-    FileUtils.chmod "go=rr", page.path(:original)
+    FileUtils.cp upload_file.tempfile.path, page.path(:org)
+    FileUtils.chmod "go=rr", page.path(:org)
 
     # Background: create smaller images and pdf text
-    if DRBConverter.instance.connected? then
-#      rm=RemoteConvertWorker.new #direct calling
-#      rm.perform([page.id]) #direct calling
-      RemoteConvertWorker.perform_async([page.id])
+    if DaemonConverter.instance.connected?
+      RemoteConvertWorker.my_perform([page.id])
     else
       LocalConvertWorker.perform_async(page.id)
     end
@@ -52,20 +50,20 @@ class UploadsController < ApplicationController
   end
 
   ### Upload from CDClient (Scanner) - file uploaded as JPG - single pages as jpg
-  def create_from_client_jpg
+  def create_from_scanner_jpg
 
     @page = Page.new(params[:page])
     @page.original_filename=@page.upload_file.original_filename
     @page.position=0
     @page.source=Page::PAGE_SOURCE_SCANNED
+    @page.mime_type='image/jpeg'
     @page.preview=true
-
     @page.save!
 
     ## Copy to docstore and update DB -- will be .scanned.jpg
     tmp = params[:page][:upload_file].tempfile
-    FileUtils.cp tmp.path, @page.path(:original)
-    FileUtils.chmod "go=rr", @page.path(:original) #happens only on qnas, set group and others to read, otherwise nginx fails
+    FileUtils.cp tmp.path, @page.path(:org)
+    FileUtils.chmod "go=rr", @page.path(:org) #happens only on qnas, set group and others to read, otherwise nginx fails
 
     ## just if provided in addition, we are happy, will be _s.jpg
     if  not params[:small_upload_file].nil? then
@@ -76,14 +74,52 @@ class UploadsController < ApplicationController
 
     ## Background: create smaller images and pdf text
 
-    if DRBConverter.instance.connected? then
-      RemoteConvertWorker.perform_async([@page.id])
+    if DaemonConverter.instance.connected? then
+      RemoteConvertWorker.my_perform([@page.id])
     else
       @page.update_status_preview(Page::UPLOADED_NOT_PROCESSED)
     end
 
     ## this triggers the pusher to update the page with new uploaded data
-    render('create_from_client_jpg', :handlers => [:erb], :formats => [:js])
+    render('create_from_scanner_jpg', :handlers => [:erb], :formats => [:js])
+
+  end
+
+
+  ### called from mobile device to check if cdserver is available
+  def cd_server_status_for_mobile
+    render :nothing => true
+  end
+
+
+  ## file will be saved as PDF, not JPG
+  def create_from_mobile_jpg
+
+
+    upload_file=params[:upload_file]
+
+    page=Page.new(
+        :original_filename => File.basename(upload_file.original_filename)+'.pdf',
+        :source => Page::PAGE_SOURCE_MOBILE,
+        :mime_type => 'image/jpeg')
+
+
+    page.save!
+    page.reload
+
+    ## Copy to docstore and update DB -- will be .scanned.jpg
+    tmp = upload_file.tempfile
+    FileUtils.cp tmp.path, page.path(:org)
+    FileUtils.chmod "go=rr", page.path(:org) #happens only on qnas, set group and others to read, otherwise nginx fails
+
+    if DaemonConverter.instance.connected?
+      RemoteConvertWorker.my_perform([page.id])
+    else
+      page.update_status_preview(Page::UPLOADED_NOT_PROCESSED)
+    end
+
+
+    render :nothing => true
 
   end
 

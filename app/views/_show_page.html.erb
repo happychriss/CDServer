@@ -38,9 +38,7 @@
 
 
   <div style="padding-right: 5px;">
-    <%= link_to "RTF", rtf_path(page.id) %> |
-    <%= link_to("PDF", pdf_path(page.id))+' |' if  ((not page.document.nil?) and page.document.complete_pdf?)  %>
-    <%= link_to(page.short_mime_type, original_path(page.id)) +' |' unless (page.document.nil? or page.document_pages_count>1 or page.document.complete_pdf?)  %>
+    <%= link_to "RTF", rtf_path(page.id) %>
     <%= yield %>  <!-- !!!!HERE IS THE YIELD -->
   </div>
 </div>

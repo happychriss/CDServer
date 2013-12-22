@@ -5,8 +5,6 @@ module FileSystem
     new_file_base_name=self.id.to_s
 
     file_name=new_file_base_name + case type
-                                     when :pdf
-                                       '.pdf'
                                      when :jpg
                                        '.jpg'
                                      when :m_jpg
@@ -17,12 +15,11 @@ module FileSystem
                                        '.txt'
                                      when :gpg
                                         '.gpg'
-                                     when :original
+                                     when :org
                                        '.org'
                                      when :all
                                       '*.*'
                                    end
-
     return file_name
 
   end
