@@ -81,7 +81,7 @@ God.watch do |w|
   w.dir           = RAILS_PROJECT_ROOT
 
   w.start         = "bundle exec clockwork ./app/jobs/cdserver_maintenance_job.rb & echo $! > #{PID_DIR}/clockwork.pid"
-  w.stop          = "kill -QUIT `cat #{PID_DIR}/clockwork.pid`"     #not working, may be replaced by https://github.com/fddayan/clockwork/tree/master/bin - clockworkd
+  w.stop          = "kill -QUIT `cat #{PID_DIR}/clockwork.pid`"
   w.keepalive
   w.log           = File.join(RAILS_PROJECT_ROOT, 'log', 'clockwork.log')
   w.behavior(:clean_pid_file)
@@ -111,7 +111,7 @@ God.watch do |w|
   w.interval      = 60.seconds
   w.start         = 'thin start --config ./thin_nginx.yml'
   w.stop          = "thin stop"
-  w.restart	      = "thin restart"
+  w.restart	    = "thin restart"
   w.pid_file      = File.join(RAILS_PROJECT_ROOT,"tmp","pids","thin.pid")
   w.keepalive
 end
@@ -126,8 +126,11 @@ God.watch do |w|
   w.interval      = 60.seconds
   w.env           = {'RAILS_ENV' => "production" }
   w.start         = "rackup private_pub.ru -s thin -E production -P #{RAILS_PROJECT_ROOT}/tmp/pids/private_pub.pid"
+
   w.log           = File.join(RAILS_PROJECT_ROOT, 'log', 'private_pub.log')
   w.pid_file      = "#{RAILS_PROJECT_ROOT}/tmp/pids/private_pub.pid"
+#   w.stop_signal = 'KILL'
   w.keepalive
-#  w.stop_signal = 'KILL' ##not sure why needed
 end
+
+
