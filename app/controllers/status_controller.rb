@@ -52,7 +52,7 @@ class StatusController < ApplicationController
       DaemonConverter.instance.enable_connection(running=='true')
 
       if DaemonConverter.instance.connected? then
-#        RemoteConvertWorker.my_perform(Page.for_batch_conversion)
+        RemoteConvertWorker.my_perform(Page.for_batch_conversion)
       end
 
       push_status_update

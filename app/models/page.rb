@@ -27,8 +27,6 @@ class Page < ActiveRecord::Base
 
   ##
   PAGE_DEFAULT_SCAN_MIME_TYPE = 'application/pdf'
-  PAGE_DEFAULT_SCAN_MIME_TYPE = 'application/pdf'
-
 
   PAGE_MIME_TYPES={'application/pdf' => :PDF,
                    'application/msword' => :MS_WORD,

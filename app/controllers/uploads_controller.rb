@@ -39,7 +39,7 @@ class UploadsController < ApplicationController
     FileUtils.chmod "go=rr", page.path(:org)
 
     # Background: create smaller images and pdf text
-    if DaemonConverter.instance.connected?
+    if DaemonConverter.instance.drb_connected?
       RemoteConvertWorker.my_perform([page.id])
     else
       LocalConvertWorker.perform_async(page.id)
@@ -74,7 +74,7 @@ class UploadsController < ApplicationController
 
     ## Background: create smaller images and pdf text
 
-    if DaemonConverter.instance.connected? then
+    if DaemonConverter.instance.drb_connected? then
       RemoteConvertWorker.my_perform([@page.id])
     else
       @page.update_status_preview(Page::UPLOADED_NOT_PROCESSED)
@@ -112,7 +112,7 @@ class UploadsController < ApplicationController
     FileUtils.cp tmp.path, page.path(:org)
     FileUtils.chmod "go=rr", page.path(:org) #happens only on qnas, set group and others to read, otherwise nginx fails
 
-    if DaemonConverter.instance.connected?
+    if DaemonConverter.instance.drb_connected?
       RemoteConvertWorker.my_perform([page.id])
     else
       page.update_status_preview(Page::UPLOADED_NOT_PROCESSED)
