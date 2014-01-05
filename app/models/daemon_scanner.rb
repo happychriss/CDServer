@@ -16,10 +16,14 @@ class DaemonScanner < DaemonConnector
   end
 
   def connected_devices
+       if DaemonScanner.instance.drb_connected? then
+          if @devices.count==0
+              @devices=DaemonScanner.instance.get_processor.scanner_list_devices
+          end
+       else
+         @devices=Array.new
+       end
 
-    if @devices.count==0
-        @devices=DaemonScanner.instance.processor.scanner_list_devices
-    end
     return @devices
   end
 

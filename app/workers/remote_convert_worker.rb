@@ -39,9 +39,11 @@ class RemoteConvertWorker
 
     begin
 
-      DaemonConverter.instance.connected=true ##this is used in context of push_status_update
-
       logger.info "RemoteConvertWorker called for  #{page_ids.count} pages!"
+
+      logger.info "Connected to DRB: #{DaemonConverter.instance.connected?}"
+      DaemonConverter.instance.enable_connection(true) unless DaemonConverter.instance.drb_connected?   ### running in own thread
+      logger.info "Connected to DRB: #{DaemonConverter.instance.connected?}"
 
       page_ids.each do |page_id|
 
@@ -61,7 +63,7 @@ class RemoteConvertWorker
 
         logger.info "start remote call to DRB Converter: #{DaemonConverter}"
 
-        result_jpg, result_sjpg, result_orginal, result_txt, result_status=DaemonConverter.instance.processor.run_conversion(scanned_jpg, page.short_mime_type)
+        result_jpg, result_sjpg, result_orginal, result_txt, result_status=DaemonConverter.instance.get_processor.run_conversion(scanned_jpg, page.short_mime_type)
 
         logger.info "complete remote call to DRB"
 

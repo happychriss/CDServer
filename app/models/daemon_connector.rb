@@ -1,23 +1,31 @@
 class DaemonConnector
 
-  attr_accessor :connected
-
   def initialize
-    @processor=0
+    @private_processor=nil
     @uri=nil
   end
 
+  
+  ### used from daemon to set connection status for push status update, not nice
+  def force_connected(conn)
+   if conn then
+    @private_processor=1
+   else
+     @private_processor=nil
+   end
+  end
+  
   def connected?
-    return @processor!=0
+    not @private_processor.nil?
   end
 
   def drb_connected?
 
     connected=false
 
-    if @processor=!0 then
+    unless @private_processor.nil? then
       begin
-        connected=@processor.me_alive?
+        connected=@private_processor.me_alive?
       rescue DRb::DRbConnError
         connected=false
       end
@@ -25,7 +33,7 @@ class DaemonConnector
       connected=false
     end
 
-    @processor=0 if not connected
+    @private_processor=nil if not connected
 
     return connected
 
@@ -35,38 +43,38 @@ class DaemonConnector
 
     ### setup connection
     if do_connect then
+
       unless self.drb_connected?
-        @processor=self.processor
+
+        tmp_proc= DRbObject.new_with_uri(@uri) ##
+
+        begin
+        tmp_alive=tmp_proc.me_alive? ## somehow only this raises the exception in case of error, me_alive? is a custom method
+
+        if tmp_alive then
+          @private_processor=tmp_proc
+        else
+          @private_processor =nil
+          puts "ERROR!!!!!!!!!!!! #{self.class.name} not connected to remote host with uri:#{@uri}"
+        end
+
+        rescue DRb::DRbConnError => e
+        @private_processor =nil
+        puts "ERROR!!!!!!!!!!!! #{self.class.name} not connected to remote host: #{e.message} with uri:#{@uri}"
+        return @private_processor
+        end
       end
       ### stop connection
     else
-      @processor=0
+      @private_processor=nil
     end
 
     return self.connected?
 
   end
 
-  def processor
-    begin
-
-      tmp_proc= DRbObject.new_with_uri(@uri) ##
-      tmp_alive=tmp_proc.me_alive? ## somehow only this raises the exception in case of error, me_alive? is a custom method
-      if tmp_alive then
-        @processor=tmp_proc
-      else
-        @processor =0
-        puts "ERROR!!!!!!!!!!!! #{self.class.name} not connected to remote host with uri:#{@uri}"
-      end
-
-      return @processor
-
-    rescue DRb::DRbConnError => e
-      @processor =0
-      puts "ERROR!!!!!!!!!!!! #{self.class.name} not connected to remote host: #{e.message} with uri:#{@uri}"
-      return @processor
-    end
-
+  def get_processor
+    @private_processor
   end
 
 end

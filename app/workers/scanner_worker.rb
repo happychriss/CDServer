@@ -14,7 +14,11 @@ class ScannerWorker
     begin
     puts "** Scanner for device #{scanner_hash['current_device']} called"
 
-    res=DaemonScanner.instance.processor.scanner_start_scann(scanner_hash['current_device'],scanner_hash['color'])
+    logger.info "Connected to DRB: #{DaemonScanner.instance.connected?}"
+    DaemonScanner.instance.enable_connection(true) unless DaemonScanner.instance.drb_connected?   ### running in own thread
+    logger.info "Connected to DRB: #{DaemonScanner.instance.connected?}"
+
+    res=DaemonScanner.instance.get_processor.scanner_start_scann(scanner_hash['current_device'],scanner_hash['color'])
 
     puts "** Scanner for device #{scanner_hash['current_device']} completed with res: #{res}"
 

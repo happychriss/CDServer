@@ -22,7 +22,7 @@ class UploadsController < ApplicationController
     upload_file= params[:file_upload][:my_file]
 
     unless Page::PAGE_MIME_TYPES.has_key?(upload_file.content_type)
-      flash[:error] = "File format not supported, detected type: #{upload_file.content_type} - supportet tpyes: #{Page::PAGE_MIME_TYPES.to_s}."
+      flash[:error] = "File format not supported, detected type: ****** #{upload_file.content_type} ******- supportet tpyes: #{Page::PAGE_MIME_TYPES.to_s}."
       render :action => 'new'
       return
     end
@@ -115,9 +115,8 @@ class UploadsController < ApplicationController
     if DaemonConverter.instance.drb_connected?
       RemoteConvertWorker.my_perform([page.id])
     else
-      page.update_status_preview(Page::UPLOADED_NOT_PROCESSED)
+      LocalConvertWorker.perform_async(page.id)
     end
-
 
     render :nothing => true
 
