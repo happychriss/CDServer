@@ -37,7 +37,7 @@ class LocalConvertWorker
     end
 
     push_status_update ## send status-update to application main page via private_pub gem, fayes,
-    push_converted_page(page)
+    push_converted_page(page,true)
 
   end
 end

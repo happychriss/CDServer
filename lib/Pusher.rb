@@ -6,8 +6,8 @@ module Pusher
     puts "*********: Remote Status: #{DaemonConverter.instance.connected?}"
   end
 
-  def push_converted_page(page)
-    message= render_anywhere('/upload_sorting/converted_page', {:page => page})
+  def push_converted_page(page,local_conversion = false)
+    message= render_anywhere('/upload_sorting/converted_page', {:page => page, :local_conversion => local_conversion})
     logger.info "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Publish: #{message}"
     PrivatePub.publish_to("/converted_page", message)
   end

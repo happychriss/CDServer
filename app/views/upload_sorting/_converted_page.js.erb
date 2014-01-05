@@ -1,10 +1,12 @@
 // this is called by the pusher.rb to replace the waiting logo with the real logo
 var pic=$('img#<%= page.id%>.no_clickzoom');
 pic.attr('src',pic.attr('preview_path'));
-pic.addClass('clickzoom');
-pic.removeClass('no_clickzoom');
-$('#completed_ind_<%= page.id%>').css('visibility','visible');
 $('#process_ind_<%= page.id%>').css('visibility','hidden');
 
+<% unless local_conversion %>
+    pic.addClass('clickzoom');
+    pic.removeClass('no_clickzoom');
+    $('#completed_ind_<%= page.id%>').css('visibility','visible');
+<%end%>
 
 
