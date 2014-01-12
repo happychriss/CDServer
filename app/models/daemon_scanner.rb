@@ -27,5 +27,12 @@ class DaemonScanner < DaemonConnector
     return @devices
   end
 
+  def enable_connection(do_connect)
+    @devices==Array.new
+    @current_device=''
+    @color=false
+    super
+  end
+
 
 end
