@@ -42,7 +42,7 @@ class RemoteConvertWorker
       logger.info "RemoteConvertWorker called for  #{page_ids.count} pages!"
 
       logger.info "Connected to DRB: #{DaemonConverter.instance.connected?}"
-      DaemonConverter.instance.enable_connection(true) unless DaemonConverter.instance.drb_connected?   ### running in own thread
+      DaemonConverter.instance.enable_connection(true)    ### running in own thread
       logger.info "Connected to DRB: #{DaemonConverter.instance.connected?}"
 
       page_ids.each do |page_id|
