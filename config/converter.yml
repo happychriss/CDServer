@@ -14,7 +14,7 @@ test:
 production:
   remote_port_converter: 8999
   remote_port_scanner: 8998
-  remote_host: '192.168.1.16'
+  remote_host: 'donald'
 
 
 
