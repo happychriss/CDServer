@@ -43,8 +43,7 @@ class DaemonConnector
 
     ### setup connection
     if do_connect then
-
-      unless self.drb_connected?
+        @private_processor=nil
 
         tmp_proc= DRbObject.new_with_uri(@uri) ##
 
@@ -63,7 +62,7 @@ class DaemonConnector
         puts "ERROR!!!!!!!!!!!! #{self.class.name} not connected to remote host: #{e.message} with uri:#{@uri}"
         return @private_processor
         end
-      end
+
       ### stop connection
     else
       @private_processor=nil
