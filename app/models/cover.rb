@@ -1,5 +1,6 @@
 class Cover < ActiveRecord::Base
 
+  ### Changed for GIT
   attr_accessible :folder_id
   has_many :documents
   belongs_to :folder
