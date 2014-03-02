@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(:version => 20131010090651) do
   end
 
   create_table "pages", :force => true do |t|
-    t.integer  "org_folder_id",                        :null => false
+    t.integer  "org_folder_id"
     t.datetime "created_at",                           :null => false
     t.datetime "updated_at",                           :null => false
     t.string   "original_filename"

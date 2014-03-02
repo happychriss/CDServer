@@ -5,7 +5,7 @@
 
 # require boot & environment for a Rails app
 #require_relative "../config/boot"
-require_relative "../../config/environment"
+require_relative "../config/environment"
 require "SphinxRakeSupport"
 require "clockwork"
 

@@ -1,26 +1,15 @@
-RAILS_PROJECT_ROOT="//share/Web/CDServer"
-REDIS_ROOT="//opt/bin"
-MYSQL_ROOT="//opt/share/mysql" #config in /opt/etc/my.cnf??
-NGINX_ROOT="//opt/sbin" #config in /opt/etc/nginx/nginx.conf
-RAKE_ROOT="//opt/bin/rake"
-
-THIN_ROOT="//opt/bin"
-THIN_CONFIG=File.join(RAILS_PROJECT_ROOT,"thin_nginx_cdserver.yml")
-
+RAILS_PROJECT_ROOT="//home/cds"
 PID_DIR = "#{RAILS_PROJECT_ROOT}/tmp/pids"
+LOG_DIR= "#{RAILS_PROJECT_ROOT}/log"
+NGINX_ROOT="/usr/local/nginx/sbin" #config in /usr/local/nginx/conf/nginx.conf
+THIN_ROOT="//home/cds/.rvm/gems/ruby-2.1.0/bin/thin"
+THIN_CONFIG=File.join(RAILS_PROJECT_ROOT,"thin_nginx_cdserver.yml")
+RVM_BIN="//home/cds/.rvm/bin"
 
-God.watch do |w|
-  w.name          = "mysql"
-  w.uid           = 'mysql'
-  w.gid           = 'mysql'
-  w.group         ='cds'
-  w.start_grace   = 5.seconds
-  w.restart_grace = 5.seconds
-  w.interval      = 60.seconds
-  w.start         = File.join(MYSQL_ROOT,'mysql.server start')
-  w.stop          = File.join(MYSQL_ROOT,'mysql.server stop')
-  w.pid_file      = "//share/Storage/mysql/qnas.pid"
-  w.keepalive
+
+## e.g. bootup_rake in RVM Bin folder
+def rvm_bin(daemon)
+  return File.join(RVM_BIN,"bootup_"+daemon+" ")
 end
 
 God.watch do |w|
@@ -30,28 +19,12 @@ God.watch do |w|
   w.restart_grace = 10.seconds
   w.interval      = 60.seconds
   w.dir           = RAILS_PROJECT_ROOT
-  w.env 	        = {'RAILS_ENV' => "production" }
-  w.start         = "#{RAKE_ROOT} ts:rebuild"
-  w.stop          = "#{RAKE_ROOT} ts:stop"
-  w.restart       = "#{RAKE_ROOT} ts:restart"
+  w.env 	  = {'RAILS_ENV' => "production" }
+  w.start         = rvm_bin('rake')+"ts:start"
+  w.stop          = rvm_bin('rake')+"ts:stop"
+  w.restart       = rvm_bin('rake')+"ts:restart"
   w.pid_file      = File.join(RAILS_PROJECT_ROOT, 'log', 'searchd.production.pid')
   w.keepalive
-end
-
-God.watch do |w|
-  w.name          = "redis"
-  w.group         ='cds'
-  w.start_grace   = 5.seconds
-  w.restart_grace = 5.seconds
-  w.interval      = 60.seconds
-  w.start         = "#{REDIS_ROOT}/redis-server /opt/etc/redis.conf"
-  w.stop          = "#{REDIS_ROOT}/redis-cli shutdown"
-  w.restart       = "#{w.stop} && #{w.start}"
-  w.start_grace   = 10.seconds
-  w.restart_grace = 10.seconds
-  w.keepalive
-  w.log           = File.join(RAILS_PROJECT_ROOT, 'log', 'redis.log')
-
 end
 
 God.watch do |w|
@@ -62,13 +35,12 @@ God.watch do |w|
   w.stop_grace    = 10.seconds
   w.interval      = 60.seconds
   w.dir           = RAILS_PROJECT_ROOT
-  w.start         = 'bundle exec sidekiq -e production -c 3'
-  w.stop          = "bundle exec sidekiqctl stop #{RAILS_PROJECT_ROOT}/tmp/pids/sidekiq.pid 5"
+  w.start         = rvm_bin('bundle')+"exec sidekiq -e production -c 3 -P #{RAILS_PROJECT_ROOT}/tmp/pids/sidekiq.pid"
+  w.stop          = rvm_bin('bundle')+"exec sidekiqctl stop #{RAILS_PROJECT_ROOT}/tmp/pids/sidekiq.pid 5"
   w.keepalive
   w.log         = File.join(RAILS_PROJECT_ROOT, 'log', 'sidekiq.log')
   w.behavior(:clean_pid_file)
-  w.env           = {'HOME' => '/root'} ## for gpg
-
+#  w.env           = {'HOME' => '/root'} ## for gpg
 end
 
 God.watch do |w|
@@ -80,7 +52,7 @@ God.watch do |w|
   w.interval      = 60.seconds
   w.dir           = RAILS_PROJECT_ROOT
 
-  w.start         = "bundle exec clockwork ./app/jobs/cdserver_maintenance_job.rb & echo $! > #{PID_DIR}/clockwork.pid"
+  w.start         = rvm_bin('bundle')+"exec clockwork ./job/cdserver_maintenance_job.rb & echo $! > #{PID_DIR}/clockwork.pid"
   w.stop          = "kill -QUIT `cat #{PID_DIR}/clockwork.pid`"
   w.keepalive
   w.log           = File.join(RAILS_PROJECT_ROOT, 'log', 'clockwork.log')
@@ -90,29 +62,17 @@ God.watch do |w|
 end
 
 God.watch do |w|
-  w.name          = 'nginx'
-  w.group         ='cds'
-  w.start_grace   = 10.seconds
-  w.restart_grace = 10.seconds
-  w.interval      = 60.seconds
-  w.start         = File.join(NGINX_ROOT,'nginx')
-  w.stop          = File.join(NGINX_ROOT,'nginx -s stop')
-  w.restart       = File.join(NGINX_ROOT,'nginx -s reload')
-  w.pid_file      = '//var/run/nginx.pid'
-  w.keepalive
-end
-
-God.watch do |w|
   w.name          = "thin"
   w.group         ='cds'
   w.dir           = RAILS_PROJECT_ROOT
   w.start_grace   = 10.seconds
   w.restart_grace = 10.seconds
   w.interval      = 60.seconds
-  w.start         = 'thin start --config ./thin_nginx.yml'
-  w.stop          = "thin stop"
-  w.restart	    = "thin restart"
-  w.pid_file      = File.join(RAILS_PROJECT_ROOT,"tmp","pids","thin.pid")
+  w.start         = rvm_bin('thin')+"start --config ./thin_nginx.yml --log #{LOG_DIR}/thin.log"
+  w.stop          = rvm_bin('thin')+"stop"
+  w.restart       = rvm_bin('thin')+"restart"
+  w.pid_file      = "#{PID_DIR}/thin.pid" 
+  w.log           = "#{LOG_DIR}/thin.log"  
   w.keepalive
 end
 
@@ -125,7 +85,7 @@ God.watch do |w|
   w.restart_grace = 10.seconds
   w.interval      = 60.seconds
   w.env           = {'RAILS_ENV' => "production" }
-  w.start         = "rackup private_pub.ru -s thin -E production -P #{RAILS_PROJECT_ROOT}/tmp/pids/private_pub.pid"
+  w.start         = rvm_bin('rackup')+"private_pub.ru -s thin -E production -P #{RAILS_PROJECT_ROOT}/tmp/pids/private_pub.pid"
 
   w.log           = File.join(RAILS_PROJECT_ROOT, 'log', 'private_pub.log')
   w.pid_file      = "#{RAILS_PROJECT_ROOT}/tmp/pids/private_pub.pid"
