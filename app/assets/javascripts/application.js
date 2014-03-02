@@ -18,5 +18,5 @@
 //= require jquery.ui.selectable
 //= require jquery.ui.sortable
 //= require jquery.ui.datepicker
-//=require private_pub
+//= require private_pub
 //= require_tree .
