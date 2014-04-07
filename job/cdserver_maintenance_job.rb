@@ -4,17 +4,15 @@
 # regularly.
 
 # require boot & environment for a Rails app
-#require_relative "../config/boot"
+require_relative "../config/boot"
 require_relative "../config/environment"
 require "SphinxRakeSupport"
 require "clockwork"
 
 
 class DBBackupWorker
-  include Sidekiq::Worker
-  sidekiq_options :retry => false
 
-  def perform
+  def self.perform
     Rails.logger.info "### DBBackup - Start "
 #    res=%x[backup perform --trigger=cd2_db_backup --config-file='#{Rails.root}/backup/config.rb']
     Bundler.with_clean_env do ##https://github.com/meskyanichi/backup/issues/306
@@ -38,10 +36,8 @@ end
 
 
 class SphinxIndexWorker
-  include Sidekiq::Worker
-  sidekiq_options :retry => false
 
-  def perform
+  def self.perform
     Rails.logger.info "### Sphinx - Start Index"
     SphinxRakeSupport::Schedule.ts_index
     Rails.logger.info "### Sphinx - Index Completed"
@@ -51,12 +47,13 @@ end
 
 
 module Clockwork
-  every(1.week, 'BackupWorker.perform_async', :at => '19:00') do
-    DBBackupWorker.perform_async
+#  every(1.week, 'BackupWorker.perform_async', :at => '19:00') do
+  every(1.minute, 'BackupWorker.perform') do
+    DBBackupWorker.perform
   end
 
   every(1.week, 'SphinxIndexWorker.perform_async', :at => '19:30') do
-    SphinxIndexWorker.perform_async
+    SphinxIndexWorker.perform
   end
 
  # every(1.month, 'RemoveFromArchiveWorker.perform_async') do
