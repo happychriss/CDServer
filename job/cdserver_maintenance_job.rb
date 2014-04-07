@@ -47,8 +47,8 @@ end
 
 
 module Clockwork
-#  every(1.week, 'BackupWorker.perform_async', :at => '19:00') do
-  every(1.minute, 'BackupWorker.perform') do
+ every(1.week, 'BackupWorker.perform_async', :at => '19:00') do
+#  every(1.minute, 'BackupWorker.perform') do
     DBBackupWorker.perform
   end
 
