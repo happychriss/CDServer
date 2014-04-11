@@ -101,6 +101,7 @@ gqN0/W/Vou3uAQG+hqVd67D36az+BpXMiZWHNhDx5W9Dyw==
     s3.bucket            = s3_config[MY_RAILS_ENV]['aws_s3_db_bucket']
 #    s3.path              = "/path/to/my/backups"
     s3.keep              = 10
+    s3.fog_options = { :path_style => true }        #https://github.com/meskyanichi/backup/issues/518
   end
 
 
