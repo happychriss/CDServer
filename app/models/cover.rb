@@ -1,5 +1,7 @@
 class Cover < ActiveRecord::Base
 
+  require 'prawn'
+
   ### Changed for GIT
   attr_accessible :folder_id
   has_many :documents
@@ -11,8 +13,12 @@ class Cover < ActiveRecord::Base
   PAGE_WITH=130
   PAGE_HEIGHT=200
 
-  X_MAX = Prawn::Document::PageGeometry::SIZES["A4"][0]-100
-  Y_MAX = Prawn::Document::PageGeometry::SIZES["A4"][1]
+#  X_MAX = Prawn::Document::PageGeometry::SIZES["A4"][0]-100
+#   Y_MAX = Prawn::Document::PageGeometry::SIZES["A4"][1]
+
+  X_MAX = 595.28-100
+  Y_MAX = 841.89
+
   X_MIDDLE=X_MAX/2
   Y_MIDDLE=Y_MAX/2-35
 
