@@ -55,7 +55,7 @@ class RemoteConvertWorker
 
         push_status_update ## send status-update to application main page via private_pub gem, fayes,
 
-        logger.info "Processing scanned file remote: #{page.id} with path: #{page.path(:org)} and mime type #{page.short_mime_type}"
+        logger.info "Processing scanned file remote: #{page.id} with path: #{page.path(:org)} and mime type #{page.short_mime_type} and Source: #{page.source.to_s}"
 
         scanned_jpg=File.read(page.path(:org))
 
@@ -63,7 +63,7 @@ class RemoteConvertWorker
 
         logger.info "start remote call to DRB Converter: #{DaemonConverter}"
 
-        result_jpg, result_sjpg, result_orginal, result_txt, result_status=DaemonConverter.instance.get_processor.run_conversion(scanned_jpg, page.short_mime_type)
+        result_jpg, result_sjpg, result_orginal, result_txt, result_status=DaemonConverter.instance.get_processor.run_conversion(scanned_jpg, page.short_mime_type, page.source)
 
         logger.info "complete remote call to DRB"
 

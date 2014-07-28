@@ -121,7 +121,10 @@ $('#scan_menu_link').bind('ajax:beforeSend', function() {
     $('#scan_menu_spinner').show();
 });
 
-}
+
+};
+
+// https://code.google.com/p/jqueryrotate/w/list
 
 
 //****************************************************************************************
