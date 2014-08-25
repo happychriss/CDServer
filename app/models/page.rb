@@ -302,6 +302,22 @@ class Page < ActiveRecord::Base
   end
 
 
+  ### convert a page into a jpg file
+
+  def jpg_file
+    tmp_jpg_file_root=File.join(Dir.tmpdir,"cd_#{self.id}")
+    res=%x[pdfimages -l 1 -f 1 -j #{self.path(:org)} #{tmp_jpg_file_root}]
+
+    ## pdfimages adds -000.jpg to the outfile in tmp_jpg_file or pbm if file was converted in with black and white option
+
+    unless File.exist?(tmp_jpg_file_root+'-000.jpg')
+      res=%x[convert #{tmp_jpg_file_root}-000.pbm #{tmp_jpg_file_root}-000.jpg]
+    end
+
+    return File.open(tmp_jpg_file_root+'-000.jpg')
+
+  end
+
   ##### mime type is stored in database as long text application/pdf for example
 
   # mime type of original stored document

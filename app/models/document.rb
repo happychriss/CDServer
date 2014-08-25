@@ -30,23 +30,7 @@ class Document < ActiveRecord::Base
     return pdf
   end
 
-  def jpg_file
-    tmp_jpg_file_root=File.join(Dir.tmpdir,"cd_#{self.id}")
-    res=%x[pdfimages -l 1 -f 1 -j #{self.pages.first.path(:org)} #{tmp_jpg_file_root}]
-
-    ## pdfimages adds -000.jpg to the outfile in tmp_jpg_file or pbm if file was converted in with black and white option
-
-    unless File.exist?(tmp_jpg_file_root+'-000.jpg')
-      res=%x[convert #{tmp_jpg_file_root}-000.pbm #{tmp_jpg_file_root}-000.jpg]
-    end
-
-    return File.open(tmp_jpg_file_root+'-000.jpg')
-
-  end
-
-
-
-  def backup?
+    def backup?
     self.pages.where("backup = 0").count==0
   end
 
