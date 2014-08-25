@@ -2,6 +2,8 @@
 <% if  page.document.complete_pdf?%>
    |
     <%= link_to("PDF", pdf_document_path(page.document.id)) %>
+    |
+    <%= link_to("JPG", jpg_document_path(page.document.id)) unless page.source==Page::PAGE_SOURCE_UPLOADED%>
  <%end%>
 
 <% unless (page.document_pages_count>1 or page.document.complete_pdf?) %>

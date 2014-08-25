@@ -17,6 +17,7 @@ CDServer::Application.routes.draw do
 
   ## Search Controller, non HABTM
   match 'pdf/:id' => 'search#show_pdf_document', :as => :pdf_document
+  match 'jpg/:id' => 'search#show_jpg_document', :as => :jpg_document
   match 'rtf/:id' => 'search#show_rtf', :as => :rtf
   match 'original/:id' => 'search#show_original', :as => :original
 

@@ -42,6 +42,14 @@ end
     @page=Page.find(params[:id])
   end
 
+  def show_jpg_document
+    document=Document.find(params[:id])
+    jpg=document.jpg_file
+    send_file(jpg.path, :type => 'application/jpg', :page => '1')
+    jpg.close
+    return
+  end
+
   def show_pdf_document
     document=Document.find(params[:id])
     pdf=document.pdf_file
