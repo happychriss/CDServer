@@ -33,7 +33,14 @@ Including:
 
    
 
-  
+Requirements:
+--------
+  * abbyyocr (or any other OCR software)
+  * pdftotext
+  * using AWS3 for file backup via PGP, keys should be installed and configured in e.g. production.rb (see example.rb)
+  * sphinx is compiled with using libstemmer_de
+  * s3cmd for upload db backup to s3
+
   
   
   
