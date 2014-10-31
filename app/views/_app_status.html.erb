@@ -11,9 +11,9 @@ Wait for Convert:<%= status_summary[Page::UPLOADED_NOT_PROCESSED].presence || '0
 </span>
 <% end %>
 
-<% if Log.check_errors? == true then %>
+<% if Log.check_errors? then %>
     | <span style="background: red"><a href="/status">ERROR</a></span>
-<% elsif not DaemonConverter.instance.connected? %>
+<% elsif not Converter.connected? %>
     | <span style="background: lightskyblue"><a href="/status">NO WORKER</a></span>
 <% else %>
     | <span><a href="/status">STATUS:OK</a></span>

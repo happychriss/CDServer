@@ -32,10 +32,7 @@ class StatusController < ApplicationController
     redirect_to :action => :index
   end
 
-  def try_to_connect
-    DaemonConverter.instance.enable_connection(true)
-    redirect_to :action => :index
-  end
+
 
   ############################### External calls
 

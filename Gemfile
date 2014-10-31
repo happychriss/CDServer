@@ -36,6 +36,7 @@ gem 'god'
 gem 'private_pub'
 gem  'prawn'
 gem 'jquery_datepicker'
+gem 'dnssd'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

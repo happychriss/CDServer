@@ -1,6 +1,6 @@
 require 'Pusher'
 
-class DrbScannersController < ApplicationController
+class ScannersController < ApplicationController
 
   include Pusher
 
@@ -10,7 +10,7 @@ class DrbScannersController < ApplicationController
 
   #### scanner to list devices - called via remote link
   def scan_info
-    @scanner_device_list=DaemonScanner.instance.connected_devices
+    @scanner_device_list=Scanner.connected_devices
     respond_to(:js) #scan_info.js.erb
   end
 
@@ -25,19 +25,9 @@ class DrbScannersController < ApplicationController
 
   def start_scanner
 
-    DaemonScanner.instance.color=!params[:color].nil?
-    DaemonScanner.instance.current_device=params[:scanner_name]
-
-    if (false) then
-      rm=ScannerWorker.new #direct calling
-
-      hash=Hash.new
-      DaemonScanner.instance.instance_variables.each { |var| hash[var.to_s.delete("@")] = DaemonScanner.instance.instance_variable_get(var) }
-
-      rm.perform(hash) #direct calling ##attributes to get a hash
-    else
-      ScannerWorker.perform_async(DaemonScanner.instance)
-    end
+    color=!params[:color].nil?
+    scanner_name=params[:scanner_name]
+    Scanner.start_scan(scanner_name,color)
 
     respond_to(:js)
   end

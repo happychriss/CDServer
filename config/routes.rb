@@ -1,5 +1,7 @@
 CDServer::Application.routes.draw do
 
+  resources :connections
+
   resources :covers
 
   ## Upload Sorting, non HABTM
@@ -27,7 +29,7 @@ CDServer::Application.routes.draw do
   match 'found/' => 'search#found'
   match 'show_document_pages/:id' => 'search#show_document_pages',:as => :show_document_pages
 
-  ## Edit Documents contgroller
+  ## Edit Documents controller
   post 'sort_pages' => 'documents#sort_pages'
   get 'documents/remove_page/:id' => 'documents#remove_page'
   get 'documents/destroy_page' => 'documents#destroy_page'
@@ -44,11 +46,11 @@ CDServer::Application.routes.draw do
   post 'status_drb' => 'status#status_drb'
 
   ## Scanner Controller
-  get "drb_scanners/scan_info"
+  get "scanners/scan_info"
   ### called from scanner drb daemon ####
-  post 'start_scanner' => 'drb_scanners#start_scanner'
-  post 'scan_status' =>  'drb_scanners#scan_status'
-  post 'scan_error' =>  'drb_scanners#scan_error'
+  post 'start_scanner' => 'scanners#start_scanner'
+  post 'scan_status' =>  'scanners#scan_status'
+  post 'scan_error' =>  'scanners#scan_error'
 
 
   resources :folders

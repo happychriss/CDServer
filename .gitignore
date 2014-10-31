@@ -16,16 +16,16 @@ config/environments/development.rb
 #config/environments/production.rb
 config/production.sphinx.conf
 config/development.sphinx.conf
-upload_test/*
+app_support/upload_test/*
 
 ## Specific files
 config/development.sphinx.conf
 config/database.yml
 config/s3.yml
 config/private_pub.yml
-config/converter.yml
-batch/DRbProcessor_remote.rb.pid
-batch/DRbProcessorRemoveServer.rb.pid
+config/services.yml
+app_support/batch/DRbProcessor_remote.rb.pid
+app_support/batch/DRbProcessorRemoveServer.rb.pid
 
 ## generic files to ignore
 *~
@@ -102,4 +102,6 @@ backup
 
 
 
-upload_test
+app_support/upload_test
+.gnupg
+app_support/avahi_services/avahi_server.rb.pid
