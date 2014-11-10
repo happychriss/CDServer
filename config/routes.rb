@@ -1,6 +1,6 @@
 CDServer::Application.routes.draw do
 
-  resources :connections
+  resources :connectors
 
   resources :covers
 
@@ -52,6 +52,11 @@ CDServer::Application.routes.draw do
   post 'scan_status' =>  'scanners#scan_status'
   post 'scan_error' =>  'scanners#scan_error'
 
+  ## ConverterController
+  ### called from scanner drb daemon ####
+  post 'convert_status' =>  'converters#convert_status'
+  post 'convert_upload_jpgs' =>  'converters#convert_upload_jpgs'
+  post 'convert_upload_text' =>  'converters#convert_upload_text'
 
   resources :folders
   resources :tags

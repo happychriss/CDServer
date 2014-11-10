@@ -7,6 +7,9 @@ require "action_mailer/railtie"
 require "active_resource/railtie"
 require "sprockets/railtie"
 
+require 'dnssd'
+
+
 # require "rails/test_unit/railtie"
 
 if defined?(Bundler)
@@ -18,6 +21,28 @@ end
 
 module CDServer
   class Application < Rails::Application
+
+
+# this will start the avahi server, scanner/converter etc will know they now can connect
+    config.before_initialize do
+      ARGV.each_with_index do|a,i|
+        if a=='-p' then
+          port=ARGV[i+1].to_i
+
+          t=Thread.new do
+
+            puts "*** application.rb *****"
+            puts "*** Identified as WebServer application - Starting Avahi service Cleandesk on port: #{port}*****"
+
+            DNSSD.register! 'Cleandesk', '_cds._tcp', nil, 3000
+            sleep
+          end
+          sleep(1)
+        end
+      end
+
+    end
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

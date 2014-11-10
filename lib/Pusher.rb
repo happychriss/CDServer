@@ -7,6 +7,7 @@ module Pusher
 
   def push_converted_page(page,local_conversion = false)
     message= render_anywhere('/upload_sorting/converted_page', {:page => page, :local_conversion => local_conversion})
+    logger.info "Page status: #{page.status}"
     logger.info "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Publish: #{message}"
     PrivatePub.publish_to("/converted_page", message)
   end

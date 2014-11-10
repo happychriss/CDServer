@@ -11,9 +11,9 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141022194755) do
+ActiveRecord::Schema.define(:version => 20141102174104) do
 
-  create_table "connections", :force => true do |t|
+  create_table "connectors", :force => true do |t|
     t.integer  "uid"
     t.string   "service"
     t.integer  "prio"

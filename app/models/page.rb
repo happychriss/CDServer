@@ -8,7 +8,7 @@ class Page < ActiveRecord::Base
 
   #### Page Status flow
   UPLOADED = 0 # page just uploaded
-  UPLOADED_PROCESSING = 1 # pages is processed
+  UPLOADED_PROCESSING = 1 # pages is being processed
   UPLOADED_NOT_PROCESSED = 2 # pages could not be processed, as worker was not available
   UPLOADED_PROCESSED = 3 # pages was processed by worker (content added)
 
@@ -278,7 +278,7 @@ class Page < ActiveRecord::Base
 
 
   def update_status_preview(status, preview= {})
-    if preview.nil? then
+    if preview.nil? or preview.empty? then
       self.update_attributes(:status => status)
     else
       self.update_attributes(:status => status, :preview => preview)
@@ -324,6 +324,15 @@ class Page < ActiveRecord::Base
 
   def short_mime_type
     Page::PAGE_MIME_TYPES[self.mime_type]
+  end
+
+
+  def save_file(file_path,file_type)
+
+    path = file_path.tempfile
+
+    FileUtils.cp path, self.path(file_type)
+    FileUtils.chmod "go=rr", self.path(file_type)
   end
 
 

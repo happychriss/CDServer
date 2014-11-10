@@ -14,14 +14,13 @@ class ScannersController < ApplicationController
     respond_to(:js) #scan_info.js.erb
   end
 
-  ### called from scanner, this will trigger the Pusher in view, based on subsc
+  ### called from scanner, this will trigger the Pusher in view
   def scan_status
-    @message=params[:message].gsub(/[^0-9a-z ]/i, '-').last(50)
+    @message=params[:message].gsub(/[^0-9a-z ]/i, '-').last(30)
     @scan_complete=(params[:scan_complete]=='true')
 
     render('scan_status', :handlers => [:erb], :formats => [:js])
   end
-
 
   def start_scanner
 

@@ -33,36 +33,4 @@ class StatusController < ApplicationController
   end
 
 
-
-  ############################### External calls
-
-
-
-
-  ### Called from CDDaemon
-  def status_drb
-    running=params[:running]
-    drb_server=params[:drb_server]
-
-    if drb_server=='Converter' then
-
-      DaemonConverter.instance.enable_connection(running=='true')
-
-      if DaemonConverter.instance.connected? then
-        RemoteConvertWorker.my_perform(Page.for_batch_conversion)
-      end
-
-      push_status_update
-
-    end
-
-    if drb_server=='Scanner' then
-      DaemonScanner.instance.enable_connection(running=='true')
-    end
-
-    render nothing: true
-
-  end
-
-
 end
