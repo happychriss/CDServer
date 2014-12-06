@@ -35,12 +35,7 @@ class UploadsController < ApplicationController
 
       page.save_file(upload_file, :org)
 
-      # Background: create smaller images and pdf text
-      if DaemonConverter.instance.drb_connected?
-        RemoteConvertWorker.my_perform([page.id])
-      else
-        LocalConvertWorker.perform_async(page.id)
-      end
+      Converter.run_conversion([page.id])
 
       redirect_to new_upload_path, notice: 'Upload was successfully created.'
 
@@ -70,11 +65,7 @@ class UploadsController < ApplicationController
 
       ## Background: create smaller images and pdf text
 
-      if Converter.connected? then
-        Converter.run_conversion([@page.id])
-      else
-        @page.update_status_preview(Page::UPLOADED_NOT_PROCESSED)
-      end
+      Converter.run_conversion([@page.id])
 
       ## this triggers the pusher to update the page with new uploaded data
       render('create_from_scanner_jpg', :handlers => [:erb], :formats => [:js])
@@ -98,7 +89,6 @@ class UploadsController < ApplicationController
           :source => Page::PAGE_SOURCE_MOBILE,
           :mime_type => 'image/jpeg')
 
-
       page.save!
       page.reload
 
@@ -106,11 +96,7 @@ class UploadsController < ApplicationController
 
       page.save_file(upload_file, :org)
 
-      if DaemonConverter.instance.drb_connected?
-        RemoteConvertWorker.my_perform([page.id])
-      else
-        LocalConvertWorker.perform_async(page.id)
-      end
+      Converter.run_conversion([page.id])
 
       render :nothing => true
 

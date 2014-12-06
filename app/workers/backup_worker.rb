@@ -30,7 +30,7 @@ class BackupWorker
 
         if page.backup==false and page.status==Page::UPLOADED_PROCESSED then
 
-          push_status_update ## send status-update to application main page via private_pub gem, fayes,
+          push_app_status ## send status-update to application main page via private_pub gem, fayes,
 
           source_name=page.path(:org)
           pgp_name=File.join(Dir.tmpdir, page.file_name(:gpg))
@@ -50,7 +50,7 @@ class BackupWorker
           File.delete(pgp_name);
           page.update_attribute('backup', true)
 
-          push_status_update ## send status-update to application main page via private_pub gem, fayes,
+          push_app_status ## send status-update to application main page via private_pub gem, fayes,
 
           Log.write_status('backup', "backup completed for page_id #{page.id} doc_id #{page.document.id} to Amazon #{AWS_S3['aws_s3_bucket']} with #{pgp_name}")
 
@@ -60,7 +60,7 @@ class BackupWorker
     end
   rescue Exception => e
     Log.write_error('BackupWorker', info_text + '->' +e.message)
-    push_status_update ## send status-update to application main page via private_pub gem, fayes,
+    push_app_status ## send status-update to application main page via private_pub gem, fayes,
     raise
   end
 

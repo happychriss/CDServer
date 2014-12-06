@@ -1,3 +1,4 @@
+#todo DELETE
 ## Create small preview image in docstore
 ## Called when remote convert worker is not available
 
@@ -30,13 +31,13 @@ class LocalConvertWorker
       end
 
       logger.info "Converted page with result:#{res}"
-      page.update_status_preview(Page::UPLOADED_NOT_PROCESSED, Page::PAGE_PREVIEW)
+      page.update_status(Page::UPLOADED_NOT_PROCESSED, Page::PAGE_PREVIEW)
     else
       logger.info "No Converting - not supported format"
-      page.update_status_preview(Page::UPLOADED_NOT_PROCESSED, Page::PAGE_NO_PREVIEW)
+      page.update_status(Page::UPLOADED_NOT_PROCESSED, Page::PAGE_NO_PREVIEW)
     end
 
-    push_status_update ## send status-update to application main page via private_pub gem, fayes,
+    push_app_status ## send status-update to application main page via private_pub gem, fayes,
     push_converted_page(page,true)
 
   end

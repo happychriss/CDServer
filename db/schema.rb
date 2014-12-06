@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141102174104) do
+ActiveRecord::Schema.define(:version => 20141206212922) do
 
   create_table "connectors", :force => true do |t|
     t.integer  "uid"
@@ -74,7 +74,7 @@ ActiveRecord::Schema.define(:version => 20141102174104) do
     t.integer  "org_cover_id"
     t.integer  "fid"
     t.string   "mime_type"
-    t.boolean  "preview",           :default => false
+    t.boolean  "ocr",               :default => false
   end
 
   create_table "taggings", :force => true do |t|

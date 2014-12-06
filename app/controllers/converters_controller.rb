@@ -14,15 +14,13 @@ class ConvertersController < ApplicationController
   def convert_upload_jpgs
 
    page=Page.find(params[:page][:id])
-
-   page.status=Page::UPLOADED_PROCESSING
    page.save!
 
    page.save_file(params[:page][:result_jpg],:jpg)
    page.save_file(params[:page][:result_sjpg],:s_jpg)
 
 
-   push_status_update ## send status-update to application main page via private_pub gem, fayes,
+   push_app_status ## send status-update to application main page via private_pub gem, fayes,
    push_converted_page(page)
 
    render :nothing => true
@@ -34,9 +32,10 @@ class ConvertersController < ApplicationController
     page=Page.find(params[:page][:id])
     page.content=params[:page][:content]
     page.status=Page::UPLOADED_PROCESSED
+    page.ocr=true
     page.save!
 
-    push_status_update ## send status-update to application main page via private_pub gem, fayes,
+    push_app_status ## send status-update to application main page via private_pub gem, fayes,
     push_converted_page(page)
 
     render :nothing => true

@@ -25,7 +25,7 @@ class ScannerWorker
     rescue Exception => e
       PrivatePub.publish_to "/status", :chat_message => "Hello, world!"
       Log.write_error('ScannerWorker', 'Scann' + '->' +e.message)
-      push_status_update ## send status-update to application main page via private_pub gem, fayes,
+      push_app_status ## send status-update to application main page via private_pub gem, fayes,
       raise
     end
   end

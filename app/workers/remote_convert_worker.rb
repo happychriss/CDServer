@@ -1,3 +1,4 @@
+#todo delete
 ## Create small preview image in docstore
 ## called from UploadsController when a page is uploaded
 
@@ -51,9 +52,9 @@ class RemoteConvertWorker
 
         logger.info "Processing started for page_id #{page.id}"
 
-        page.update_status_preview(Page::UPLOADED_PROCESSING)
+        page.update_status(Page::UPLOADED_PROCESSING)
 
-        push_status_update ## send status-update to application main page via private_pub gem, fayes,
+        push_app_status ## send status-update to application main page via private_pub gem, fayes,
 
         logger.info "Processing scanned file remote: #{page.id} with path: #{page.path(:org)} and mime type #{page.short_mime_type} and Source: #{page.source.to_s}"
 
@@ -69,7 +70,7 @@ class RemoteConvertWorker
 
         if result_status !='OK' then
           Log.write_error('RemoteConvertWorker', "Remote Converting: #{result_status}")
-          push_status_update ## send status-update to application main page via private_pub gem, fayes,
+          push_app_status ## send status-update to application main page via private_pub gem, fayes,
           return
         end
 
@@ -77,7 +78,7 @@ class RemoteConvertWorker
 
         logger.info "Processing file remote: page_id #{page.id}  completed"
 
-        push_status_update ## send status-update to application main page via private_pub gem, fayes,
+        push_app_status ## send status-update to application main page via private_pub gem, fayes,
         push_converted_page(page)
 
       end
@@ -85,7 +86,7 @@ class RemoteConvertWorker
     rescue Exception => e
       PrivatePub.publish_to "/status", :chat_message => "Hello, world!"
       Log.write_error('RemoteConvertWorker', 'Converting' + '->' +e.message)
-      push_status_update ## send status-update to application main page via private_pub gem, fayes,
+      push_app_status ## send status-update to application main page via private_pub gem, fayes,
       raise
     end
   end

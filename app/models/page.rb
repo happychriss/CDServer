@@ -9,7 +9,9 @@ class Page < ActiveRecord::Base
   #### Page Status flow
   UPLOADED = 0 # page just uploaded
   UPLOADED_PROCESSING = 1 # pages is being processed
+
   UPLOADED_NOT_PROCESSED = 2 # pages could not be processed, as worker was not available
+
   UPLOADED_PROCESSED = 3 # pages was processed by worker (content added)
 
 
@@ -180,6 +182,8 @@ class Page < ActiveRecord::Base
                Page.where("status < #{Page::UPLOADED_PROCESSED}").count
              when :not_converted then
                Page.where("status = #{Page::UPLOADED_NOT_PROCESSED}").count
+             when :no_ocr then
+               Page.where('ocr = 0').count
              else
                'ERROR'
            end
@@ -277,14 +281,13 @@ class Page < ActiveRecord::Base
   end
 
 
-  def update_status_preview(status, preview= {})
-    if preview.nil? or preview.empty? then
-      self.update_attributes(:status => status)
-    else
-      self.update_attributes(:status => status, :preview => preview)
-    end
+  def preview?
+    File.exist?(self.path(:s_jpg))
   end
 
+  def update_status(status)
+      self.update_attributes(:status => status)
+  end
 
   def status_text
     status=''

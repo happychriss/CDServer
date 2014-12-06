@@ -30,7 +30,7 @@ class ConnectorsController < ApplicationController
       Converter.run_conversion(Page.for_batch_conversion)
     end
 
- push_status_update
+ push_app_status
     render nothing: true
   end
 

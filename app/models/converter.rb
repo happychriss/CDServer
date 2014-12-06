@@ -15,17 +15,26 @@ class Converter
 
       page=Page.find(page_id)
 
-      page.update_status_preview(Page::UPLOADED_PROCESSING)
+      if Converter.connected? then
 
-      puts "Start remote call: Processing scanned file remote: #{page.id} with path: #{page.path(:org)} and mime type #{page.short_mime_type} and Source: #{page.source.to_s}"
+        page.update_status(Page::UPLOADED_PROCESSING)
 
-      scanned_jpg=File.read(page.path(:org))
+        puts "Start remote call: Processing scanned file remote: #{page.id} with path: #{page.path(:org)} and mime type #{page.short_mime_type} and Source: #{page.source.to_s}"
 
-      ### REMOTE CALL via DRB - the server can run on any server: distributed ruby
+        scanned_jpg=File.read(page.path(:org))
 
-      Converter.get_drb.run_conversion(scanned_jpg, page.short_mime_type, page.source, page.id)
+        ### REMOTE CALL via DRB - the server can run on any server: distributed ruby
 
-      puts "complete remote call to DRB"
+        Converter.get_drb.run_conversion(scanned_jpg, page.short_mime_type, page.source, page.id)
+
+        puts "complete remote call to DRB"
+
+      else
+
+        puts "NO DRB found for #{page.id} , updating as not processed"
+
+        page.update_status(Page::UPLOADED_NOT_PROCESSED)
+      end
 
     end
 

@@ -1,6 +1,6 @@
 module Pusher
 
-  def push_status_update
+  def push_app_status
     message= render_anywhere('/app_status')
     PrivatePub.publish_to("/app_status", message)
   end
