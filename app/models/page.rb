@@ -7,11 +7,8 @@ class Page < ActiveRecord::Base
   include FileSystem
 
   #### Page Status flow
-  UPLOADED = 0 # page just uploaded
-  UPLOADED_PROCESSING = 1 # pages is being processed
-
-  UPLOADED_NOT_PROCESSED = 2 # pages could not be processed, as worker was not available
-
+  UPLOADED = 0 # page just uploaded, waiting for processing
+  UPLOADED_PROCESSING = 1 # pages is being processed (OCR)
   UPLOADED_PROCESSED = 3 # pages was processed by worker (content added)
 
 
@@ -181,7 +178,7 @@ class Page < ActiveRecord::Base
              when :not_processed then
                Page.where("status < #{Page::UPLOADED_PROCESSED}").count
              when :not_converted then
-               Page.where("status = #{Page::UPLOADED_NOT_PROCESSED}").count
+               Page.where("status = #{Page::UPLOADED}").count
              when :no_ocr then
                Page.where('ocr = 0').count
              else
@@ -199,7 +196,7 @@ class Page < ActiveRecord::Base
   end
 
   def self.for_batch_conversion
-    self.where("status < #{Page::UPLOADED_PROCESSED}").select('id').map { |x| x.id }
+    self.where("status = #{Page::UPLOADED}").select('id').map { |x| x.id }
   end
 
   def destroy_with_file

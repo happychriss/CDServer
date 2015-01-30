@@ -1,3 +1,4 @@
+// Updates the scanner status headline, enables the scanner icons when scanner is completed
 <% publish_to "/scanner_status_update" do %>
 $('#scanner_status').text("<%=h @message%>");
 <% if @scan_complete then %>

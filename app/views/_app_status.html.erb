@@ -2,10 +2,6 @@
 Upload:<%= status_summary[Page::UPLOADED].presence ||'0' %> |
 Convert:<%= status_summary[Page::UPLOADED_PROCESSING].presence || '0' %> |
 
-<% if status_summary[Page::UPLOADED_NOT_PROCESSED].presence %>
-    <span style="color: yellow">No Processing: <%= status_summary[Page::UPLOADED_NOT_PROCESSED].presence%></span>  |
-<% end %>
-
 <% pending_backups=Page.uploading_status(:no_backup) %>
 
 <% if pending_backups!=0 %>

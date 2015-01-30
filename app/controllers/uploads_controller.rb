@@ -59,7 +59,6 @@ class UploadsController < ApplicationController
 
       unless params[:small_upload_file].nil?
         @page.save_file(params[:small_upload_file], :s_jpg)
-        @page.preview=true
         @page.save
       end
 

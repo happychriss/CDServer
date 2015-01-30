@@ -33,7 +33,6 @@ class Converter
 
         puts "NO DRB found for #{page.id} , updating as not processed"
 
-        page.update_status(Page::UPLOADED_NOT_PROCESSED)
       end
 
     end

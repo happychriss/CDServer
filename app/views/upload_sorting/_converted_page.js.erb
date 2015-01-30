@@ -18,7 +18,7 @@ pic.attr('src', pic.attr('preview_path'));
 <% end %>
 
 
-<% if (page.status==Page::UPLOADED_NOT_PROCESSED)   %>
+<% if (page.status==Page::UPLOADED)   %>
     $('#attention_ind_<%= page.id%>').css('visibility', 'visible');
 <% else %>
     $('#attention_ind_<%= page.id%>').css('visibility', 'hidden');
