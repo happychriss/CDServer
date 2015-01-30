@@ -22,8 +22,8 @@ class StatusController < ApplicationController
     redirect_to :action => :index
   end
 
-  def start_remote_worker
-    RemoteConvertWorker.my_perform(Page.for_batch_conversion)
+  def start_conversion
+    Converter.run_conversion(Page.for_batch_conversion)
     redirect_to :action => :index
   end
 

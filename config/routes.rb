@@ -37,7 +37,7 @@ CDServer::Application.routes.draw do
 
   ## Status Controller
   get 'status/clear' => 'status#clear'
-  get 'status/start_remote_worker' => 'status#start_remote_worker'
+  get 'status/start_conversion' => 'status#start_conversion'
   get 'trigger_backup' => 'status#trigger_backup'
   get 'status/try_to_connect' => 'status#try_to_connect'
   get 'search_doc_id' => 'documents#search_doc_id'

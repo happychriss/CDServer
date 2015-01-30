@@ -39,13 +39,8 @@ class ConnectorsController < ApplicationController
   def destroy
     @connector = Connector.find_all_by_uid(params[:id]).first
     @connector.destroy
-#    push_status_update
-
-    respond_to do |format|
-      format.html { redirect_to connections_url }
-      format.json { head :ok }
-    end
-
+  push_app_status
+    render nothing: true
 
   end
 end

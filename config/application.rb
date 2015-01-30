@@ -34,7 +34,7 @@ module CDServer
             puts "*** application.rb *****"
             puts "*** Identified as WebServer application - Starting Avahi service Cleandesk on port: #{port}*****"
 
-            DNSSD.register! 'Cleandesk', '_cds._tcp', nil, 3000
+            DNSSD.register! 'Cleandesk', '_cds._tcp', nil, port
             sleep
           end
           sleep(1)
