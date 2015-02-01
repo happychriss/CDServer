@@ -1,4 +1,4 @@
-RAILS_PROJECT_ROOT="//home/cds"
+RAILS_PROJECT_ROOT="//home/cds/CDServer"
 PID_DIR = "#{RAILS_PROJECT_ROOT}/tmp/pids"
 LOG_DIR= "#{RAILS_PROJECT_ROOT}/log"
 NGINX_ROOT="/usr/local/nginx/sbin" #config in /usr/local/nginx/conf/nginx.conf
