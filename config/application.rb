@@ -25,21 +25,16 @@ module CDServer
 
 # this will start the avahi server, scanner/converter etc will know they now can connect
     config.before_initialize do
-      ARGV.each_with_index do|a,i|
-        if a=='-p' then
-          port=ARGV[i+1].to_i
 
           t=Thread.new do
 
             puts "*** application.rb *****"
-            puts "*** Identified as WebServer application - Starting Avahi service Cleandesk on port: #{port}*****"
+            puts "*** Identified as WebServer application - Starting Avahi service Cleandesk on port:*****"
 
-            DNSSD.register! 'Cleandesk', '_cds._tcp', nil, port
+            DNSSD.register! 'Cleandesk', '_cds._tcp', nil, 8082
             sleep
           end
           sleep(1)
-        end
-      end
 
     end
 
