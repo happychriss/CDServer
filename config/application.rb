@@ -28,10 +28,12 @@ module CDServer
 
           t=Thread.new do
 
-            puts "*** application.rb *****"
-            puts "*** Identified as WebServer application - Starting Avahi service Cleandesk on port:*****"
+            port=Rails::Server.new.options[:Port]
 
-            DNSSD.register! 'Cleandesk', '_cds._tcp', nil, 8082
+            puts "*** application.rb *****"
+            puts "*** Identified as WebServer application - Starting Avahi service Cleandesk on port:#{port}*****"
+
+            DNSSD.register! 'Cleandesk', '_cds._tcp', nil, port
             sleep
           end
           sleep(1)
