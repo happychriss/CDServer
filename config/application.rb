@@ -24,21 +24,7 @@ module CDServer
 
 
 # this will start the avahi server, scanner/converter etc will know they now can connect
-    config.before_initialize do
 
-          t=Thread.new do
-
-            port=Rails::Server.new.options[:Port]
-
-            puts "*** application.rb *****"
-            puts "*** Identified as WebServer application - Starting Avahi service Cleandesk on port:#{port}*****"
-
-            DNSSD.register! 'Cleandesk', '_cds._tcp', nil, port
-            sleep
-          end
-          sleep(1)
-
-    end
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
