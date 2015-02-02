@@ -3,7 +3,7 @@ PID_DIR = "#{RAILS_PROJECT_ROOT}/tmp/pids"
 LOG_DIR= "#{RAILS_PROJECT_ROOT}/log"
 NGINX_ROOT="/usr/local/nginx/sbin" #config in /usr/local/nginx/conf/nginx.conf
 THIN_ROOT="//home/cds/.rvm/gems/ruby-2.1.0/bin/thin"
-THIN_CONFIG=File.join(RAILS_PROJECT_ROOT,"thin_nginx_cdserver.yml")
+THIN_CONFIG=File.join(RAILS_PROJECT_ROOT,"thin_nginx.yml")
 RVM_BIN="//home/cds/.rvm/bin"
 
 

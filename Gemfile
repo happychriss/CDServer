@@ -22,7 +22,7 @@ group :assets do
 end
 
 gem 'quiet_assets', :group => :development
-
+gem 'i18n'
 gem 'redis'
 gem 'sidekiq'
 gem 'clockwork'
