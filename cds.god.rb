@@ -98,7 +98,7 @@ God.watch do |w|
   w.name 	  = "avahi"  
   w.group         ='cds'
   w.dir           = RAILS_PROJECT_ROOT  
-  w.start = rvm_bin('bundle')+"exec "+ rvm_bin('ruby')+" #{RAILS_PROJECT_ROOT}/avahi_service_start_port.rb -p 8082 -e production"
+  w.start = rvm_bin('bundle')+"exec ruby #{RAILS_PROJECT_ROOT}/avahi_service_start_port.rb -p 8082 -e production"
   w.log           = "#{LOG_DIR}/avahi.log"  
   w.keepalive
 end
