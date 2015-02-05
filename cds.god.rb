@@ -1,9 +1,10 @@
-RAILS_PROJECT_ROOT="//home/cds/CDServer"
-PID_DIR = "#{RAILS_PROJECT_ROOT}/tmp/pids"
-LOG_DIR= "#{RAILS_PROJECT_ROOT}/log"
+CDSERVER_ROOT="//home/cds/CDServer"
+CDDAEMON_ROOT="//home/cds/CDDaemon"
+CDSERVER_PID = "#{CDSERVER_ROOT}/tmp/pids"
+CDSERVER_LOG= "#{CDSERVER_ROOT}/log"
 NGINX_ROOT="/usr/local/nginx/sbin" #config in /usr/local/nginx/conf/nginx.conf
 THIN_ROOT="//home/cds/.rvm/gems/ruby-2.1.0/bin/thin"
-THIN_CONFIG=File.join(RAILS_PROJECT_ROOT,"thin_nginx.yml")
+THIN_CONFIG=File.join(CDSERVER_ROOT,"thin_nginx.yml")
 RVM_BIN="//home/cds/.rvm/bin"
 
 
@@ -18,12 +19,12 @@ God.watch do |w|
   w.start_grace   = 10.seconds
   w.restart_grace = 10.seconds
   w.interval      = 60.seconds
-  w.dir           = RAILS_PROJECT_ROOT
+  w.dir           = CDSERVER_ROOT
   w.env 	  = {'RAILS_ENV' => "production" }
   w.start         = rvm_bin('rake')+"ts:start"
   w.stop          = rvm_bin('rake')+"ts:stop"
   w.restart       = rvm_bin('rake')+"ts:restart"
-  w.pid_file      = File.join(RAILS_PROJECT_ROOT, 'log', 'searchd.production.pid')
+  w.pid_file      = File.join(CDSERVER_LOG,'searchd.production.pid')
   w.keepalive
 end
 
@@ -34,11 +35,11 @@ God.watch do |w|
   w.restart_grace = 10.seconds
   w.stop_grace    = 10.seconds
   w.interval      = 60.seconds
-  w.dir           = RAILS_PROJECT_ROOT
-  w.start         = rvm_bin('bundle')+"exec sidekiq -e production -c 3 -P #{RAILS_PROJECT_ROOT}/tmp/pids/sidekiq.pid"
-  w.stop          = rvm_bin('bundle')+"exec sidekiqctl stop #{RAILS_PROJECT_ROOT}/tmp/pids/sidekiq.pid 5"
+  w.dir           = CDSERVER_ROOT
+  w.start         = rvm_bin('bundle')+"exec sidekiq -e production -c 3 -P #{CDSERVER_ROOT}/tmp/pids/sidekiq.pid"
+  w.stop          = rvm_bin('bundle')+"exec sidekiqctl stop #{CDSERVER_ROOT}/tmp/pids/sidekiq.pid 5"
   w.keepalive
-  w.log         = File.join(RAILS_PROJECT_ROOT, 'log', 'sidekiq.log')
+  w.log           = File.join(CDSERVER_LOG, 'sidekiq.log')
   w.behavior(:clean_pid_file)
 #  w.env           = {'HOME' => '/root'} ## for gpg
 end
@@ -50,29 +51,29 @@ God.watch do |w|
   w.restart_grace = 10.seconds
   w.stop_grace    = 10.seconds
   w.interval      = 60.seconds
-  w.dir           = RAILS_PROJECT_ROOT
+  w.dir           = CDSERVER_ROOT
 
-  w.start         = rvm_bin('bundle')+"exec clockwork ./job/cdserver_maintenance_job.rb & echo $! > #{PID_DIR}/clockwork.pid"
-  w.stop          = "kill -QUIT `cat #{PID_DIR}/clockwork.pid`"
+  w.start         = rvm_bin('bundle')+"exec clockwork ./job/cdserver_maintenance_job.rb & echo $! > #{CDSERVER_PID}/clockwork.pid"
+  w.stop          = "kill -QUIT `cat #{CDSERVER_PID}/clockwork.pid`"
   w.keepalive
-  w.log           = File.join(RAILS_PROJECT_ROOT, 'log', 'clockwork.log')
+  w.log           = File.join(CDSERVER_LOG, 'clockwork.log')
   w.behavior(:clean_pid_file)
   w.env           = {'RAILS_ENV' => "production" }
-  w.pid_file      = "#{PID_DIR}/clockwork.pid"
+  w.pid_file      = "#{CDSERVER_PID}/clockwork.pid"
 end
 
 God.watch do |w|
   w.name          = "thin"
   w.group         ='cds'
-  w.dir           = RAILS_PROJECT_ROOT
+  w.dir           = CDSERVER_ROOT
   w.start_grace   = 10.seconds
   w.restart_grace = 10.seconds
   w.interval      = 60.seconds
-  w.start         = rvm_bin('thin')+"start --config ./thin_nginx.yml --log #{LOG_DIR}/thin.log"
+  w.start         = rvm_bin('thin')+"start --config ./thin_nginx.yml --log #{CDSERVER_LOG}/thin.log"
   w.stop          = rvm_bin('thin')+"stop"
   w.restart       = rvm_bin('thin')+"restart"
-  w.pid_file      = "#{PID_DIR}/thin.pid" 
-  w.log           = "#{LOG_DIR}/thin.log"  
+  w.pid_file      = "#{CDSERVER_PID}/thin.pid" 
+  w.log           = "#{CDSERVER_LOG}/thin.log"  
   w.keepalive
 end
 
@@ -80,15 +81,15 @@ end
 God.watch do |w|
   w.name          = "private_pub"
   w.group         ='cds'
-  w.dir           = RAILS_PROJECT_ROOT
+  w.dir           = CDSERVER_ROOT
   w.start_grace   = 10.seconds
   w.restart_grace = 10.seconds
   w.interval      = 60.seconds
   w.env           = {'RAILS_ENV' => "production" }
-  w.start         = rvm_bin('rackup')+"private_pub.ru -s thin -E production -P #{RAILS_PROJECT_ROOT}/tmp/pids/private_pub.pid"
+  w.start         = rvm_bin('rackup')+"private_pub.ru -s thin -E production -P #{CDSERVER_PID}/private_pub.pid"
 
-  w.log           = File.join(RAILS_PROJECT_ROOT, 'log', 'private_pub.log')
-  w.pid_file      = "#{RAILS_PROJECT_ROOT}/tmp/pids/private_pub.pid"
+  w.log           = File.join(CDSERVER_LOG, 'private_pub.log')
+  w.pid_file      = "#{CDSERVER_PID}/private_pub.pid"
 #   w.stop_signal = 'KILL'
   w.keepalive
 end
@@ -97,9 +98,10 @@ end
 God.watch do |w|
   w.name 	  = "avahi"  
   w.group         ='cds'
-  w.dir           = RAILS_PROJECT_ROOT  
-  w.start = rvm_bin('bundle')+"exec ruby #{RAILS_PROJECT_ROOT}/avahi_service_start_port.rb -p 8082 -e production"
-  w.log           = "#{LOG_DIR}/avahi.log"  
+  w.dir           = CDSERVER_ROOT  
+  w.start = rvm_bin('bundle')+"exec ruby #{CDSERVER_ROOT}/avahi_service_start_port.rb -p 8082 -e production"
+  w.log           = "#{CDSERVER_LOG}/avahi.log"  
   w.keepalive
 end
+
 
