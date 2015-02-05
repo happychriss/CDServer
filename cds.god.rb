@@ -104,4 +104,12 @@ God.watch do |w|
   w.keepalive
 end
 
-
+#scanner server, in case scanner is connected with cubietrack
+God.watch do |w|
+  w.name 	  ='cddaemon'
+  w.group         ='scanner'
+  w.dir           = CDDAEMON_ROOT  
+  w.start         = rvm_bin('bundle')+"exec ruby #{CDDAEMON_ROOT}/cdclient_daemon.rb --service 'Scanner' --uid 13 --prio 1 --subnet '10.237.48.*' --port 8971 --avahiprefix production --unpaper_speed y"
+  w.log           = "#{CDDAEMON_ROOT}/cdscanner.log"  
+  w.keepalive
+end
