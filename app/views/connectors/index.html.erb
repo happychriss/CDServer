@@ -16,7 +16,7 @@
     <td><%= connection.service %></td>
     <td><%= connection.prio %></td>
     <td><%= connection.uri %></td>
-    <td><%= link_to 'Destroy', connection, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <td><%= link_to 'Destroy',connector_path(:id => connection.uid), method: :delete,  data: {confirm: 'Are you sure?'} %></td>
   </tr>
 <% end %>
 </table>

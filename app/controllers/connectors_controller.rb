@@ -37,10 +37,15 @@ class ConnectorsController < ApplicationController
   # DELETE /connections/1
   # DELETE /connections/1.json
   def destroy
-    @connector = Connector.find_all_by_id(params[:id]).first
+    @connector = Connector.find_all_by_uid(params[:id]).first
     @connector.destroy
+
+    respond_to do |format|
+      format.html {redirect_to status_url }
+      format.json { render nothing: true}
+    end
+
   push_app_status
-    render nothing: true
 
   end
 end
