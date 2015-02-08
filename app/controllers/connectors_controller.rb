@@ -20,17 +20,20 @@ class ConnectorsController < ApplicationController
   # POST /connections
   # POST /connections.json
   def create
-    @connector = Connector.new(params[:connector])
-    @connector.save!
 
-    Scanner.connect if @connector.service=='Scanner'
-    Converter.connect if @connector.service=='Converter'
+    service= params[:connector][:service]
 
-    if @connector.service=='Converter'
-      Converter.run_conversion(Page.for_batch_conversion)
+    case service
+      when 'Scanner'
+        Scanner.connect(params[:connector])
+      when 'Converter'
+        Converter.connect(params[:connector])
+        Converter.run_conversion(Page.for_batch_conversion)
+      else
+        raise "Create Connection with unkown service: #{service}"
     end
 
- push_app_status
+   push_app_status
     render nothing: true
   end
 
@@ -38,14 +41,14 @@ class ConnectorsController < ApplicationController
   # DELETE /connections/1.json
   def destroy
     @connector = Connector.find_all_by_uid(params[:id]).first
-    @connector.destroy
+    @connector.destroy unless @connector.nil?
 
     respond_to do |format|
-      format.html {redirect_to status_url }
-      format.json { render nothing: true}
+      format.html { redirect_to status_url }
+      format.json { render nothing: true }
     end
 
-  push_app_status
+    push_app_status
 
   end
 end

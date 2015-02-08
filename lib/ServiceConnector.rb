@@ -11,6 +11,97 @@ require 'drb/drb'
 module ServiceConnector
 
 
+
+
+
+  def connect(connection_uri)
+
+    connection = Connector.find_or_initialize_by_uid(connection_uri[:uid])
+    connection.update_attributes(connection_uri)
+    connection.save!
+    get_drb
+
+  end
+
+
+  ### check if a working DRB connection exsits
+
+  def connected?
+
+
+    puts "Checking for connection for servcie:#{self.service_name}"
+    begin
+      drb=get_drb
+      if drb.nil? then
+        return false
+      else
+        return true
+      end
+
+    rescue
+      return false
+    end
+
+  end
+
+
+
+  ### return a DRB connection either from DB or from DRB connection object
+  def get_drb
+
+    begin
+      puts "**** Request DRB Connection for service: #{self.service_name}"
+
+      ##http://dalibornasevic.com/posts/9-ruby-singleton-pattern  class variables as singelton
+      @@drb_connections||=Hash.new
+
+      ## check if service is registered in DB
+
+      connection=Connector.find_service(self.service_name)
+
+      if connection.nil? then
+        puts "No connection found in DB - return nil"
+        return nil
+      end
+
+      puts "Found :#{connection.inspect}***************"
+
+
+      ## check of the DRB object still works, if not remove the DRB object
+      drb=@@drb_connections[connection.uid]
+      if !drb.nil? and drb_connected?(drb) then
+        puts "********* Found working DRB connection in the HASH  - all done - GREATE !!!"
+        return drb
+      else
+        puts "********* Found a not working DRB connection in the DB"
+        @@drb_connections.delete(connection.uid)
+      end
+
+      ### create a new connection from the database
+
+      puts "************* Creating new connection with uri #{connection.uri} from DB *********"
+      drb= DRb::DRbObject.new_with_uri(connection.uri) ##
+      #      puts "DRB Object #{drb} created"
+      if drb_connected?(drb) then
+        @@drb_connections[connection.uid]=drb
+        puts "***** DRB Class #{@@drb_connections.inspect}**********"
+        return drb
+      else
+        connection.destroy
+        raise "Connection in DB not vaild anymore - connection not created for uri #{connection.uri}"
+      end
+
+
+    rescue Exception => e
+      Log.write_error('DRBConnection - ServiceConnector', e.message)
+      raise
+    end
+
+  end
+
+
+  private
+
   def drb_connected?(drb)
     connected=false
     begin
@@ -20,67 +111,5 @@ module ServiceConnector
     end
     return connected
   end
-
-
-  def connected?
-    not get_drb.nil? ## return true if not nil, meaning drb object found
-  end
-
-  def connect
-    drb=get_drb
-    return false if drb.nil?
-    drb_connected?(drb)
-  end
-
-
-  def get_drb
-
-    begin
-
-      puts "*********** Run via DRB***************+"
-
-      ##http://dalibornasevic.com/posts/9-ruby-singleton-pattern  class variables as singelton
-      @@drb_connections||=Hash.new
-
-      ## check if service is registered in DB
-
-      connection=Connector.find_service(self.service_name)
-
-      puts "*********** found no connections***************" if connection.nil?
-
-      puts "*********** found :#{connection.inspect}***************" unless connection.nil?
-
-      ## check if a connection is stored in the database, that can be used
-      return nil if connection.nil?
-
-      ## check of the DRB object still works, if not remove the DRB object
-      drb=@@drb_connections[connection.uid]
-      if !drb.nil? and drb_connected?(drb) then
-        puts "********* Found working DRB connection"
-        return drb
-      else
-        puts "********* Found not working DRB connection"
-        @@drb_connections.delete(connection.uid)
-      end
-
-      ### create a new connection from the database
-
-      puts "************* Creating new conenction*********"
-      drb= DRb::DRbObject.new_with_uri(connection.uri) ##
-      puts "****DRB Object #{drb} *****************"
-      if drb_connected?(drb) then
-        @@drb_connections[connection.uid]=drb
-        puts "***** DRB Class #{@@drb_connections.inspect}**********"
-        return drb
-      end
-
-      nil
-    rescue Exception => e
-      Log.write_error('DRBConnection - ServiceConnector', e.message)
-      raise
-    end
-
-  end
-
 end
 
