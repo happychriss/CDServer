@@ -327,6 +327,8 @@ class Page < ActiveRecord::Base
   end
 
 
+
+  ### if an original as JPG already exists and this is called a second time, the PDF will be stored
   def save_file(file_path,file_type)
 
     path = file_path.tempfile

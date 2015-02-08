@@ -27,13 +27,16 @@ class ConvertersController < ApplicationController
 
   end
 
-  def convert_upload_text
+  def convert_upload_pdf
 
     page=Page.find(params[:page][:id])
     page.content=params[:page][:content]
     page.status=Page::UPLOADED_PROCESSED
+    page.mime_type='application/pdf' if page.source==Page::PAGE_SOURCE_SCANNED
     page.ocr=true
     page.save!
+
+    page.save_file(params[:page][:pdf_data],:org)     ### will overwrite orginal file with PDF
 
     push_app_status ## send status-update to application main page via private_pub gem, fayes,
     push_converted_page(page)

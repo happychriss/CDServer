@@ -56,7 +56,7 @@ CDServer::Application.routes.draw do
   ### called from scanner drb daemon ####
   post 'convert_status' =>  'converters#convert_status'
   post 'convert_upload_jpgs' =>  'converters#convert_upload_jpgs'
-  post 'convert_upload_text' =>  'converters#convert_upload_text'
+  post 'convert_upload_pdf' =>  'converters#convert_upload_pdf'
 
   resources :folders
   resources :tags

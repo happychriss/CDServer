@@ -62,7 +62,7 @@ class UploadsController < ApplicationController
         @page.save
       end
 
-      ## Background: create smaller images and pdf text
+      ## Background: create smaller images and pdf  and text
 
       Converter.run_conversion([@page.id])
 
