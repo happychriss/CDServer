@@ -53,7 +53,7 @@ God.watch do |w|
   w.interval      = 60.seconds
   w.dir           = CDSERVER_ROOT
 
-  w.start         = rvm_bin('bundle')+"exec clockwork ./job/cdserver_maintenance_job.rb & echo $! > #{CDSERVER_PID}/clockwork.pid"
+  w.start         = rvm_bin('bundle')+"exec clockwork ./services/cdserver_maintenance_job.rb & echo $! > #{CDSERVER_PID}/clockwork.pid"
   w.stop          = "kill -QUIT `cat #{CDSERVER_PID}/clockwork.pid`"
   w.keepalive
   w.log           = File.join(CDSERVER_LOG, 'clockwork.log')
@@ -99,11 +99,11 @@ God.watch do |w|
   w.name 	  = "avahi"  
   w.group         ='cds'
   w.dir           = CDSERVER_ROOT  
-  w.start = rvm_bin('bundle')+"exec ruby #{CDSERVER_ROOT}/avahi_service_start_port.rb -p 8082 -e production"
+  w.start = rvm_bin('bundle')+"exec ruby #{CDSERVER_ROOT}/services/avahi_service_start_port.rb -p 8082 -e production"
   w.log           = "#{CDSERVER_LOG}/avahi.log"  
   w.keepalive
 end
-
+################# Not part of CDServer #########################################################################
 #scanner server, in case scanner is connected with cubietrack
 God.watch do |w|
   w.start_grace   = 10.seconds
