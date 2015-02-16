@@ -22,7 +22,7 @@ DAEMON_HOME=//home/cds/CDServer
 DAEMON_LOG=$DAEMON_HOME/log/gpio_server.log
 DAEMON_OPTS="-e production -p 8970"
 PID=/run/cpioserver.pid
-VERBOSE=y
+VERBOSE="y"
 
 
 . /lib/init/vars.sh
@@ -38,7 +38,7 @@ VERBOSE=y
 do_start()
 {
     start-stop-daemon --start --quiet --pidfile $PID --exec $DAEMON --test > /dev/null || return 1
-    start-stop-daemon --start --quiet --pidfile $PID --exec $DAEMON -- $DAEMON_OPTS 2>/dev/null || return 2
+    start-stop-daemon --start --quiet --pidfile $PID --exec $DAEMON -- $DAEMON_OPTS 2>$DAEMON_LOG || return 2
 }
 #
 # Function that stops the daemon/service
@@ -57,7 +57,7 @@ do_stop()
 }
 case "$1" in
 start)
-    [ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$NAME"
+    [ "$VERBOSE" != no ] && echo "Starting $DESC" "$NAME"
     do_start
     case "$?" in
     0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
@@ -65,7 +65,7 @@ start)
 esac
 ;;
 stop)
-    [ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$NAME"
+    [ "$VERBOSE" != no ] && echo "Stopping $DESC" "$NAME"
     do_stop
     case "$?" in
     0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
@@ -73,7 +73,7 @@ stop)
 esac
 ;;
 restart)
-    log_daemon_msg "Restarting $DESC" "$NAME"
+    echo "Restarting $DESC" "$NAME"
     $0 stop &&
     $0 start ||
 exit $?
