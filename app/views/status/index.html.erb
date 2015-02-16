@@ -28,9 +28,10 @@
 
 <div class="status_frame">
   <h2>Documents not converted: <%= Page.uploading_status(:not_converted) %></h2>
+  <h2>Documents pending conversion: <%= Page.uploading_status(:processing) %></h2>
   <% if Converter.connected? then %>
       <h2>Connected to remote Converter!</h2>
-      <%= button_to "Trigger conversion now ", status_start_conversion_path, :method => :get %>
+      <%= button_to "Trigger conversion & cleaning now ", status_start_conversion_path, :method => :get %>
   <% else %>
       <h2>Not connected !!!</h2>
   <% end %>

@@ -179,6 +179,8 @@ class Page < ActiveRecord::Base
                Page.where("status < #{Page::UPLOADED_PROCESSED}").count
              when :not_converted then
                Page.where("status = #{Page::UPLOADED}").count
+             when :processing then
+               Page.where("status = #{Page::UPLOADED_PROCESSING}").count
              when :no_ocr then
                Page.where('ocr = 0').count
              else
@@ -284,6 +286,11 @@ class Page < ActiveRecord::Base
 
   def update_status(status)
       self.update_attributes(:status => status)
+  end
+
+  ### clean all pages, that got stucked in upload processing, because converter daemon crashed. shall be called when converter daemon connects again
+  def self.clean_pending
+    Page.where(:status => Page::UPLOADED_PROCESSING).update_all(:status=>Page::UPLOADED)
   end
 
   def status_text

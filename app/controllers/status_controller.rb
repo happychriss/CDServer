@@ -23,6 +23,7 @@ class StatusController < ApplicationController
   end
 
   def start_conversion
+    Page.clean_pending
     Converter.run_conversion(Page.for_batch_conversion)
     redirect_to :action => :index
   end
