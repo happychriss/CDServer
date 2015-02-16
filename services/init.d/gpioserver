@@ -24,6 +24,10 @@ DAEMON_OPTS="-e production -p 8970"
 PID=/run/cpioserver.pid
 VERBOSE=y
 
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
 #
 # Function that starts the daemon/service
 #
