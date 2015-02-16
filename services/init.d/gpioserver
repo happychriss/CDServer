@@ -9,15 +9,14 @@
 # Short-Description: starts the gpio server
 # Description:       starts the gpio server
 ### END INIT INFO
-
+## Create RVM wrapper via: rvm wrapper 2.1.1 bootup //home/cds/CDServer/services/gpio_server.rb
 
 DESC="gpioserver for CT io controll"
 NAME=gpio_server
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 
-DAEMON=//home/cds/.rvm/bin/bootup_gpioserver
-DAEMON=/home/rvm/.rvm/wrappers/cinch/smfbot
+DAEMON=//home/cds/.rvm/bin/bootup_gpio_server.rb
 
 DAEMON_HOME=//home/cds/CDServer
 DAEMON_LOG=$DAEMON_HOME/log/gpio_server.log

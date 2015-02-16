@@ -38,9 +38,10 @@ gem  'prawn'
 gem 'jquery_datepicker'
 gem 'dnssd'
 gem 'jquery-migrate-rails'
+gem 'sunxi_gpio','~> 0.0.4', :git => 'git://github.com/happychriss/sunxi-gpio-gem.git'     # my personal sunxi-gem with SERVER
 
 # To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
+# gem 'bcrypt-ruby', '~> 3.0.0  '
 
 # To use Jbuilder templates for JSON
 # gem 'jbuilder'
