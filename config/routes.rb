@@ -49,6 +49,7 @@ CDServer::Application.routes.draw do
   get "scanners/scan_info"
   ### called from scanner drb daemon ####
   post 'start_scanner' => 'scanners#start_scanner'
+  post 'start_scanner_from_hardware' => 'scanners#start_scanner_from_hardware'
   post 'scan_status' =>  'scanners#scan_status'
   post 'scan_error' =>  'scanners#scan_error'
 

@@ -27,7 +27,12 @@ class ScannersController < ApplicationController
     color=!params[:color].nil?
     scanner_name=params[:scanner_name]
     Scanner.start_scan(scanner_name,color)
+    push_app_status ## send status-update to application main page via private_pub gem, fayes,
 
     respond_to(:js)
+  end
+
+  def start_scanner_from_hardware
+
   end
 end

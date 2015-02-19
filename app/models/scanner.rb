@@ -18,7 +18,6 @@ class Scanner
       self.get_drb.scanner_start_scann(scanner_name,color)
     else
       Log.write_error('ScannerWorker', 'Not connected to scanner')
-      push_app_status ## send status-update to application main page via private_pub gem, fayes,
     end
 
   end

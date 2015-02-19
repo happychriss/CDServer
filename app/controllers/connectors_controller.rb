@@ -29,6 +29,10 @@ class ConnectorsController < ApplicationController
       when 'Converter'
         Converter.connect(params[:connector])
         Converter.run_conversion(Page.for_batch_conversion)
+      when 'Iocontroller'
+        Hardware.connect(params[:connector])
+        Hardware.blink_ok_status_led
+        Hardware.watch_scanner_button_on
       else
         raise "Create Connection with unkown service: #{service}"
     end
