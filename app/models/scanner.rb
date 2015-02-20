@@ -3,6 +3,8 @@ require 'ServiceConnector'
 
 class Scanner
 
+  COLOR_MODE_ON=true
+  COLOR_MODE_OFF=false
 
   extend ServiceConnector ##provides methods to connect to remote drb services
 

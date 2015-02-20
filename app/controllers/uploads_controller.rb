@@ -64,7 +64,12 @@ class UploadsController < ApplicationController
 
       ## Background: create smaller images and pdf  and text
 
+      Hardware.update_status_leds
+
       Converter.run_conversion([@page.id])
+
+      Hardware.blink_ok_status_led
+
 
       ## this triggers the pusher to update the page with new uploaded data
       render('create_from_scanner_jpg', :handlers => [:erb], :formats => [:js])

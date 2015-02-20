@@ -29,7 +29,7 @@ class ConnectorsController < ApplicationController
       when 'Converter'
         Converter.connect(params[:connector])
         Converter.run_conversion(Page.for_batch_conversion)
-      when 'Iocontroller'
+      when 'Hardware'
         Hardware.connect(params[:connector])
         Hardware.blink_ok_status_led
         Hardware.watch_scanner_button_on

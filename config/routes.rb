@@ -43,6 +43,8 @@ CDServer::Application.routes.draw do
   get 'search_doc_id' => 'documents#search_doc_id'
   get 'search_page_id' => 'documents#search_page_id'
   get 'search_archive' => 'documents#search_archive'
+  get 'get_server_status' => 'status#get_server_status'
+
   post 'status_drb' => 'status#status_drb'
 
   ## Scanner Controller

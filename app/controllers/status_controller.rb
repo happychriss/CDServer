@@ -34,4 +34,8 @@ class StatusController < ApplicationController
   end
 
 
+  ## called by the hardware stack to read the server status and to display if any error
+  def get_server_status
+      render :json => Log.check_errors?
+  end
 end
