@@ -19,7 +19,6 @@ class ConvertersController < ApplicationController
    page.save_file(params[:page][:result_jpg],:jpg)
    page.save_file(params[:page][:result_sjpg],:s_jpg)
 
-
    push_app_status ## send status-update to application main page via private_pub gem, fayes,
    push_converted_page(page)
 
@@ -36,7 +35,9 @@ class ConvertersController < ApplicationController
     page.ocr=true
     page.save!
 
-    page.save_file(params[:page][:pdf_data],:org)     ### will overwrite orginal file with PDF
+
+    ## pdf_data is only sent in case it was na pdf
+    page.save_file(params[:page][:pdf_data],:org)  unless params[:page][:pdf_data]==""    ### will overwrite orginal file with PDF
 
     push_app_status ## send status-update to application main page via private_pub gem, fayes,
     push_converted_page(page)

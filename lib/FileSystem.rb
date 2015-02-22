@@ -17,7 +17,7 @@ module FileSystem
                                         '.gpg'
                                      when :org
                                        '.org'
-                                     when :all
+                                      when :all
                                       '*.*'
                                    end
     return file_name

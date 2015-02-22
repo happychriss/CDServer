@@ -44,8 +44,8 @@ class UploadsController < ApplicationController
     ### Upload from CDClient (Scanner) - file uploaded as JPG - single pages as jpg
     def create_from_scanner_jpg
 
-      @page = Page.new(params[:page])
-      @page.original_filename=@page.upload_file.original_filename
+      @page = Page.new
+      @page.original_filename=params[:upload_file].original_filename
       @page.position=0
       @page.source=Page::PAGE_SOURCE_SCANNED
       @page.mime_type='image/jpeg'
@@ -53,14 +53,11 @@ class UploadsController < ApplicationController
       @page.save!
 
       ## Copy to docstore
-      @page.save_file(params[:page][:upload_file], :org)
+      @page.save_file(params[:upload_file], :org)
 
       ## just if provided in addition, we are happy, will be _s.jpg
 
-      unless params[:small_upload_file].nil?
-        @page.save_file(params[:small_upload_file], :s_jpg)
-        @page.save
-      end
+      @page.save_file(params[:small_upload_file], :s_jpg) unless params[:small_upload_file].nil?
 
       ## Background: create smaller images and pdf  and text
 
