@@ -88,6 +88,7 @@ module ServiceConnector
         return drb
       else
         connection.destroy
+        @@drb_connections.delete(connection.uid)
         raise "Connection in DB not vaild anymore - connection not created for uri #{connection.uri}"
       end
 

@@ -28,9 +28,11 @@ class ConnectorsController < ApplicationController
         Scanner.connect(params[:connector])
       when 'Converter'
         Converter.connect(params[:connector])
+        sleep(0.5) ##just to avoid to much going on in parallel, should not be needed, just better
         Converter.run_conversion(Page.for_batch_conversion)
       when 'Hardware'
         Hardware.connect(params[:connector])
+        sleep(0.5)
         Hardware.blink_ok_status_led
         Hardware.watch_scanner_button_on
       else

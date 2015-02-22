@@ -21,7 +21,7 @@ class Converter
 
         puts "Start remote call: Processing scanned file remote: #{page.id} with path: #{page.path(:org)} and mime type #{page.short_mime_type} and Source: #{page.source.to_s}"
 
-        scanned_jpg=File.read(page.path(:org))
+        scanned_jpg=File.open(page.path(:org))              ####not read, but open to send the data as file
 
         ### REMOTE CALL via DRB - the server can run on any server: distributed ruby
 
