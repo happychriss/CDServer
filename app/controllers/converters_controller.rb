@@ -31,7 +31,7 @@ class ConvertersController < ApplicationController
     page=Page.find(params[:page][:id])
     page.content=params[:page][:content]
     page.status=Page::UPLOADED_PROCESSED
-    page.mime_type='application/pdf' if page.source==Page::PAGE_SOURCE_SCANNED
+    page.mime_type='application/pdf' if page.source==Page::PAGE_SOURCE_SCANNED  or page.source==Page::PAGE_SOURCE_MOBILE
     page.ocr=true
     page.save!
 
