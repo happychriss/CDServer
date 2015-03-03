@@ -13,16 +13,16 @@ class ConvertersController < ApplicationController
   ### called from converter, when preview images are created
   def convert_upload_jpgs
 
-   page=Page.find(params[:page][:id])
-   page.save!
+    page=Page.find(params[:page][:id])
+    page.save!
 
-   page.save_file(params[:page][:result_jpg],:jpg)
-   page.save_file(params[:page][:result_sjpg],:s_jpg)
+    page.save_file(params[:page][:result_jpg], :jpg)
+    page.save_file(params[:page][:result_sjpg], :s_jpg)
 
-   push_app_status ## send status-update to application main page via private_pub gem, fayes,
-   push_converted_page(page)
+    push_app_status ## send status-update to application main page via private_pub gem, fayes,
+    push_converted_page(page)
 
-   render :nothing => true
+    render :nothing => true
 
   end
 
@@ -31,13 +31,12 @@ class ConvertersController < ApplicationController
     page=Page.find(params[:page][:id])
     page.content=params[:page][:content]
     page.status=Page::UPLOADED_PROCESSED
-    page.mime_type='application/pdf' if page.source==Page::PAGE_SOURCE_SCANNED  or page.source==Page::PAGE_SOURCE_MOBILE
+    page.mime_type='application/pdf' if page.source==Page::PAGE_SOURCE_SCANNED or page.source==Page::PAGE_SOURCE_MOBILE
     page.ocr=true
     page.save!
 
+    page.save_file(params[:page][:pdf_data], :org)
 
-    ## pdf_data is only sent in case it was na pdf
-    page.save_file(params[:page][:pdf_data],:org)  unless params[:page][:pdf_data]==""    ### will overwrite orginal file with PDF
 
     push_app_status ## send status-update to application main page via private_pub gem, fayes,
     push_converted_page(page)

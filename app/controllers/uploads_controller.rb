@@ -86,7 +86,7 @@ class UploadsController < ApplicationController
       upload_file=params[:upload_file]
 
       page=Page.new(
-          :original_filename => File.basename(upload_file.original_filename)+'.pdf',
+          :original_filename => File.basename(upload_file.original_filename),
           :source => Page::PAGE_SOURCE_MOBILE,
           :mime_type => 'image/jpeg')
 
