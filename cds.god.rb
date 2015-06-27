@@ -111,7 +111,7 @@ God.watch do |w|
   w.name 	  ='scanner_daemon'
   w.group         ='cds'
   w.dir           = CDDAEMON_ROOT  
-  w.start         = rvm_bin('bundle')+"exec ruby #{CDDAEMON_ROOT}/cdclient_daemon.rb --service Scanner --uid 13 --prio 1 --subnet 10.237.48 --port 8971 --avahiprefix production --unpaper_speed y"
+  w.start         = rvm_bin('bundle')+"exec ruby #{CDDAEMON_ROOT}/cdclient_daemon.rb --service Scanner --uid 13 --prio 1 --subnet 192.168.1 --port 8971 --avahiprefix production --unpaper_speed y"
   w.log           = "#{CDDAEMON_ROOT}/cdscanner.log"  
   w.keepalive
 end
@@ -121,7 +121,7 @@ God.watch do |w|
   w.name 	  ='hardware_daemon'
   w.group         ='cds'
   w.dir           = CDDAEMON_ROOT
-  w.start         = rvm_bin('bundle')+"exec ruby #{CDDAEMON_ROOT}/cdclient_daemon.rb --service Hardware --uid 99 --prio 0 --subnet 10.237.48 --port 8961 --avahiprefix production --gpio_server ct --gpio_port 8780"
+  w.start         = rvm_bin('bundle')+"exec ruby #{CDDAEMON_ROOT}/cdclient_daemon.rb --service Hardware --uid 99 --prio 0 --subnet 192.168-1 --port 8961 --avahiprefix production --gpio_server ct --gpio_port 8780"
   w.log           = "#{CDDAEMON_ROOT}/cdhardware.log"
   w.keepalive
 end
