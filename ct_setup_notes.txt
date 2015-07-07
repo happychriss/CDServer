@@ -49,3 +49,16 @@ installed from ubunut repro
 //data /data/CDServer/sphinx_index 
 mysql config updated to point to /data/database  and database and
 
+***** server IP address update *****
+in case the CT ip address is changed, the DNS name-server of CT must be updated in cds.god.rb and
+
+$ sudo vim /etc/resolvconf/resolv.conf.d/base
+
+Then put your nameserver list in like so:
+
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+
+Finally update resolvconf:
+
+$ sudo resolvconf -u

@@ -3,8 +3,9 @@
     <%= text_field_tag(:q, @q, :size => 40, :id => 'search_input') %>
 
     <span style="margin-left: 20px; font-size: large;">
-    Relevance:<%= radio_button_tag 'sort_mode', 'relevance', @sort_mode==:relevance %>
       Time:<%= radio_button_tag 'sort_mode', 'time', @sort_mode==:time %>
+    Relevance:<%= radio_button_tag 'sort_mode', 'relevance', @sort_mode==:relevance %>
+
     </span>
 
     <%= render :partial => 'keywords', :locals => {:current_keywords => @current_keywords} %>

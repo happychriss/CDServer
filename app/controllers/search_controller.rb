@@ -3,7 +3,7 @@ class SearchController < ApplicationController
 
   def search
     @current_keywords||= []
-    @sort_mode||= :relevance
+    @sort_mode||= :time
   end
 
   def found
