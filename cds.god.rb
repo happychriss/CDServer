@@ -69,10 +69,10 @@ God.watch do |w|
   w.start_grace   = 10.seconds
   w.restart_grace = 10.seconds
   w.interval      = 60.seconds
-  w.start         = rvm_bin('thin')+"start --config ./thin_nginx.yml --log #{CDSERVER_LOG}/thin.log"
-  w.stop          = rvm_bin('thin')+"stop"
+  w.start         = rvm_bin('thin')+"start --config ./thin_nginx.yml --log #{CDSERVER_LOG}/thin.log --pid //tmp/thin.pid"
+  w.stop          = rvm_bin('thin')+"stop --pid //tmp/thin.pid"
   w.restart       = rvm_bin('thin')+"restart"
-  w.pid_file      = "#{CDSERVER_PID}/thin.pid" 
+  w.pid_file      = "//tmp/thin.pid" 
   w.log           = "#{CDSERVER_LOG}/thin.log"  
   w.keepalive
 end
