@@ -1,6 +1,6 @@
 CDSERVER_ROOT="//home/cds/CDServer"
 CDDAEMON_ROOT="//home/cds/CDDaemon"
-CDSERVER_PID = "#{CDSERVER_ROOT}/tmp/pids"
+CDSERVER_PID = "//tmp"
 CDSERVER_LOG= "#{CDSERVER_ROOT}/log"
 NGINX_ROOT="/usr/local/nginx/sbin" #config in /usr/local/nginx/conf/nginx.conf
 THIN_ROOT="//home/cds/.rvm/gems/ruby-2.1.0/bin/thin"
@@ -24,7 +24,7 @@ God.watch do |w|
   w.start         = rvm_bin('rake')+"ts:start"
   w.stop          = rvm_bin('rake')+"ts:stop"
   w.restart       = rvm_bin('rake')+"ts:restart"
-  w.pid_file      = File.join(CDSERVER_LOG,'searchd.production.pid')
+  w.pid_file      = File.join(CDSERVER_,PID'searchd.production.pid')
   w.keepalive
 end
 
@@ -36,8 +36,8 @@ God.watch do |w|
   w.stop_grace    = 10.seconds
   w.interval      = 60.seconds
   w.dir           = CDSERVER_ROOT
-  w.start         = rvm_bin('bundle')+"exec sidekiq -e production -c 3 -P #{CDSERVER_ROOT}/tmp/pids/sidekiq.pid"
-  w.stop          = rvm_bin('bundle')+"exec sidekiqctl stop #{CDSERVER_ROOT}/tmp/pids/sidekiq.pid 5"
+  w.start         = rvm_bin('bundle')+"exec sidekiq -e production -c 3 -P #{CDSERVER_PID}/sidekiq.pid"
+  w.stop          = rvm_bin('bundle')+"exec sidekiqctl stop #{CDSERVER_PID}/sidekiq.pid 5"
   w.keepalive
   w.log           = File.join(CDSERVER_LOG, 'sidekiq.log')
   w.behavior(:clean_pid_file)
