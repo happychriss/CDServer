@@ -24,7 +24,7 @@ God.watch do |w|
   w.start         = rvm_bin('rake')+"ts:start"
   w.stop          = rvm_bin('rake')+"ts:stop"
   w.restart       = rvm_bin('rake')+"ts:restart"
-  w.pid_file      = File.join(CDSERVER_LOG,'searchd.production.pid')
+  w.pid_file      = File.join(CDSERVER_,PID'searchd.production.pid')
   w.keepalive
 end
 
