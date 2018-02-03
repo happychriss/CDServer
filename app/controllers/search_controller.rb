@@ -62,7 +62,14 @@ end
     @page=Page.find(params[:id])
 
     data=File.read(@page.path(:org))
-    send_data( data, :filename => @page.original_filename,:type => @page.mime_type, :page => '1' )
+    if @page.mime_type=='application/pdf' then
+      extension='.pdf'
+    else
+      extension=''
+    end
+
+
+    send_data( data, :filename => @page.original_filename+extension,:type => @page.mime_type, :page => '1' )
 
     return
   end

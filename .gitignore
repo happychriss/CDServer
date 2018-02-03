@@ -21,8 +21,7 @@ app_support/upload_test/*
 ## Specific files
 config/development.sphinx.conf
 config/database.yml
-config/s3.yml
-config/private_pub.yml
+../../DocumentBox/DocumentBox-Server/config/s3.yml
 config/services.yml
 app_support/batch/DRbProcessor_remote.rb.pid
 app_support/batch/DRbProcessorRemoveServer.rb.pid
@@ -115,3 +114,4 @@ test.rb
 test2.rb
 tmp/
 vendor/
+/config/s3.yml
