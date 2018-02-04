@@ -29,6 +29,10 @@ class Converter
 
         puts "xx complete remote call to DRB"
 
+        sleep(2); ##ABBYY gets stress when at the same time
+
+        puts "sleep done"
+
       else
 
         puts "NO DRB found for #{page.id} , updating as not processed"
