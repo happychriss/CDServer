@@ -13,6 +13,9 @@ def rvm_bin(daemon)
   return File.join(RVM_BIN,"bootup_"+daemon+" ")
 end
 
+
+God.pid_file_directory = '//tmp'
+
 God.watch do |w|
   w.name          = "sphinx"
   w.group         ='cds'
